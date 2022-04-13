@@ -360,3 +360,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/MVCAvisaEnchenteProject/appsettings.json
+/MVCAvisaEnchenteProject/appsettings.Development.json
