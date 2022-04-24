@@ -29,6 +29,12 @@
                         <li class="nav-item mr-4">
                             <a class="nav-link text-primary" asp-area="" asp-controller="Home" asp-action="ComoFunciona">Como Funciona?</a>
                         </li>
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" asp-area="" asp-controller="Home" asp-action="ComoFunciona">Minha Conta</a>
+                            </li>
+                        }
                     </ul>
                 </div>
 
@@ -42,11 +48,15 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Avisa Enchente! - <a asp-area="" asp-controller="Home" asp-action="SobreNos">Sobre Nós</a>
-        </div>
-    </footer>
+    @if ((string)ViewData["Title"] != "Página Inicial" || User.Identity.IsAuthenticated)
+    {
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - Avisa Enchente! - <a asp-area="" asp-controller="Home" asp-action="SobreNos">Sobre Nós</a>
+            </div>
+        </footer>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
