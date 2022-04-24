@@ -39,8 +39,9 @@ CREATE TABLE [dbo].[usuarios](
     [nome_completo] VARCHAR(100) NOT NULL,
 	[email] VARCHAR(200) NOT NULL,
 	[senha] VARCHAR(60) NOT NULL,	
-	[role] VARCHAR(60) NOT NULL,
+	[tipo_usuario] VARCHAR(60) NOT NULL,
 	[cidade_atendida_id] INT NOT NULL,
+	[primeiro_login] BIT NOT NULL,
 
 	CONSTRAINT [pk_usuarios_id] PRIMARY KEY([id]),
 	CONSTRAINT [fk_usuarios_cidade_atendida_id] FOREIGN KEY([cidade_atendida_id])
