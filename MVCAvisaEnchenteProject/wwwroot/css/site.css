@@ -69,3 +69,31 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+/* Custom
+-------------------------------------------------- */
+
+.navbar .navbar-nav .nav-item .nav-link {
+    position: relative;
+}
+
+.navbar .navbar-nav .nav-item .nav-link::after {
+    position: absolute !important;
+    bottom: -0.5rem;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: #F36E21;
+    width: 0%;
+    content: "";
+    height: 3px;
+}
+
+.navbar .navbar-nav .nav-item .nav-link:hover::after, .navbar-light .navbar-nav .nav-link:focus::after {
+    width: 100%;
+}
+.navbar .navbar-nav .nav-item .nav-link:hover, .navbar .navbar-nav .nav-item .nav-link:focus {
+    color: #F36E21 !important;
+    transition: unset;
+}
