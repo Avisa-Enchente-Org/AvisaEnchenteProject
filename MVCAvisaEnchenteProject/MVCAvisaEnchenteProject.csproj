@@ -17,6 +17,7 @@
     <Folder Include="Models\ViewModels\Response\" />
     <Folder Include="Models\ViewModels\Request\" />
     <Folder Include="Views\Shared\Components\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 </Project>

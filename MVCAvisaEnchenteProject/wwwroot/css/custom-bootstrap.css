@@ -1,5 +1,4 @@
-﻿/*! `Custom` Bootstrap 5 theme */
-@import url(https://use.fontawesome.com/releases/v5.0.10/css/all.css); /*!
+﻿/*! `Custom` Bootstrap 5 theme */ /*!
  * Bootstrap v5.0.1 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
  * Copyright 2011-2021 Twitter, Inc.
@@ -9813,5 +9812,27 @@ textarea.form-control-lg {
 
     .d-print-none {
         display: none !important
+    }
+}
+
+html {
+    font-size: .8rem
+}
+
+@media (min-width: 576px) {
+    html {
+        font-size: .9rem
+    }
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: .9rem
+    }
+}
+
+@media (min-width: 992px) {
+    html {
+        font-size: 1rem
     }
 }
