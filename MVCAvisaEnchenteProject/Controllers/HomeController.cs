@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MVCAvisaEnchenteProject.Models;
+using MVCAvisaEnchenteProject.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
