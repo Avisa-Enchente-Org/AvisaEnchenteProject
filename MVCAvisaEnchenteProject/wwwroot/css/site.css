@@ -9,13 +9,20 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #F36E21
+}
+a.link-text {
+    color: #F36E21
+}
+a.link-text:hover {
+    color: #F36E21;
+    opacity: 0.8;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
@@ -113,16 +120,23 @@ body {
 }
 
 .tela-inicial-text {
-    width: 35vw;
+    width: 40vw;
 }
 
 .btn-entrar-tela-inicial {
-    width: 15rem;
+    width: 16rem;
 }
 
 .div-tela-inicial {
     height: 70vh;
     width: 45%;
+}
+
+.nao-possui-conta-text {
+    font-size: 12px;
+    text-align: center;
+    width: 16rem;
+    margin-top: 5px;
 }
 
 @media (max-width: 768px) {
@@ -139,5 +153,9 @@ body {
     .div-tela-inicial {
         height: 70vh;
         width: 100%;
+    }
+
+    .nao-possui-conta-text {
+        align-self: center;
     }
 }
