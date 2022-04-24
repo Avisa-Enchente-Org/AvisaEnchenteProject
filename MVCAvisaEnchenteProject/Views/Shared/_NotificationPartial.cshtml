@@ -1,0 +1,51 @@
+﻿@{
+    var temp = TempData["Risco"] as NotificacaoRiscoModel;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success notification float-right" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger notification float-right" role="alert">
+        @TempData["Error"]
+    </div>
+}
+
+@if (temp != null)
+{
+    if (temp.TipoDoRisco == 0)
+    {
+        <div class="alert alert-info alert-dismissible fade show notification float-right" role="alert">
+            <h4 class="alert-heading">Alerta de Baixo Risco!</h4>
+            Baixo Risco de Enchente ou alagamento na sua cidade!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    if (temp.TipoDoRisco == 1)
+    {
+        <div class="alert alert-warning alert-dismissible fade show notification float-right" role="alert">
+            <h4 class="alert-heading">Alerta de Médio Risco!</h4>
+            Médio Risco de Enchente ou alagamento na sua cidade!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    if (temp.TipoDoRisco == 2)
+    {
+        <div class="alert alert-danger alert-dismissible fade show notification float-right" role="alert">
+            <h4 class="alert-heading">Alerta de Alto Risco!</h4>
+            Alto Risco de Enchente ou alagamento na sua cidade!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
