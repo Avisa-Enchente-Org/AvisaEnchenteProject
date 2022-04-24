@@ -22,8 +22,11 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             return View();
         }
-
         public IActionResult SobreNos()
+        {
+            return View();
+        }
+        public IActionResult ComoFunciona()
         {
             return View();
         }
