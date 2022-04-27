@@ -7,6 +7,6 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
 {
     public class BaseEntity
     {
-        public virtual int Id { get; protected set; }
+        public virtual int Id { get; set; }
     }
 }
