@@ -18,7 +18,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
         protected string Tabela { get; set; }
         protected string NomeSpListagem { get; set; } = "sp_Listagem";
         protected abstract SqlParameter[] CriaParametros(T model);
-        protected abstract T MontaModel(DataRow registro);
+        protected abstract T MontaEntidade(DataRow registro);
         protected abstract void SetTabela();
 
         public virtual void Insert(T model)
@@ -55,14 +55,13 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
             if (tabela.Rows.Count == 0)
                 return null;
             else
-                return MontaModel(tabela.Rows[0]);
+                return MontaEntidade(tabela.Rows[0]);
         }
 
-        public virtual List<T> Listagem(int id)
+        public virtual List<T> Listagem()
         {
             var p = new SqlParameter[]
             {
-                new SqlParameter("id", id),
                 new SqlParameter("tabela", Tabela)
             };
             var tabela = HelperDAO.ExecutaProcSelect(NomeSpListagem, p);
@@ -70,7 +69,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
             List<T> lista = new List<T>();
 
             foreach (DataRow registro in tabela.Rows)
-                lista.Add(MontaModel(registro));
+                lista.Add(MontaEntidade(registro));
 
             return lista;
         }
