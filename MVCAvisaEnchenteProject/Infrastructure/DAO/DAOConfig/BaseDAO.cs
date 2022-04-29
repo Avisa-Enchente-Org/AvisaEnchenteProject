@@ -21,17 +21,17 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
         protected abstract T MontaEntidade(DataRow registro);
         protected abstract void SetTabela();
 
-        public virtual void Insert(T model)
+        public virtual void Inserir(T model)
         {
             HelperDAO.ExecutaProc("sp_Insert_" + Tabela, CriaParametros(model));
         }
 
-        public virtual void Update(T model)
+        public virtual void Atualizar(T model)
         {
             HelperDAO.ExecutaProc("sp_Update_" + Tabela, CriaParametros(model));
         }
 
-        public virtual void Delete(int id)
+        public virtual void Deletar(int id)
         {
             var p = new SqlParameter[]
             {
@@ -42,7 +42,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
             HelperDAO.ExecutaProc("sp_Delete", p);
         }
 
-        public virtual T Consulta(int id)
+        public virtual T ConsultarPorId(int id)
         {
             var p = new SqlParameter[]
             {
@@ -58,7 +58,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
                 return MontaEntidade(tabela.Rows[0]);
         }
 
-        public virtual List<T> Listagem()
+        public virtual List<T> Listar()
         {
             var p = new SqlParameter[]
             {

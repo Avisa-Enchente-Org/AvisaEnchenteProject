@@ -19,7 +19,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             try
             {
-                var lista = DAO.Listagem();
+                var lista = DAO.Listar();
                 return View(NomeViewIndex, lista);
             }
             catch (Exception erro)
