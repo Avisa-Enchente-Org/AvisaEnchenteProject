@@ -1,8 +1,8 @@
 ﻿$(function () {
 
-    if ($("div.alert.notification").length) {
+    if ($("div.notification").length) {
         setTimeout(() => {
-            $("div.alert.notification").fadeOut();
+            $("div.notification").fadeOut();
         }, 4000);
     }
 
