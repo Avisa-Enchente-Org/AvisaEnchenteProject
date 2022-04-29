@@ -1,5 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Como Funciona?";
-}  
+}
 
 <h1 class="text-primary">Como Funciona?</h1>
+
+@section Scripts {
+    <script>
+        window.addEventListener('load', function () {
+
+            $('#Index').removeClass('active');
+            $('#SobreNos').removeClass('active');
+            $('#ComoFunciona').addClass('active');
+            $('#MeuPerfil').removeClass('active');
+
+        });
+    </script>
+}
