@@ -16,7 +16,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
         }
 
         protected string Tabela { get; set; }
-        protected string NomeSpListagem { get; set; } = "sp_Listagem";
+        protected string NomeSpListagem { get; set; } = "sp_Listar";
         protected abstract SqlParameter[] CriaParametros(T model);
         protected abstract T MontaEntidade(DataRow registro);
         protected abstract void SetTabela();

@@ -1,6 +1,6 @@
 /*
-	Se for a primeira vez que irá utilizar esse script,
-	remova o comentário da Criação do Banco de Dados logo abaixo
+	Se for a primeira vez que irï¿½ utilizar esse script,
+	remova o comentï¿½rio da Criaï¿½ï¿½o do Banco de Dados logo abaixo
 */
 
 /*CREATE DATABASE [avisa_enchente_db]
@@ -80,7 +80,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_Listagem
+CREATE PROCEDURE sp_Listar
 (
 	@tabela VARCHAR(MAX)
 )
@@ -91,7 +91,7 @@ BEGIN
 
 	SET @function =
 		CASE @tabela
-			WHEN 'usuario' THEN  'fnc_ListaUsuarios()'
+			WHEN 'usuarios' THEN  'fnc_ListaUsuarios()'
 		END
 
 	SET @sql = 'select * from ' + @function
