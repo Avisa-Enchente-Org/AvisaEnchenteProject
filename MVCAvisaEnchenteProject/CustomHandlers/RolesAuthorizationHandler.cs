@@ -31,8 +31,8 @@ namespace MVCAvisaEnchenteProject.CustomHandlers
                 var roles = requirement.AllowedRoles;
 
                 var usuarioDAO = new UsuarioDAO();
-
-                validRole = roles.ToList().Contains(usuarioDAO.ConsultarPorId(Convert.ToInt32(usuarioId)).TipoUsuario.GetDescription());
+                var tipoUsuario = usuarioDAO.ConsultarPorId(Convert.ToInt32(usuarioId)).TipoUsuario;
+                validRole = roles.ToList().Contains(nameof(tipoUsuario));
             }
 
             if (validRole)
