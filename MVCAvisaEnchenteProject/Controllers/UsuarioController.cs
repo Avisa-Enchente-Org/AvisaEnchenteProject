@@ -18,10 +18,18 @@ namespace MVCAvisaEnchenteProject.Controllers
             DAOPrincipal = new UsuarioDAO();
         }
 
+        [HttpGet]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
         public override IActionResult Index()
         {
             return base.Index();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult MeuPerfil()
+        {
+            return View(ObterUsuarioLogado() ?? new Usuario());
         }
     }
 }
