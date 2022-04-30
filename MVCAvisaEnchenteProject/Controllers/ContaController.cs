@@ -23,9 +23,6 @@ namespace MVCAvisaEnchenteProject.Controllers
             _usuarioDAO = new UsuarioDAO();
         }
 
-        /// <summary>
-        /// GET /conta/registro
-        /// </summary>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Registro()
@@ -35,7 +32,6 @@ namespace MVCAvisaEnchenteProject.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
 
         [HttpPost]
         [AllowAnonymous]
@@ -154,20 +150,6 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
-        }
-        private bool VerificaSePrimeiroLogin()
-        {
-            var usuarioId = User?.FindFirst("UsuarioId")?.Value;
-            if (!string.IsNullOrEmpty(usuarioId))
-            {
-                if (_usuarioDAO.ConsultarPorId(Convert.ToInt32(usuarioId)).PrimeiroLogin)
-                {
-                    TempData["Info"] = "Primeiro Selecione uma Localização para acessar outras páginas do Site";
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }
