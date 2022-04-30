@@ -11,13 +11,11 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
-    public class UsuarioController : BaseController<Usuario>
+    public class UsuarioController : BaseController<Usuario, UsuarioDAO>
     {
-        private readonly UsuarioDAO _usuarioDAO;
-
         public UsuarioController()
         {
-            _usuarioDAO = new UsuarioDAO();
+            DAOPrincipal = new UsuarioDAO();
         }
 
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
