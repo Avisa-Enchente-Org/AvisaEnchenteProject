@@ -93,6 +93,10 @@ body {
     height: 3px;
 }
 
+a#configuracoes.active {
+    color: #F36E21 !important;
+}
+
 .navbar .navbar-nav .nav-item .nav-link.nav-link-text:hover::after, .navbar-light .navbar-nav .nav-link.nav-link-text.active::after {
     width: 100%;
 }
@@ -101,14 +105,20 @@ body {
     transition: unset;
 }
 
-.logout-button, .meu-perfil-button {
+.nav-link-dropdown {
     color: #08357c
 }
-.logout-button:hover, .meu-perfil-button:hover {
-    color: #F36E21
+
+a.dropdown-item.nav-link-dropdown:focus, a.dropdown-item.nav-link-dropdown:hover {
+    color: #F36E21;
+    background: unset;
 }
 
-a#navbarDropdownMenuLink.nav-link.dropdown-toggle::after{
+img#meu-perfil-image.rounded-circle.active {
+    border: 2px solid #f36e21;
+}
+
+a#dropdownMeuPerfilLink.nav-link.dropdown-toggle::after {
     border-top: 0px !important
 }
 /*Custom Alerts

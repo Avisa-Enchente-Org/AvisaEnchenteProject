@@ -2188,8 +2188,8 @@ textarea.form-control-lg {
 
     .dropdown-toggle::after {
         display: inline-block;
-        margin-left: .255em;
-        vertical-align: .255em;
+        margin-left: .1em;
+        vertical-align: .15em;
         content: "";
         border-top: .3em solid;
         border-right: .3em solid transparent;

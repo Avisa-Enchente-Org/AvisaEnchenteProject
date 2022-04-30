@@ -31,36 +31,36 @@
                             <ul class="navbar-nav flex-grow-1 justify-content-end">
                                 @if (User?.Identity?.IsAuthenticated ?? false)
                                 {
-                                    <li class="nav-item mr-4">
-                                        <a class="nav-link text-primary nav-link-text" id="Index" asp-controller="Home" asp-action="Index">Inicio</a>
+                                    <li class="nav-item mr-3">
+                                        <a class="nav-link text-primary nav-link-text" id="index" asp-controller="Home" asp-action="Index">Inicio</a>
                                     </li>
 
-                                    <li class="nav-item mr-4">
-                                        <a class="nav-link text-primary nav-link-text" id="SobreNos" asp-controller="Home" asp-action="SobreNos">Sobre Nós</a>
+                                    <li class="nav-item mr-3">
+                                        <a class="nav-link text-primary nav-link-text" id="sobre-nos" asp-controller="Home" asp-action="SobreNos">Sobre Nós</a>
                                     </li>
-                                    <li class="nav-item mr-4">
-                                        <a class="nav-link text-primary nav-link-text" id="ComoFunciona" asp-controller="Home" asp-action="ComoFunciona">Como Funciona?</a>
+                                    <li class="nav-item mr-3">
+                                        <a class="nav-link text-primary nav-link-text" id="como-funciona" asp-controller="Home" asp-action="ComoFunciona">Como Funciona?</a>
                                     </li>
 
                                     if (userRole == nameof(ETipoUsuario.Admin))
                                     {
-                                        <li class="nav-item dropdown mr-4">
-                                            <a class="nav-link dropdown-toggle" id="Configuracoes" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa-solid fa-user"></i> Configurações
+                                        <li class="nav-item dropdown mr-3 text-primary ">
+                                            <a class="nav-link dropdown-toggle text-primary" id="configuracoes" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa-solid fa-gear"></i> Configurações
                                             </a>
                                             <div class="dropdown-menu">
-                                                <a class="nav-link text-primary nav-link-text" asp-controller="Usuario" asp-action="Index">Usuários</a>
+                                                <a class="dropdown-item nav-link-dropdown" asp-controller="Usuario" asp-action="Index"><i class="fa-solid fa-users-gear pr-2"></i>Usuários</a>
                                             </div>
                                         </li>
                                     }
 
-                                    <li class="nav-item dropdown  meu-perfil-button">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0">
-                                            <img src="/img/image.png" width="40" height="40" class="rounded-circle">
+                                    <li class="nav-item dropdown meu-perfil-button">
+                                        <a class="nav-link dropdown-toggle" href="#" id="dropdownMeuPerfilLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0">
+                                            <img src="/img/image.png" width="40" height="40" id="meu-perfil-image" class="rounded-circle">
                                         </a>
-                                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                            <a class="dropdown-item meu-perfil-button" asp-controller="Home" asp-action="ComoFunciona"><i class="fa-solid fa-user"></i> Meu Perfil</a>
-                                            <a class="dropdown-item logout-button" asp-controller="Conta" asp-action="Logout" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket fa-sm"></i> Sair</a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMeuPerfilLink">
+                                            <a class="dropdown-item nav-link-dropdown" asp-controller="Usuario" asp-action="MeuPerfil"><i class="fa-solid fa-user pr-2"></i> Meu Perfil</a>
+                                            <a class="dropdown-item nav-link-dropdown" asp-controller="Conta" asp-action="Logout" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket fa-sm pr-2"></i> Sair</a>
                                         </div>
                                     </li>
                                 }
