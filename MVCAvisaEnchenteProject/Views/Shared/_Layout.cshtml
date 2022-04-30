@@ -13,7 +13,7 @@
     <div class="content" style="height: 100%">
         @if ((string)ViewData["Title"] != "Página Inicial" || User.Identity.IsAuthenticated)
         {
-            <header class="mb-3" style=" height: 9.5vh;">
+            <header style=" height: 8.5vh;">
                 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
                     <div class="container">
                         <a class="navbar-brand text-primary font-weight-bold" asp-area="" asp-controller="Home" asp-action="Index">Avisa Enchente!</a>
@@ -56,7 +56,7 @@
                 </nav>
             </header>
         }
-        <div class="container" style=" height: calc(100% - 8vh - 1rem);">
+        <div class="container" style=" height: calc(100% - 8vh);">
             <partial name="_NotificationPartial" />
             <main role="main" style=" height: 100%;">
                 @RenderBody()

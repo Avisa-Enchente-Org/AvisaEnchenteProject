@@ -4,12 +4,14 @@
 
 @if (User?.Identity?.IsAuthenticated ?? false)
 {
-    <h1 class="text-primary"> Bem Vindo @User?.Identity?.Name</h1>
+    <div class="pt-3">
+        <h4 class="text-primary">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
+    </div>
 }
 else
 {
     <div class="row h-100">
-        <div class="col-md-6 my-auto">
+        <div class="col-md-6 my-auto" style="text-align: center;">
             <h1 class="text-primary font-weight-bold">
                 Um Website de
                 Monitoramento de
