@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="/lib/fa-icons/all.css" />
 </head>
 <body>
+    @{
+        var userRole = User?.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
+    }
     <div class="content" style="height: 100%">
         @if ((string)ViewData["Title"] != "Página Inicial" || User.Identity.IsAuthenticated)
         {
@@ -38,6 +41,18 @@
                                     <li class="nav-item mr-4">
                                         <a class="nav-link text-primary nav-link-text" id="ComoFunciona" asp-controller="Home" asp-action="ComoFunciona">Como Funciona?</a>
                                     </li>
+
+                                    if (userRole == nameof(ETipoUsuario.Admin))
+                                    {
+                                        <li class="nav-item dropdown mr-4">
+                                            <a class="nav-link dropdown-toggle" id="Configuracoes" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa-solid fa-user"></i> Configurações
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="nav-link text-primary nav-link-text" asp-controller="Usuario" asp-action="Index">Usuários</a>
+                                            </div>
+                                        </li>
+                                    }
 
                                     <li class="nav-item dropdown  meu-perfil-button">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0">
@@ -72,10 +87,10 @@
             </footer>
         }
     </div>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/lib/fa-icons/all.js"></script>
-        @RenderSection("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/fa-icons/all.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
