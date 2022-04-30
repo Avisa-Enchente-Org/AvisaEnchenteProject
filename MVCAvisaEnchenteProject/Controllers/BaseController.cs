@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.ViewModels;
@@ -30,5 +31,13 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         protected bool UsuarioEstaLogado() => !string.IsNullOrEmpty(User?.FindFirst("UsuarioId")?.Value);
         protected string ObterIdUsuarioLogado() => User?.FindFirst("UsuarioId")?.Value;
+        protected Usuario ObterUsuarioLogado()
+        {
+            var usuarioDAO = new UsuarioDAO();
+            if (UsuarioEstaLogado())
+                return usuarioDAO.ConsultarPorId(Convert.ToInt32(ObterIdUsuarioLogado()));
+
+            return null;
+        }
     }
 }
