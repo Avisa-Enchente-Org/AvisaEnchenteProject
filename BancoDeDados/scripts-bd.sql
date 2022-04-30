@@ -39,11 +39,135 @@ CREATE TABLE [dbo].[usuarios](
     [nome_completo] VARCHAR(100) NOT NULL,
 	[email] VARCHAR(200) NOT NULL,
 	[senha] VARCHAR(60) NOT NULL,	
-	[role] VARCHAR(60) NOT NULL,
-	[cidade_atendida_id] INT NOT NULL,
+	[tipo_usuario] INT NOT NULL,
+	[cidade_atendida_id] INT NULL,
+	[primeiro_login] BIT NOT NULL,
 
 	CONSTRAINT [pk_usuarios_id] PRIMARY KEY([id]),
 	CONSTRAINT [fk_usuarios_cidade_atendida_id] FOREIGN KEY([cidade_atendida_id])
         REFERENCES [dbo].[cidades_atendidas]([id])
 )
 GO
+
+
+-- STORED PROCEDURES PADRAO
+
+CREATE PROCEDURE sp_Consulta
+(
+	@id INT,
+	@tabela VARCHAR(MAX)
+)
+AS
+BEGIN
+	DECLARE @sql VARCHAR(MAX);
+	SET @sql = 'select * from ' + @tabela +
+	' where id = ' + CAST(@id AS VARCHAR(MAX))
+	EXEC(@sql)
+END
+GO
+
+CREATE PROCEDURE sp_Delete
+(
+	@id INT,
+	@tabela VARCHAR(MAX)
+)
+AS
+BEGIN
+	DECLARE @sql VARCHAR(MAX);
+	SET @sql = ' delete ' + @tabela +
+	' where id = ' + CAST(@id AS VARCHAR(MAX))
+	EXEC(@sql)
+END
+GO
+
+CREATE PROCEDURE sp_Listagem
+(
+	@tabela VARCHAR(MAX)
+)
+AS
+BEGIN
+	DECLARE @sql VARCHAR(MAX);
+	DECLARE @function VARCHAR(MAX);	
+
+	SET @function =
+		CASE @tabela
+			WHEN 'usuario' THEN  'fnc_ListaUsuarios()'
+		END
+
+	SET @sql = 'select * from ' + @function
+	EXEC(@sql)
+END
+GO
+
+-- STORED PROCEDURES PERSONALIZADAS
+
+CREATE PROCEDURE sp_Registrar_Usuario
+(
+	@nome_completo VARCHAR(150),
+	@email VARCHAR(200),
+	@senha VARCHAR(150),
+	@tipo_usuario INT,
+	@primeiro_login BIT
+)
+AS
+BEGIN
+	INSERT INTO usuarios
+	(nome_completo, email, senha, tipo_usuario, primeiro_login)
+	VALUES
+	(@nome_completo, @email, @senha, @tipo_usuario, @primeiro_login)
+END
+GO
+
+CREATE PROCEDURE sp_Login_Usuario
+(
+	@email VARCHAR(200),
+	@senha VARCHAR(150)
+)
+AS
+BEGIN
+	SELECT * FROM usuarios u
+	WHERE u.email = @email and u.senha = @senha
+END
+GO
+
+CREATE PROCEDURE sp_Define_Cidade_Usuario
+(
+	@usuarioId INT,
+	@CidadeId INT
+)
+AS
+BEGIN
+	UPDATE usuarios 
+	SET cidade_atendida_id = @CidadeId
+	WHERE id = @usuarioId 
+
+	IF((SELECT primeiro_login FROM usuarios WHERE id = @usuarioId) = 1) BEGIN
+		UPDATE usuarios 
+		SET primeiro_login = 0
+		WHERE id = @usuarioId
+	END
+END
+GO
+
+CREATE PROCEDURE sp_Consulta_Usuario_Por_Email
+(
+	@email VARCHAR(200)
+)
+AS
+BEGIN
+	SELECT * FROM usuarios u
+	WHERE u.email = @email
+END
+GO
+
+
+-- FUNCTIONS
+
+CREATE FUNCTION fnc_ListaUsuarios()
+RETURNS TABLE AS
+RETURN
+(
+	SELECT * FROM usuarios
+)
+GO
+

@@ -1,19 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Sobre Nós";
+    ViewData["Title"] = "Como Funciona?";
 }
 
 <h3 class="text-primary pt-3">@ViewData["Title"]</h3>
-
-<p>Daniel Santos de Sousa RA: 081200021</p>
-
 
 @section Scripts {
     <script>
         window.addEventListener('load', function () {
 
             $('#Index').removeClass('active');
-            $('#SobreNos').addClass('active');
-            $('#ComoFunciona').removeClass('active');
+            $('#SobreNos').removeClass('active');
+            $('#ComoFunciona').addClass('active');
             $('#MeuPerfil').removeClass('active');
 
         });

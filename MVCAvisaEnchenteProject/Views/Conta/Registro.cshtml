@@ -1,0 +1,55 @@
+﻿@model RegistrarUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Cadastro de Usuário";
+}
+
+<div class="row  h-100">
+    <div class="col-sm-12 my-auto">
+        <h3 class="text-primary mb-3">Cadastro</h3>
+
+        <div class="row">
+            <div class="col-md-5">
+                <form asp-action="Registro">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="NomeCompleto" class="control-label text-primary"></label>
+                        <input asp-for="NomeCompleto" class="form-control" />
+                        <span asp-validation-for="NomeCompleto" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label text-primary"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Senha" class="control-label text-primary"></label>
+                        <input asp-for="Senha" class="form-control" />
+                        <span asp-validation-for="Senha" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group text-center mt-4">
+                        <input type="submit" value="Cadastrar" class="btn btn-primary w-100" />
+                        <div class="text-dark fa-1x mt-3">Já Possui uma conta? <a class="link-text" href="/conta/Login">Entrar</a></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+       
+
+<div class="d-none d-md-block">
+    <div class="tela-inicial-image">
+        <img style="width: 53vw" src="/img/tela-inicial-image.jpg" />
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/pagina-inicial.js"></script>
+}

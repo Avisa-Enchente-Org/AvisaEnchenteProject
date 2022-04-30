@@ -1,0 +1,50 @@
+﻿@model PrimeiroLoginViewModel
+
+@{
+    ViewData["Title"] = "Primeiro Login";
+}
+
+<div class="row  h-100">
+    <div class="col-sm-12 my-auto">
+
+        <h3 class="text-primary mb-3">Olá Daniel, Vamos Começar?</h3>
+        <p class="text-dark">Selecine a sua Localização para que possamos alerta-lo dos possiveis alagamentos e enchentes! </p>
+
+        <div class="row">
+            <div class="col-md-5">
+                <form asp-action="PrimeiroLogin">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="EstadoAtendidoId" class="control-label"></label>
+                        <input asp-for="EstadoAtendidoId" class="form-control" />
+                        <span asp-validation-for="EstadoAtendidoId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CidadeAtendidaId" class="control-label"></label>
+                        <input asp-for="CidadeAtendidaId" class="form-control" />
+                        <span asp-validation-for="CidadeAtendidaId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <input type="submit" value="Pronto!" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="d-none d-md-block">
+    <div class="tela-inicial-image">
+        <img src="/img/tela-inicial-image.jpg" />
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/pagina-inicial.js"></script>
+}

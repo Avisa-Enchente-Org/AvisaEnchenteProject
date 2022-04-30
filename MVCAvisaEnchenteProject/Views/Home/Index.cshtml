@@ -1,8 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Página Inicial";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+    <div class="pt-3">
+        <h4 class="text-primary">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
+    </div>
+}
+else
+{
+    <div class="row h-100">
+        <div class="col-md-6 my-auto" style="text-align: center;">
+            <h1 class="text-primary font-weight-bold">
+                Um Website de
+                Monitoramento de
+                Enchentes e Alagamentos
+            </h1>
+            <div class="text-dark mb-4">
+                Nosso sistema consegue identificar em
+                pontos estratégios, possiveis riscos de enchentes
+                e alagamentos em tempo real!
+            </div>
+            <a class="btn btn-primary btn-entrar-tela-inicial" asp-controller="Conta" asp-action="Login">Entrar</a>
+            <div class="text-dark fa-1x nao-possui-conta-text">Não Possui uma conta? <a class="link-text" href="/conta/registro">Cadastre-se</a></div>
+        </div>
+    </div>
+    <div class="tela-inicial-image d-none d-md-block">
+        <img src="/img/tela-inicial-image.jpg" />
+    </div>
+}
+
+
+@section Scripts {
+    <script src="~/js/pagina-inicial.js"></script>
+}

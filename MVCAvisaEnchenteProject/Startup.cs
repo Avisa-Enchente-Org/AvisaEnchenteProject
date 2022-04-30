@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MVCAvisaEnchenteProject.CustomHandlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,15 @@ namespace MVCAvisaEnchenteProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("CookieAuthentication")
+                .AddCookie("CookieAuthentication", config =>
+                {
+                    config.Cookie.Name = "UserLoginCookie";
+                    config.LoginPath = "/Conta/Login";
+                    config.AccessDeniedPath = "/home/NotFoundPageView";
+                });
+
+            services.AddScoped<IAuthorizationHandler, RolesAuthorizationHandler>();
             services.AddControllersWithViews();
         }
 
@@ -44,6 +55,7 @@ namespace MVCAvisaEnchenteProject
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
