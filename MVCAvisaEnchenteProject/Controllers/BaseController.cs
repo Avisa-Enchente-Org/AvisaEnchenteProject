@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
-    public abstract class BaseController<T> : Controller where T : BaseEntity
+    public abstract class BaseController<T, D> : Controller where T : BaseEntity where D : BaseDAO<T>
     {
-        protected BaseDAO<T> DAO { get; set; }
+        protected D DAOPrincipal { get; set; }
         protected string NomeViewIndex { get; set; } = "index";
         protected string NomeViewForm { get; set; } = "form";
 
@@ -19,7 +19,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             try
             {
-                var lista = DAO.Listar();
+                var lista = DAOPrincipal.Listar();
                 return View(NomeViewIndex, lista);
             }
             catch (Exception erro)

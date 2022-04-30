@@ -32,7 +32,7 @@ namespace MVCAvisaEnchenteProject.CustomHandlers
 
                 var usuarioDAO = new UsuarioDAO();
                 var tipoUsuario = usuarioDAO.ConsultarPorId(Convert.ToInt32(usuarioId)).TipoUsuario;
-                validRole = roles.ToList().Contains(nameof(tipoUsuario));
+                validRole = roles.ToList().Contains(tipoUsuario.ToString());
             }
 
             if (validRole)

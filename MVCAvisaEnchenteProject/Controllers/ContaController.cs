@@ -14,13 +14,11 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
-    public class ContaController : BaseController<Usuario>
+    public class ContaController : BaseController<Usuario, UsuarioDAO>
     {
-        private readonly UsuarioDAO _usuarioDAO;
-
         public ContaController()
         {
-            _usuarioDAO = new UsuarioDAO();
+            DAOPrincipal = new UsuarioDAO();
         }
 
         [HttpGet]
@@ -43,13 +41,13 @@ namespace MVCAvisaEnchenteProject.Controllers
                 try
                 {
                     var usuario = new Usuario(usuarioModel);
-                    if (_usuarioDAO.EmailJaExiste(usuarioModel.Email))
+                    if (DAOPrincipal.EmailJaExiste(usuarioModel.Email))
                     {
                         TempData["Error"] = "Erro ao Cadastrar Usuário";
                         return View(usuarioModel);
                     }
 
-                    _usuarioDAO.RegistrarUsuario(usuario);
+                    DAOPrincipal.RegistrarUsuario(usuario);
 
                     TempData["Success"] = "Usuário Cadastrado Com Sucesso!";
                     return RedirectToAction("Login");
@@ -82,7 +80,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             {
                 try
                 {
-                    var usuario = _usuarioDAO.LogarUsuario(login.Email, login.Senha);
+                    var usuario = DAOPrincipal.LogarUsuario(login.Email, login.Senha);
 
                     if (usuario != null)
                     {
@@ -133,7 +131,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                 try
                 {
                     var usuarioId = User.FindFirst("UsuarioId").Value;
-                    _usuarioDAO.DefineCidadeUsuario(Convert.ToInt32(usuarioId), primeiroLogin.CidadeAtendidaId);
+                    DAOPrincipal.DefineCidadeUsuario(Convert.ToInt32(usuarioId), primeiroLogin.CidadeAtendidaId);
 
                     return RedirectToAction("Index", "Home");
                 }

@@ -31,7 +31,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             var tabela = HelperDAO.ExecutaProcSelect("sp_Login_Usuario", parametros);
 
             if (tabela.Rows.Count != 0)
-                return MontaEntidade(tabela.Rows[0]);
+                return MontaEntidadePadrao(tabela.Rows[0]);
             else
                 return null;
         }
@@ -63,7 +63,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
 
         #region Helpers
 
-        protected override Usuario MontaEntidade(DataRow registro)
+        protected override Usuario MontaEntidadePadrao(DataRow registro)
         {
             var usuario = new Usuario
             {
