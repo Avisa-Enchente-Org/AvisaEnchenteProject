@@ -29,5 +29,6 @@ namespace MVCAvisaEnchenteProject.Controllers
         }
 
         protected bool UsuarioEstaLogado() => !string.IsNullOrEmpty(User?.FindFirst("UsuarioId")?.Value);
+        protected string ObterIdUsuarioLogado() => User?.FindFirst("UsuarioId")?.Value;
     }
 }
