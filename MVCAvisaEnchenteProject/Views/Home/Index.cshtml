@@ -8,8 +8,8 @@
 }
 else
 {
-    <div class="flex d-inline-flex div-tela-inicial">
-        <div class="tela-inicial-text d-flex d-sm-flex align-items-start flex-column bd-highlight align-self-center">
+    <div class="row h-100">
+        <div class="col-md-6 my-auto">
             <h1 class="text-primary font-weight-bold">
                 Um Website de
                 Monitoramento de
@@ -20,13 +20,12 @@ else
                 pontos estratégios, possiveis riscos de enchentes
                 e alagamentos em tempo real!
             </div>
-            <a class="btn btn-primary btn-entrar-tela-inicial" href="/conta/login">Entrar</a>
-            <div class="text-primary nao-possui-conta-text">Não Possui uma conta? <a class="link-text" href="/conta/registro">Cadastre-se</a></div>
+            <a class="btn btn-primary btn-entrar-tela-inicial" asp-controller="Conta" asp-action="Login">Entrar</a>
+            <div class="text-dark fa-1x nao-possui-conta-text">Não Possui uma conta? <a class="link-text" href="/conta/registro">Cadastre-se</a></div>
         </div>
-
-        <div class="tela-inicial-image d-none d-md-block">
-            <img src="/img/tela-inicial-image.jpg" />
-        </div>
+    </div>
+    <div class="tela-inicial-image d-none d-md-block">
+        <img src="/img/tela-inicial-image.jpg" />
     </div>
 }
 

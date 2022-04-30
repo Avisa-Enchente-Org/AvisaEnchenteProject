@@ -60,16 +60,17 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    margin-bottom: 8.5vh;
+    height: calc(100vh - 8.5vh);
 }
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
-  z-index: 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 8vh; /* Vertically center the text there */
+    z-index: 0;
+    height: 8.5vh;
 }
 
 
@@ -119,15 +120,15 @@ a#navbarDropdownMenuLink.nav-link.dropdown-toggle::after{
 .notification {
     display: block;
     position: fixed;
-    top: 0;
+    top: 10%;
     left: 20%;
     right: 20%;
-    width: 80%;
+    width: 75%;
     padding-top: 10px;
     z-index: 9999
 }
 
-.tela-inicial-image img{
+.tela-inicial-image img {
     height: 100vh;
     position: absolute;
     top: 0;
@@ -138,27 +139,16 @@ a#navbarDropdownMenuLink.nav-link.dropdown-toggle::after{
     object-fit: cover;
 }
 
-.tela-inicial-text {
-    width: 40vw;
-}
-
 .btn-entrar-tela-inicial {
     width: 16rem;
 }
 
 .div-tela-inicial {
-    height: 70vh;
+    height: 90vh;
     width: 45%;
 }
 
-.nao-possui-conta-text {
-    font-size: 12px;
-    text-align: center;
-    width: 16rem;
-    margin-top: 5px;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .tela-inicial-text {
         width: 100%;
         text-align: center;
@@ -170,11 +160,11 @@ a#navbarDropdownMenuLink.nav-link.dropdown-toggle::after{
     }
 
     .div-tela-inicial {
-        height: 70vh;
+        height: 100vh;
         width: 100%;
     }
 
-    .nao-possui-conta-text {
+    .nao-possui-conta-text{
         align-self: center;
     }
 }
