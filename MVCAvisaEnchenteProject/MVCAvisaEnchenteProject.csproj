@@ -8,15 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.21" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\DAO\" />
-    <Folder Include="Infrastructure\Components\" />
-    <Folder Include="Models\ViewModels\Components\" />
-    <Folder Include="Models\ViewModels\Response\" />
-    <Folder Include="Models\ViewModels\Request\" />
-    <Folder Include="Views\Shared\Components\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
