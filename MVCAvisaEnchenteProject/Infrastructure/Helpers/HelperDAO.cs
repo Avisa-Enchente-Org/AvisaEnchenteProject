@@ -1,7 +1,8 @@
-﻿using System.Data;
+﻿using MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig;
+using System.Data;
 using System.Data.SqlClient;
 
-namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
+namespace MVCAvisaEnchenteProject.Infrastructure.Helpers
 {
     public class HelperDAO
     {

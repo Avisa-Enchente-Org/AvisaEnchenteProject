@@ -1,6 +1,8 @@
 ﻿using MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig;
+using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
+using MVCAvisaEnchenteProject.Models.ViewModels.Request;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,18 +19,14 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             Tabela = "usuarios";
         }
 
-        public void RegistrarUsuario(Usuario usuario)
-        {        
-            HelperDAO.ExecutaProc("sp_Registrar_Usuario", CriaParametros(usuario));
-        }
-        public Usuario LogarUsuario(string email, string senha)
+        public Usuario LogarUsuario(LoginUsuarioRequest login)
         {
             SqlParameter[] parametros = {
-                new SqlParameter("email", email),
-                new SqlParameter("senha", senha),
+                new SqlParameter("email", login.Email),
+                new SqlParameter("senha", login.Senha),
             };
 
-            var tabela = HelperDAO.ExecutaProcSelect("sp_Login_Usuario", parametros);
+            var tabela = HelperDAO.ExecutaProcSelect("sp_login_usuario", parametros);
 
             if (tabela.Rows.Count != 0)
                 return MontaEntidadePadrao(tabela.Rows[0]);
@@ -43,7 +41,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 new SqlParameter("cidadeId", cidadeId),
             };
 
-            HelperDAO.ExecutaProc("sp_Define_Cidade_Usuario", parametros);
+            HelperDAO.ExecutaProc("sp_define_cidade_usuario", parametros);
         }
 
         public bool EmailJaExiste(string email)
@@ -52,7 +50,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 new SqlParameter("email", email),
             };
 
-            var tabela = HelperDAO.ExecutaProcSelect("sp_Consulta_Usuario_Por_Email", emailParametro);
+            var tabela = HelperDAO.ExecutaProcSelect("sp_consulta_usuario_por_email", emailParametro);
 
             if (tabela.Rows.Count == 0)
                 return false;
@@ -60,6 +58,33 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 return true;
         }
 
+        public void AtualizarUsuarioAdmin(AdminCriarEditarUsuarioViewModel usuarioViewModel)
+        {
+            SqlParameter[] parametros = {
+                new SqlParameter("id", usuarioViewModel.Id),
+                new SqlParameter("tipo_usuario", usuarioViewModel.TipoUsuario)
+            };
+
+            HelperDAO.ExecutaProc("sp_atualiza_usuario_admin", parametros);
+        }
+
+        public List<Usuario> PesquisaAvancadaUsuarios(PesquisaAvancadaUsuariosViewModel pesquisaAvancadaUsuariosViewModel)
+        {
+            var p = new SqlParameter[]
+            {
+                new SqlParameter("nome_completo", pesquisaAvancadaUsuariosViewModel.NomeCompleto ?? ""),
+                new SqlParameter("email", pesquisaAvancadaUsuariosViewModel.Email ?? ""),
+                new SqlParameter("tipo_usuario", pesquisaAvancadaUsuariosViewModel.TipoUsuario == 0 ? "": pesquisaAvancadaUsuariosViewModel.TipoUsuario.ToString())
+            };
+
+            var lista = new List<Usuario>();
+            DataTable tabela = HelperDAO.ExecutaProcSelect("sp_pesquisa_avancada_usuarios", p);
+
+            foreach (DataRow registro in tabela.Rows)
+                lista.Add(MontaEntidadePadrao(registro));
+
+            return lista;
+        }
 
         #region Helpers
 
@@ -70,10 +95,11 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 Id = Convert.ToInt32(registro["id"]),
                 NomeCompleto = registro["nome_completo"].ToString(),
                 Email = registro["email"].ToString(),
-                Senha = registro["senha"].ToString(),
                 TipoUsuario = (ETipoUsuario)Convert.ToInt32(registro["tipo_usuario"]),
                 PrimeiroLogin = Convert.ToBoolean(registro["primeiro_login"]),
             };
+            if (registro.Table.Columns.Contains("senha"))
+                usuario.Senha = registro["senha"].ToString();
             if (registro["cidade_atendida_id"] != DBNull.Value)
                 usuario.CidadeAtendidaId = Convert.ToInt32(registro["cidade_atendida_id"]);
             

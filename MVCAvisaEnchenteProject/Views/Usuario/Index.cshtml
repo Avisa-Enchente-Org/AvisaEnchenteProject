@@ -4,72 +4,17 @@
     ViewData["Title"] = "Usuários";
 }
 
-<h3 class="text-primary pt-3">@ViewData["Title"]</h3>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeCompleto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Senha)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoUsuario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CidadeAtendidaId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrimeiroLogin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NomeCompleto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Senha)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TipoUsuario)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CidadeAtendidaId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrimeiroLogin)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    
+<h4 class="text-primary pt-3">@ViewData["Title"]</h4>
+
+<div id="pv-pesquisa-avancada-usuarios" class="my-3">
+    @await Html.PartialAsync("_FormPesquisaAvancadaUsuarios", new PesquisaAvancadaUsuariosViewModel())
+</div>
+
+<div id="pv-listar-usuarios">
+    @await Html.PartialAsync("_ListarUsuarios", Model)
+</div>
 
 @section Scripts {
     <script src="~/js/configurations.js"></script>

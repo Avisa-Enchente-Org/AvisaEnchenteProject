@@ -8,16 +8,17 @@
     <link rel="stylesheet" href="~/css/custom-bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="/lib/fa-icons/all.css" />
+    <link rel="stylesheet" href="/lib/sweet-alert/dist/sweetalert2.min.css" />
+    <link rel="stylesheet" href="/lib/bootstrap-table/dist/bootstrap-table.min.css" />
 </head>
 <body>
     @{
         var userRole = User?.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
     }
-    <div class="content" style="height: 100%">
         @if ((string)ViewData["Title"] != "Página Inicial" || User.Identity.IsAuthenticated)
         {
-            <header style=" height: 8.5vh;">
-                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+            <header>
+                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow" style="z-index: 1;">
                     <div class="container">
                         <a class="navbar-brand text-primary font-weight-bold" asp-area="" asp-controller="Home" asp-action="Index">Avisa Enchente!</a>
                         @if (User?.Identity?.IsAuthenticated ?? false)
@@ -42,7 +43,7 @@
                                         <a class="nav-link text-primary nav-link-text" id="como-funciona" asp-controller="Home" asp-action="ComoFunciona">Como Funciona?</a>
                                     </li>
 
-                                    if (userRole == nameof(ETipoUsuario.Admin))
+                                    if (userRole == ETipoUsuario.Admin.GetDescription())
                                     {
                                         <li class="nav-item dropdown mr-3 text-primary ">
                                             <a class="nav-link dropdown-toggle text-primary" id="configuracoes" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -71,12 +72,28 @@
                 </nav>
             </header>
         }
-        <div class="container" style=" height: calc(100% - 8vh);">
+        <div class="container">
             <partial name="_NotificationPartial" />
-            <main role="main" style=" height: 100%;">
+            <main class="pb-3" role="main">
                 @RenderBody()
             </main>
         </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="form-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-primary">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         @if ((string)ViewData["Title"] != "Página Inicial" || User.Identity.IsAuthenticated)
         {
@@ -86,11 +103,12 @@
                 </div>
             </footer>
         }
-    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/fa-icons/all.js"></script>
+    <script src="~/lib/sweet-alert/dist/sweetalert2.all.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

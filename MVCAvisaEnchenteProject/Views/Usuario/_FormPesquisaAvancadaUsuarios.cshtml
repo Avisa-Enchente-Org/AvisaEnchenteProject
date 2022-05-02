@@ -1,0 +1,40 @@
+﻿@model PesquisaAvancadaUsuariosViewModel
+
+
+<h6 class="text-primary">Filtrar por: </h6>
+<form asp-action="PesquisaAvancadaUsuarios" onsubmit="return realizaPesquisaAvancadaUsuarios(this);" id="pesquisa-avancada-usuarios">
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="NomeCompleto" class="control-label text-primary"></label>
+                <input asp-for="NomeCompleto" class="form-control form-control-sm" />
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Email" class="control-label text-primary"></label>
+                <input asp-for="Email" class="form-control form-control-sm" />
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label asp-for="TipoUsuario" class="control-label text-primary"></label>
+                @Html.DropDownListFor(m => m.TipoUsuario, Model.SelectListTipoUsuario, "Selecione...", new { @class = "form-control form-control-sm" })
+                <span asp-validation-for="TipoUsuario" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2" style=" padding-top: 2rem; ">
+            <div class="form-group">
+                <button type="submit" value="Pesquisar" class="btn btn-primary btn-block btn-sm">
+                    <i class="fa-solid fa-filter mr-1"></i> 
+                    Filtrar
+                </button>
+            </div>
+        </div>
+
+    </div>
+</form>
+

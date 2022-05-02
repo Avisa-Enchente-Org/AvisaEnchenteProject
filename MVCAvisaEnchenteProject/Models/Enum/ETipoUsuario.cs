@@ -9,9 +9,9 @@ namespace MVCAvisaEnchenteProject.Models.Enum
     public enum ETipoUsuario
     {
         [Description("Comum")]
-        Comum = 0,
+        Comum = 1,
 
-        [Description("Admin")]
-        Admin = 1
+        [Description("Administrador")]
+        Admin = 2
     }
 }

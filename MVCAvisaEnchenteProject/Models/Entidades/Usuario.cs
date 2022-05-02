@@ -31,5 +31,14 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
             TipoUsuario = ETipoUsuario.Comum;
             PrimeiroLogin = true;
         }
+
+        public Usuario(AdminCriarEditarUsuarioViewModel usuarioRequest)
+        {
+            NomeCompleto = usuarioRequest.NomeCompleto;
+            Email = usuarioRequest.Email;
+            Senha = usuarioRequest.Senha;
+            TipoUsuario = (ETipoUsuario)usuarioRequest.TipoUsuario;
+            PrimeiroLogin = true;
+        }
     }
 }

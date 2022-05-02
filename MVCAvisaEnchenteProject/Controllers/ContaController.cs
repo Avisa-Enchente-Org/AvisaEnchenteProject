@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
+using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
 using MVCAvisaEnchenteProject.Models.ViewModels;
@@ -47,7 +48,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                         return View(usuarioModel);
                     }
 
-                    DAOPrincipal.RegistrarUsuario(usuario);
+                    DAOPrincipal.Inserir(usuario);
 
                     TempData["Success"] = "Usuário Cadastrado Com Sucesso!";
                     return RedirectToAction("Login");
@@ -80,7 +81,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             {
                 try
                 {
-                    var usuario = DAOPrincipal.LogarUsuario(login.Email, login.Senha);
+                    var usuario = DAOPrincipal.LogarUsuario(login);
 
                     if (usuario != null)
                     {

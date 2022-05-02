@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MVCAvisaEnchenteProject.CustomHandlers
+namespace MVCAvisaEnchenteProject.Infrastructure.CustomHandlers
 {
     public class RolesAuthorizationHandler : AuthorizationHandler<RolesAuthorizationRequirement>, IAuthorizationHandler
     {

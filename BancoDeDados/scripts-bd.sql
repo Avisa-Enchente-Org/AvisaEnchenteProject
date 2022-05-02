@@ -52,7 +52,7 @@ GO
 
 -- STORED PROCEDURES PADRAO
 
-CREATE PROCEDURE sp_Consulta
+CREATE PROCEDURE sp_consulta
 (
 	@id INT,
 	@tabela VARCHAR(MAX)
@@ -66,7 +66,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_Delete
+CREATE PROCEDURE sp_delete
 (
 	@id INT,
 	@tabela VARCHAR(MAX)
@@ -80,7 +80,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_Listar
+CREATE PROCEDURE sp_listar
 (
 	@tabela VARCHAR(MAX)
 )
@@ -91,7 +91,7 @@ BEGIN
 
 	SET @function =
 		CASE @tabela
-			WHEN 'usuarios' THEN  'fnc_ListaUsuarios()'
+			WHEN 'usuarios' THEN  'fnc_listar_usuarios()'
 		END
 
 	SET @sql = 'select * from ' + @function
@@ -101,7 +101,7 @@ GO
 
 -- STORED PROCEDURES PERSONALIZADAS
 
-CREATE PROCEDURE sp_Registrar_Usuario
+CREATE PROCEDURE sp_insert_usuarios
 (
 	@nome_completo VARCHAR(150),
 	@email VARCHAR(200),
@@ -118,7 +118,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_Login_Usuario
+CREATE PROCEDURE sp_login_usuario
 (
 	@email VARCHAR(200),
 	@senha VARCHAR(150)
@@ -130,7 +130,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_Define_Cidade_Usuario
+CREATE PROCEDURE sp_define_cidade_usuario
 (
 	@usuarioId INT,
 	@CidadeId INT
@@ -149,7 +149,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_Consulta_Usuario_Por_Email
+CREATE PROCEDURE sp_consulta_usuario_por_email
 (
 	@email VARCHAR(200)
 )
@@ -160,14 +160,58 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE sp_update_usuarios
+(
+	@id int,
+	@nome_completo VARCHAR(150),
+	@email VARCHAR(200),
+	@senha VARCHAR(150),
+	@tipo_usuario INT,
+	@primeiro_login BIT
+)
+AS
+BEGIN
+	UPDATE usuarios SET
+	nome_completo = @nome_completo, 
+	email = @email, 
+	senha = @senha, 
+	tipo_usuario = @tipo_usuario, 
+	primeiro_login = @primeiro_login
+	WHERE id = @id
+END
+GO
+
+ALTER PROCEDURE sp_pesquisa_avancada_usuarios
+(
+	@nome_completo VARCHAR(150),
+	@email VARCHAR(200),
+	@tipo_usuario varchar(2)
+)
+AS
+BEGIN
+	SELECT * FROM vw_usuarios 
+	WHERE nome_completo  LIKE '%' + @nome_completo +'%'
+	AND email LIKE '%' + @email +'%' 
+	AND tipo_usuario LIKE '%' + @tipo_usuario +'%' 
+END
+GO
+
 
 -- FUNCTIONS
 
-CREATE FUNCTION fnc_ListaUsuarios()
+CREATE FUNCTION fnc_listar_usuarios()
 RETURNS TABLE AS
 RETURN
 (
-	SELECT * FROM usuarios
+	SELECT * FROM vw_usuarios
 )
 GO
 
+-- VIEWS
+
+CREATE VIEW vw_usuarios AS
+	SELECT u.id, u.nome_completo, u.email, u.tipo_usuario, u.cidade_atendida_id, u.primeiro_login FROM usuarios u
+GO
+
+
+EXEC sp_listar 'usuarios'

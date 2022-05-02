@@ -3,6 +3,7 @@ using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.ViewModels;
+using MVCAvisaEnchenteProject.Models.ViewModels.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,19 @@ namespace MVCAvisaEnchenteProject.Controllers
             catch (Exception erro)
             {
                 return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+        }
+
+        public IActionResult Deletar(int id)
+        {
+            try
+            {
+                DAOPrincipal.Deletar(id);
+                return Json(new JsonFormResponse());
+            }
+            catch (Exception erro)
+            {
+                return Json(new JsonFormResponse(messageErro: "Ocorreu um erro ao tentar Excluir!"));
             }
         }
 
