@@ -25,6 +25,11 @@ a.link-text:hover {
     border-color: #1861ac;
 }
 
+.custom-loader {
+    animation: none !important;
+    border-width: 0 !important;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -61,7 +66,6 @@ html {
 
 body {
     margin-bottom: 8.5vh;
-    height: calc(100vh - 8.5vh);
 }
 .footer {
     position: absolute;
@@ -121,6 +125,14 @@ img#meu-perfil-image.rounded-circle.active {
 a#dropdownMeuPerfilLink.nav-link.dropdown-toggle::after {
     border-top: 0px !important
 }
+
+a#configuracoes:hover {
+    color: #F36E21 !important;
+    transition: unset;
+}
+a#configuracoes:focus {
+    color: #08357c !important;
+}
 /*Custom Alerts
 ------------------------------------------------------*/
 .alert-heading {
@@ -176,5 +188,12 @@ a#dropdownMeuPerfilLink.nav-link.dropdown-toggle::after {
 
     .nao-possui-conta-text{
         align-self: center;
+    }
+
+
+}
+@media (min-width: 767px) {
+    #pesquisa-avancada-usuarios .row div {
+        padding-right: 0px
     }
 }
