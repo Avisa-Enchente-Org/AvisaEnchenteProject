@@ -181,7 +181,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE sp_pesquisa_avancada_usuarios
+CREATE PROCEDURE sp_pesquisa_avancada_usuarios
 (
 	@nome_completo VARCHAR(150),
 	@email VARCHAR(200),

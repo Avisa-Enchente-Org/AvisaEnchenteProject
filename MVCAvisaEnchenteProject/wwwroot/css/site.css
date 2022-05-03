@@ -189,7 +189,9 @@ a#configuracoes:focus {
     .nao-possui-conta-text{
         align-self: center;
     }
-
+    body {
+        margin-bottom: 0;
+    }
 
 }
 @media (min-width: 767px) {
