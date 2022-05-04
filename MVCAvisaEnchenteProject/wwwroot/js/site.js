@@ -17,7 +17,6 @@ abrirFormModal = (url, titulo) => {
             $('#form-modal .modal-body').html(res);
             $('#form-modal .modal-title').html(titulo);
             $('#form-modal').modal('show');
-
         }
     });
 }
@@ -52,14 +51,12 @@ salvarAjax = (form) => {
                             var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
                             return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
                         }
-    
+   
                     }
                     else {
                         $('#form-modal .modal-body').html(res.html);
                     }
-                }
-
-              
+                }          
             },
             error: function (err) {
                 console.log(err);
@@ -158,8 +155,6 @@ function deletarPorIdEController(id, controllerName) {
 
                 }
             })
-
-
         }
     })
 }

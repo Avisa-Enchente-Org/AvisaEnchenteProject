@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Infrastructure.Helpers;
@@ -16,7 +17,6 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
-    [RequiredFirstAccessConfig]
     public class UsuarioController : BaseController<Usuario, UsuarioDAO>
     {
         public UsuarioController()
@@ -31,7 +31,17 @@ namespace MVCAvisaEnchenteProject.Controllers
             return base.Index();
         }
 
+        [HttpDelete]
+        [Authorize(Roles = nameof(ETipoUsuario.Admin))]
+        public override IActionResult Deletar(int id)
+        {
+            if(id == Convert.ToInt32(ObterIdUsuarioLogado()))
+                return Json(new JsonFormResponse(messageErro: "Você não pode excluir seu proprio Usuário!"));
 
+            return base.Deletar(id);
+        }
+
+        [HttpGet]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
         public IActionResult CriarOuEditarUsuario(int id = 0)
         {   
@@ -39,18 +49,16 @@ namespace MVCAvisaEnchenteProject.Controllers
                 return View(new AdminCriarEditarUsuarioViewModel());
 
             var usuario = DAOPrincipal.ConsultarPorId(id);
-            if(usuario == null)
-            {
-                TempData["Error"] = "Usuário não existe!";
-                return RedirectToAction("Index");
-            }
+            if(usuario != null)
+                return View(new AdminCriarEditarUsuarioViewModel(usuario));
 
-           return View(new AdminCriarEditarUsuarioViewModel(usuario));
+            TempData["Error"] = "Usuário não existe!";
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> CriarOuEditarUsuario(int id, [Bind("Id", "NomeCompleto", "Email" , "Senha", "TipoUsuario")] AdminCriarEditarUsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> CriarOuEditarUsuario(int id, AdminCriarEditarUsuarioViewModel usuarioViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +98,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> PesquisaAvancadaUsuarios([Bind("NomeCompleto", "Email", "TipoUsuario")] PesquisaAvancadaUsuariosViewModel pesquisaAvancadaUsuarios)
+        public async Task<IActionResult> PesquisaAvancadaUsuarios(PesquisaAvancadaUsuariosViewModel pesquisaAvancadaUsuarios)
         {
             try
             {
@@ -101,7 +109,6 @@ namespace MVCAvisaEnchenteProject.Controllers
                 return Json(new JsonFormResponse(messageErro: "Ocorreu um erro ao pesquisar os Usuários!"));
             }   
         }
-
 
         [HttpGet]
         [Authorize]

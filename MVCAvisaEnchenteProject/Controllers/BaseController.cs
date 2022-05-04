@@ -15,8 +15,6 @@ namespace MVCAvisaEnchenteProject.Controllers
     {
         protected D DAOPrincipal { get; set; }
         protected string NomeViewIndex { get; set; } = "index";
-        protected string NomeViewForm { get; set; } = "form";
-
         public virtual IActionResult Index()
         {
             try
@@ -30,7 +28,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
         }
 
-        public IActionResult Deletar(int id)
+        public virtual IActionResult Deletar(int id)
         {
             try
             {
