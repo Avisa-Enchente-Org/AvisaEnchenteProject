@@ -35,8 +35,8 @@
                     @item.TipoUsuario.GetDescription()
                 </td>
                 <td>
-                    <a onclick="abrirFormModal('@Url.Action("CriarOuEditarUsuario", "Usuario", new {id=item.Id}, Context.Request.Scheme)', 'Editar Usuário')" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-plus mr-2"></i>Editar</a>
-                    <a onclick="deletarPorIdEController(@item.Id, 'Usuario')" class="btn btn-danger btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-plus mr-2"></i>Excluir</a>
+                    <a onclick="abrirFormModal('@Url.Action("CriarOuEditarUsuario", "Usuario", new {id=item.Id}, Context.Request.Scheme)', 'Editar Usuário')" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-pen-to-square mr-2"></i>Editar</a>
+                    <a onclick="deletarPorIdEController(@item.Id, 'Usuario')" class="btn btn-danger btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-trash-can mr-2"></i>Excluir</a>
                 </td>
             </tr>
         }
