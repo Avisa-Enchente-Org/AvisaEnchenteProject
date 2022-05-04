@@ -32,7 +32,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
 
         [DisplayName("Tipo do Usuário")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public int TipoUsuario { get; set; }
+        public int? TipoUsuario { get; set; }
 
         public SelectList SelectListTipoUsuario => new SelectList(new List<SelectListItem>
         {

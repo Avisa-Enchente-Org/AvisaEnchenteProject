@@ -22,7 +22,7 @@ abrirFormModal = (url, titulo) => {
     });
 }
 
-salvarUsuarioAjax = form => {
+salvarAjax = (form) => {
 
     try {
         $.ajax({
@@ -48,8 +48,10 @@ salvarUsuarioAjax = form => {
                         $('#form-modal .modal-title').html('');
                         $('#form-modal').modal('hide');
 
-                        var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
-                        return realizaPesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios);
+                        if (form.id === "form-criar-editar-usuario") {
+                            var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
+                            return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
+                        }
     
                     }
                     else {
@@ -71,7 +73,7 @@ salvarUsuarioAjax = form => {
 }
 
 
-realizaPesquisaAvancadaUsuarios = form => {
+realizaPesquisaAvancada = form => {
 
     try {
         $.ajax({
@@ -92,8 +94,10 @@ realizaPesquisaAvancadaUsuarios = form => {
                     })
                 }
                 else {
-                    $('#pv-listar-usuarios').html(res.html);
-                    rebuild();
+                    if (form.id === "pesquisa-avancada-usuarios") {
+                        $('#pv-listar-usuarios').html(res.html);
+                        rebuild();
+                    }
                 }
 
             },
@@ -148,7 +152,7 @@ function deletarPorIdEController(id, controllerName) {
 
                         if (controllerName.toLowerCase() === "usuario") {
                             var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
-                            return realizaPesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios);
+                            return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
                         }
                     }
 

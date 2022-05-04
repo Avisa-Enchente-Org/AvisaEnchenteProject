@@ -37,7 +37,7 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
             NomeCompleto = usuarioRequest.NomeCompleto;
             Email = usuarioRequest.Email;
             Senha = usuarioRequest.Senha;
-            TipoUsuario = (ETipoUsuario)usuarioRequest.TipoUsuario;
+            TipoUsuario = (ETipoUsuario)usuarioRequest.TipoUsuario.Value;
             PrimeiroLogin = true;
         }
     }

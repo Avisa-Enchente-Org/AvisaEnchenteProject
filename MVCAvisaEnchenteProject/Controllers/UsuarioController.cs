@@ -59,7 +59,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                     if(!usuarioViewModel.EdicaoModel() && string.IsNullOrEmpty(usuarioViewModel.Senha))
                     {
                         ModelState.AddModelError("Senha", "A senha é Obrigatória!");
-                        return Json(new JsonFormResponse(valido: true, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
+                        return Json(new JsonFormResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
                     }
 
                     var usuario = new Usuario(usuarioViewModel);
@@ -85,7 +85,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                     return Json(new JsonFormResponse(messageErro: "Ocorreu um erro ao tentar salvar o usuário!"));
                 }
             }
-            return Json(new JsonFormResponse(valido: true, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
+            return Json(new JsonFormResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
         }
 
         [HttpPost]
