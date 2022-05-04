@@ -19,7 +19,7 @@
                 }
                 else
                 {
-                    <input asp-for="NomeCompleto" class="form-control form-control-sm" />
+                    <input asp-for="NomeCompleto" class="form-control form-control-sm" placeholder="Nome Completo"/>
                 }
 
                 <span asp-validation-for="NomeCompleto" class="text-danger"></span>
@@ -32,7 +32,7 @@
                 }
                 else
                 {
-                    <input asp-for="Email" class="form-control form-control-sm" />
+                    <input asp-for="Email" class="form-control form-control-sm" placeholder="Email"/>
                 }
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
@@ -41,7 +41,7 @@
                 @if (!Model.EdicaoModel())
                 {
                     <label asp-for="Senha" class="control-label text-primary"></label>
-                    <input asp-for="Senha" class="form-control form-control-sm" />
+                    <input asp-for="Senha" class="form-control form-control-sm" placeholder="Senha"/>
                     <span asp-validation-for="Senha" class="text-danger"></span>
                 }
 
