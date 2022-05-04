@@ -8,6 +8,9 @@ namespace MVCAvisaEnchenteProject.Models.Enum
 {
     public enum ETipoRisco
     {
+        [Description("Sem Risco")]
+        SemRisco = 0,
+
         [Description("Baixo Risco")]
         BaixoRisco = 1,
 
