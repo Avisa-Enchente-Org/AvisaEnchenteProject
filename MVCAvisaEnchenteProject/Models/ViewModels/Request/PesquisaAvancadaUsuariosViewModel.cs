@@ -23,7 +23,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
         [DisplayName("Tipo do Usuário")]
         public int? TipoUsuario { get; set; }
 
-        public SelectList SelectListTipoUsuario => TipoDeUsuarioHelper.GetTiposDeUsuario(TipoUsuario);
+        public SelectList SelectListTipoUsuario => EnumHelper.GetTiposDeUsuario(TipoUsuario);
 
         public PesquisaAvancadaUsuariosViewModel()
         {

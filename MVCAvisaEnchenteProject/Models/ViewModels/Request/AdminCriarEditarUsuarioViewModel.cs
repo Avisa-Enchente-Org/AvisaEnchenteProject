@@ -34,7 +34,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int? TipoUsuario { get; set; }
 
-        public SelectList SelectListTipoUsuario => TipoDeUsuarioHelper.GetTiposDeUsuario(TipoUsuario);
+        public SelectList SelectListTipoUsuario => EnumHelper.GetTiposDeUsuario(TipoUsuario);
 
         public AdminCriarEditarUsuarioViewModel(Usuario usuario)
         {
