@@ -22,7 +22,7 @@ abrirFormModal = (url, titulo) => {
     });
 }
 
-salvarUsuarioAjax = form => {
+salvarAjax = (form) => {
 
     try {
         $.ajax({
@@ -48,8 +48,10 @@ salvarUsuarioAjax = form => {
                         $('#form-modal .modal-title').html('');
                         $('#form-modal').modal('hide');
 
-                        var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
-                        return realizaPesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios);
+                        if (form.id === "form-criar-editar-usuario") {
+                            var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
+                            return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
+                        }
     
                     }
                     else {
@@ -71,7 +73,7 @@ salvarUsuarioAjax = form => {
 }
 
 
-realizaPesquisaAvancadaUsuarios = form => {
+realizaPesquisaAvancada = form => {
 
     try {
         $.ajax({
@@ -92,8 +94,10 @@ realizaPesquisaAvancadaUsuarios = form => {
                     })
                 }
                 else {
-                    $('#pv-listar-usuarios').html(res.html);
-                    rebuild();
+                    if (form.id === "pesquisa-avancada-usuarios") {
+                        $('#pv-listar-usuarios').html(res.html);
+                        rebuild();
+                    }
                 }
 
             },
@@ -108,6 +112,56 @@ realizaPesquisaAvancadaUsuarios = form => {
     }
 
     return false;
+}
+
+function deletarPorIdEController(id, controllerName) {
+    Swal.fire({
+        title: 'Tem Certeza?',
+        text: "Não é possível reverter essa exclusão!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#08357c',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, Pode Excluir!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            $.ajax({
+                type: "DELETE",
+                url: "/"+ controllerName + "/Deletar/" + id,
+                success: function (res) {
+
+                    if (res.erro) {
+                        Swal.fire({
+                            title: res.messageErro,
+                            confirmButtonColor: '#08357c',
+                            customClass: {
+                                confirmButton: 'btn btn-primary btn-md',
+                            },
+                        })
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: 'Excluido!',
+                            text: 'Esse Registro Foi Excluido com Sucesso',
+                            icon: 'success',
+                            confirmButtonColor: '#08357c'
+                        })
+
+                        if (controllerName.toLowerCase() === "usuario") {
+                            var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
+                            return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
+                        }
+                    }
+
+                }
+            })
+
+
+        }
+    })
 }
 
 function loadingTemplate(message) {

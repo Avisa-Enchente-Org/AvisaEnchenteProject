@@ -20,7 +20,7 @@
             <header>
                 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow" style="z-index: 1;">
                     <div class="container">
-                        <a class="navbar-brand text-primary font-weight-bold" asp-area="" asp-controller="Home" asp-action="Index">Avisa Enchente!</a>
+                        <a class="navbar-brand text-primary font-weight-bold" asp-area="" asp-controller="Home" asp-action="PaginaApresentacao">Avisa Enchente!</a>
                         @if (User?.Identity?.IsAuthenticated ?? false)
                         {
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -33,7 +33,7 @@
                                 @if (User?.Identity?.IsAuthenticated ?? false)
                                 {
                                     <li class="nav-item mr-3">
-                                        <a class="nav-link text-primary nav-link-text" id="index" asp-controller="Home" asp-action="Index">Inicio</a>
+                                        <a class="nav-link text-primary nav-link-text" id="index" asp-controller="Home" asp-action="PaginaApresentacao">Inicio</a>
                                     </li>
 
                                     <li class="nav-item mr-3">
@@ -89,6 +89,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+
                     </div>
                 </div>
             </div>

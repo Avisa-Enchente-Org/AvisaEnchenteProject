@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Infrastructure.Helpers;
@@ -133,6 +134,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                 {
                     var usuarioId = User.FindFirst("UsuarioId").Value;
                     DAOPrincipal.DefineCidadeUsuario(Convert.ToInt32(usuarioId), primeiroLogin.CidadeAtendidaId);
+                    HttpContext.Session.SetString("PrimeiroLogin", "false");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -147,6 +149,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         public IActionResult Logout()
         {
+            HttpContext.Session.Clear();
             HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }

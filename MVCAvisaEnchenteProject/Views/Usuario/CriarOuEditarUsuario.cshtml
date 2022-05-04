@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="CriarOuEditarUsuario" asp-route-id="@Model.Id" onsubmit="return salvarUsuarioAjax(this);">
+        <form id="form-criar-editar-usuario" asp-action="CriarOuEditarUsuario" asp-route-id="@Model.Id" onsubmit="return salvarAjax(this);">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">

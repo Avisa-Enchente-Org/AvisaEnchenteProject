@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Página Inicial";
 }
 
@@ -8,11 +9,6 @@
         <h4 class="text-primary">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
     </div>
 }
-else
-{
-    @await Html.PartialAsync("_PaginaInicialUsuarioNaoLogado")
-}
-
 
 @section Scripts {
     <script src="~/js/pagina-inicial.js"></script>

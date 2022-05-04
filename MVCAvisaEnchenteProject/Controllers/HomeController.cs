@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Models.ViewModels;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -22,53 +24,42 @@ namespace MVCAvisaEnchenteProject.Controllers
             _usuarioDAO = new UsuarioDAO();
         }
 
-        
+        [RequiredFirstAccessConfig]
         public IActionResult Index()
         {
-            if(VerificaSePrimeiroLogin())
-                return RedirectToAction("PrimeiroLogin", "Conta");
+            return View();
+        }
+
+        [Route("/")]
+        [AllowAnonymous]
+        public IActionResult PaginaApresentacao()
+        {
+            if (!string.IsNullOrEmpty(HttpContext.User.FindFirst("UsuarioId")?.Value))
+                return RedirectToAction("Index");
 
             return View();
         }
+
         public IActionResult SobreNos()
         {
-            if (VerificaSePrimeiroLogin())
-                return RedirectToAction("PrimeiroLogin", "Conta");
-
             return View();
         }
         public IActionResult ComoFunciona()
         {
-            if (VerificaSePrimeiroLogin())
-                return RedirectToAction("PrimeiroLogin", "Conta");
-
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult NotFoundPageView()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private bool VerificaSePrimeiroLogin()
-        {
-            var usuarioId = User?.FindFirst("UsuarioId")?.Value;
-            if (!string.IsNullOrEmpty(usuarioId))
-            {
-                if (_usuarioDAO.ConsultarPorId(Convert.ToInt32(usuarioId)).PrimeiroLogin)
-                {
-                    TempData["Info"] = "Primeiro Selecione uma Localização para acessar outras páginas do Site";
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }
