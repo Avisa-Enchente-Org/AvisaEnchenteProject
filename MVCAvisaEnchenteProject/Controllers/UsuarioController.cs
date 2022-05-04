@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
+    [RequiredFirstAccessConfig]
     public class UsuarioController : BaseController<Usuario, UsuarioDAO>
     {
         public UsuarioController()
@@ -29,7 +31,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             return base.Index();
         }
 
-        [HttpGet]
+
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
         public IActionResult CriarOuEditarUsuario(int id = 0)
         {   

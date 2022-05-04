@@ -33,6 +33,12 @@ namespace MVCAvisaEnchenteProject
                     config.AccessDeniedPath = "/home/NotFoundPageView";
                 });
 
+            services.AddSession(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromSeconds(1000000);
+            });
+
             services.AddScoped<IAuthorizationHandler, RolesAuthorizationHandler>();
             services.AddControllersWithViews();
         }
@@ -58,11 +64,13 @@ namespace MVCAvisaEnchenteProject
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=PaginaInicialUsuarioNaoLogado}/{id?}");
             });
         }
     }

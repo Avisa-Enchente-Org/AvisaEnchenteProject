@@ -3,95 +3,43 @@
 <p>
     <a onclick="abrirFormModal('@Url.Action("CriarOuEditarUsuario", "Usuario", null, Context.Request.Scheme)', 'Cadastrar Usuário')" class="btn btn-primary btn-sm text-white" style="width: 100%; max-width: 260px; "><i class="fa-solid fa-plus mr-2"></i>Cadastrar Usuário</a>
 </p>
-<div class="">
-    <table class="table-sm table-striped table-responsive-xl"
-           id="table"
-           data-toggle="table"
-           data-height="295"
-           data-pagination="true"
-           data-page-list="[5, 10, 15, 20, 25, 50, 100, ALL]">
-        <thead>
+
+<table class="table-sm table-striped table-responsive-xl"
+        id="table"
+        data-toggle="table"
+        data-height="295"
+        data-pagination="true"
+        data-page-list="[5, 10, 15, 20, 25, 50, 100, ALL]">
+    <thead>
+        <tr>
+            <th data-field="id" data-sortable="true" data-width="5" data-width-unit="%">Id</th>
+            <th data-field="name" data-sortable="true" data-width="30" data-width-unit="%">Nome</th>
+            <th data-field="email" data-sortable="true" data-width="30" data-width-unit="%">Email</th>
+            <th data-field="tipo-usuario"data-sortable="true"data-width="15" data-width-unit="%">Tipo de Usuário</th>
+            <th data-field="acoes"  data-width="20" data-width-unit="%">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th data-field="id" data-sortable="true" data-width="5" data-width-unit="%">Id</th>
-                <th data-field="name" data-sortable="true" data-width="30" data-width-unit="%">Nome</th>
-                <th data-field="email" data-sortable="true" data-width="30" data-width-unit="%">Email</th>
-                <th data-field="tipo-usuario"data-sortable="true"data-width="15" data-width-unit="%">Tipo de Usuário</th>
-                <th data-field="acoes"  data-width="20" data-width-unit="%">Ações</th>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.NomeCompleto
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.TipoUsuario.GetDescription()
+                </td>
+                <td>
+                    <a onclick="abrirFormModal('@Url.Action("CriarOuEditarUsuario", "Usuario", new {id=item.Id}, Context.Request.Scheme)', 'Editar Usuário')" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-plus mr-2"></i>Editar</a>
+                    <a onclick="deletarPorIdEController(@item.Id, 'Usuario')" class="btn btn-danger btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-plus mr-2"></i>Excluir</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @item.Id
-                    </td>
-                    <td>
-                        @item.NomeCompleto
-                    </td>
-                    <td>
-                        @item.Email
-                    </td>
-                    <td>
-                        @item.TipoUsuario.GetDescription()
-                    </td>
-                    <td>
-                        <a onclick="abrirFormModal('@Url.Action("CriarOuEditarUsuario", "Usuario", new {id=item.Id}, Context.Request.Scheme)', 'Editar Usuário')" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-plus mr-2"></i>Editar</a>
-                        <a onclick="deletarPorIdEController(@item.Id, 'Usuario')" class="btn btn-danger btn-sm text-white" style="width: 100%; max-width: 100px; "><i class="fa-solid fa-plus mr-2"></i>Excluir</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-<script>
-    function deletarPorIdEController(id, controllerName) {
-        Swal.fire({
-            title: 'Tem Certeza?',
-            text: "Não é possível reverter essa exclusão!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#08357c',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sim, Pode Excluir!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-
-                $.ajax({
-                    type: "DELETE",
-                    url: controllerName + "/Deletar/" + id,
-                    success: function (res) {
-
-                        if (res.erro) {
-                            Swal.fire({
-                                title: res.messageErro,
-                                confirmButtonColor: '#08357c',
-                                customClass: {
-                                    confirmButton: 'btn btn-primary btn-md',
-                                },
-                            })
-
-                        }
-                        else {
-
-                            Swal.fire({
-                                title: 'Excluido!',
-                                text: 'Esse Registro Foi Excluido com Sucesso',
-                                icon: 'success',
-                                confirmButtonColor: '#08357c'
-                            })
-
-                            if (controllerName.toLowerCase() === "usuario") {
-                                var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
-                                return realizaPesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios);
-                            }
-                        }
-
-                    }
-                })
-
-
-            }
-        })
-    }
-</script>
+        }
+    </tbody>
+</table>

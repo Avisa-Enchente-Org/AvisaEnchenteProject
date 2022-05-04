@@ -110,6 +110,56 @@ realizaPesquisaAvancadaUsuarios = form => {
     return false;
 }
 
+function deletarPorIdEController(id, controllerName) {
+    Swal.fire({
+        title: 'Tem Certeza?',
+        text: "Não é possível reverter essa exclusão!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#08357c',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, Pode Excluir!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            $.ajax({
+                type: "DELETE",
+                url: "/"+ controllerName + "/Deletar/" + id,
+                success: function (res) {
+
+                    if (res.erro) {
+                        Swal.fire({
+                            title: res.messageErro,
+                            confirmButtonColor: '#08357c',
+                            customClass: {
+                                confirmButton: 'btn btn-primary btn-md',
+                            },
+                        })
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: 'Excluido!',
+                            text: 'Esse Registro Foi Excluido com Sucesso',
+                            icon: 'success',
+                            confirmButtonColor: '#08357c'
+                        })
+
+                        if (controllerName.toLowerCase() === "usuario") {
+                            var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
+                            return realizaPesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios);
+                        }
+                    }
+
+                }
+            })
+
+
+        }
+    })
+}
+
 function loadingTemplate(message) {
 
     return '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>';
