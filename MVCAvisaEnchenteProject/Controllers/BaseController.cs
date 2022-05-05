@@ -13,6 +13,11 @@ namespace MVCAvisaEnchenteProject.Controllers
 {
     public abstract class BaseController<T, D> : Controller where T : BaseEntity where D : BaseDAO<T>
     {
+        public BaseController()
+        {
+            DAOPrincipal = Activator.CreateInstance(typeof(D)) as D;
+        }
+
         protected D DAOPrincipal { get; set; }
         protected string NomeViewIndex { get; set; } = "index";
         public virtual IActionResult Index()

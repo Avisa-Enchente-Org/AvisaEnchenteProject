@@ -19,9 +19,9 @@ namespace MVCAvisaEnchenteProject.Controllers
 {
     public class UsuarioController : BaseController<Usuario, UsuarioDAO>
     {
-        public UsuarioController()
+        public UsuarioController() : base()
         {
-            DAOPrincipal = new UsuarioDAO();
+            
         }
 
         [HttpGet]
