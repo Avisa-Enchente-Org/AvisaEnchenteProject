@@ -17,7 +17,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
         }
 
         protected string Tabela { get; set; }
-        protected string NomeSpListagem { get; set; } = "sp_listar";
+        protected abstract string NomeSpListagem { get; set; }
         protected abstract SqlParameter[] CriaParametros(T model);
         protected abstract T MontaEntidadePadrao(DataRow registro);
         protected abstract void SetTabela();
@@ -61,11 +61,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
 
         public virtual List<T> Listar()
         {
-            var p = new SqlParameter[]
-            {
-                new SqlParameter("tabela", Tabela)
-            };
-            var tabela = HelperDAO.ExecutaProcSelect(NomeSpListagem, p);
+            var tabela = HelperDAO.ExecutaProcSelect(NomeSpListagem, Array.Empty<SqlParameter>());
 
             List<T> lista = new List<T>();
 

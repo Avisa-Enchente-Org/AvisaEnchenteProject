@@ -14,6 +14,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
 {
     public class UsuarioDAO : BaseDAO<Usuario>
     {
+        protected override string NomeSpListagem { get; set; } = "sp_listar_usuarios";
         protected override void SetTabela()
         {
             Tabela = "usuarios";
