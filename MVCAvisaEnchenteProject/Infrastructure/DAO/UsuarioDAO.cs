@@ -112,6 +112,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
         protected override SqlParameter[] CriaParametros(Usuario usuario)
         {
             SqlParameter[] usuarioParametros = {
+                new SqlParameter("id", usuario.Id),
                 new SqlParameter("nome_completo", usuario.NomeCompleto),
                 new SqlParameter("email", usuario.Email),
                 new SqlParameter("senha", usuario.Senha),
