@@ -3,8 +3,8 @@
 	remova o coment�rio da Cria��o do Banco de Dados logo abaixo
 */
 
-/*CREATE DATABASE [avisa_enchente_db]
-GO*/
+CREATE DATABASE [avisa_enchente_db]
+GO
 
 USE [avisa_enchente_db]
 GO
@@ -52,7 +52,7 @@ GO
 
 CREATE TABLE [dbo].[pontos_sensoriamento](
 	[id] INT IDENTITY(1,1) NOT NULL,
-    [descricao] VARCHAR(200) NOT NULL,
+    [helix_id] VARCHAR(200) NOT NULL,
 	[ativo_helix] BIT NOT NULL,
 	[cidade_atendida_id] INT NULL,
 	[latitude] DECIMAL(9,6) NOT NULL,
@@ -110,6 +110,13 @@ CREATE TABLE [dbo].[notificacoes_parametros](
 	CONSTRAINT [fk_notificacoes_parametros_ponto_sensoriamento_id] FOREIGN KEY([ponto_sensoriamento_id])
         REFERENCES [dbo].[pontos_sensoriamento]([id])
 )
+GO
+
+
+-- VIEWS
+
+CREATE VIEW vw_usuarios AS
+	SELECT u.id, u.nome_completo, u.email, u.tipo_usuario, u.cidade_atendida_id, u.primeiro_login FROM usuarios u
 GO
 
 
@@ -282,13 +289,6 @@ RETURN
 	SELECT * FROM vw_usuarios
 )
 GO
-
--- VIEWS
-
-CREATE VIEW vw_usuarios AS
-	SELECT u.id, u.nome_completo, u.email, u.tipo_usuario, u.cidade_atendida_id, u.primeiro_login FROM usuarios u
-GO
-
 
 -- TRIGGERS
 
