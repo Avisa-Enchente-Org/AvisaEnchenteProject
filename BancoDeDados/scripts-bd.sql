@@ -11,13 +11,14 @@ GO
 
 CREATE TABLE [dbo].[estados_atendidos](
 	[id] INT IDENTITY(1,1) NOT NULL,
-	[descricao] VARCHAR(max) NOT NULL,
+	[descricao] VARCHAR(MAX) NOT NULL,
 	[uf] VARCHAR(2) NOT NULL,
 	[codigo_estado] VARCHAR(2) NOT NULL,
 
-	CONSTRAINT [pk_estados_atendidos_id] PRIMARY KEY([id]),
+	CONSTRAINT [pk_estados_atendidos_id] PRIMARY KEY([id])
 )
 GO
+
 
 CREATE TABLE [dbo].[cidades_atendidas](
 	[id] INT IDENTITY(1,1) NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE [dbo].[cidades_atendidas](
         REFERENCES [dbo].[estados_atendidos]([id])
 )
 GO
- 
+
 
 CREATE TABLE [dbo].[usuarios](
 	[id] INT IDENTITY(1,1) NOT NULL,
@@ -49,10 +50,9 @@ CREATE TABLE [dbo].[usuarios](
 )
 GO
 
-
 CREATE TABLE [dbo].[pontos_sensoriamento](
 	[id] INT IDENTITY(1,1) NOT NULL,
-    [helix_id] VARCHAR(200) NOT NULL,
+    [helix_id] VARCHAR(100) NOT NULL,
 	[ativo_helix] BIT NOT NULL,
 	[cidade_atendida_id] INT NULL,
 	[latitude] DECIMAL(9,6) NOT NULL,
@@ -85,9 +85,9 @@ GO
 CREATE TABLE [dbo].[notificacoes_historico](
 	[id] INT IDENTITY(1,1) NOT NULL,
 	[ponto_sensoriamento_id] INT NULL,
-	[nivel_pluviosidade] decimal(6,2) NOT NULL,
-	[vazao_agua] decimal(6,2) NOT NULL,
-	[altura_agua] decimal(6,2) NOT NULL,
+	[nivel_pluviosidade] DECIMAL(6,2) NOT NULL,
+	[vazao_agua] DECIMAL(6,2) NOT NULL,
+	[altura_agua] DECIMAL(6,2) NOT NULL,
 	[data_notificacao] SMALLDATETIME NOT NULL DEFAULT GETDATE(),	
 	[tipo_risco] INT NOT NULL,
 
@@ -119,6 +119,27 @@ CREATE VIEW vw_usuarios AS
 	SELECT u.id, u.nome_completo, u.email, u.tipo_usuario, u.cidade_atendida_id, u.primeiro_login FROM usuarios u
 GO
 
+-- FUNCTIONS
+
+-- FUNCTIONS Ponto Sensoriamento
+CREATE FUNCTION fnc_listar_pontos_sensoriamento()
+RETURNS TABLE AS
+RETURN
+(
+	SELECT p.*, 
+	u.nome_completo as 'nome_completo_usuario',
+	c.descricao as 'cidade_descricao',
+	c.codigo_cidade,
+	e.id as 'estado_atendido_id',
+	e.descricao as 'estado_descricao',
+	e.uf as 'estado_uf',
+	E.codigo_estado
+	FROM [dbo].[pontos_sensoriamento] p
+	INNER JOIN [dbo].[usuarios] u ON u.id = p.usuario_id 
+	INNER JOIN [dbo].[cidades_atendidas] c ON c.id = p.cidade_atendida_id
+	INNER JOIN [dbo].[estados_atendidos] e ON e.id = c.estado_atendido_id
+)
+GO
 
 -- STORED PROCEDURES PADRAO
 
@@ -150,26 +171,25 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_listar
-(
-	@tabela VARCHAR(MAX)
-)
-AS
+CREATE PROCEDURE spProximoId (@tabela VARCHAR(max)) AS
 BEGIN
-	DECLARE @sql VARCHAR(MAX);
-	DECLARE @function VARCHAR(MAX);	
-
-	SET @function =
-		CASE @tabela
-			WHEN 'usuarios' THEN  'fnc_listar_usuarios()'
-		END
-
-	SET @sql = 'select * from ' + @function
+	DECLARE @sql VARCHAR(MAX)
+	SET @sql = 'SELECT IDENT_CURRENT (' + '''' + @tabela + '''' + ') + 1 AS Current_Identity'
 	EXEC(@sql)
 END
 GO
 
 -- STORED PROCEDURES PERSONALIZADAS
+
+-- SP's Usuarios
+CREATE PROCEDURE sp_listar_usuarios
+AS
+BEGIN
+
+	SELECT * FROM vw_usuarios
+
+END
+GO
 
 CREATE PROCEDURE sp_insert_usuarios
 (
@@ -187,6 +207,7 @@ BEGIN
 	(@nome_completo, @email, @senha, @tipo_usuario, @primeiro_login)
 END
 GO
+
 
 CREATE PROCEDURE sp_login_usuario
 (
@@ -280,15 +301,289 @@ BEGIN
 END
 GO
 
--- FUNCTIONS
-
-CREATE FUNCTION fnc_listar_usuarios()
-RETURNS TABLE AS
-RETURN
-(
-	SELECT * FROM vw_usuarios
-)
+CREATE PROCEDURE sp_listar_usuarios_administradores
+AS
+BEGIN
+	SELECT * FROM vw_usuarios u
+	WHERE u.tipo_usuario = 2
+END
 GO
+
+-- SP's Pontos de Sensoriamento
+CREATE PROCEDURE sp_consultar_pontos_sensoriamento 
+(
+	@id INT
+)
+AS
+BEGIN
+	
+	SELECT p.*, 
+	u.nome_completo as 'nome_completo_usuario',
+	c.descricao as 'cidade_descricao',
+	c.codigo_cidade,
+	e.id as 'estado_atendido_id',
+	e.descricao as 'estado_descricao',
+	e.uf as 'estado_uf',
+	E.codigo_estado
+	FROM [dbo].[pontos_sensoriamento] p
+	INNER JOIN [dbo].[usuarios] u ON u.id = p.usuario_id 
+	INNER JOIN [dbo].[cidades_atendidas] c ON c.id = p.cidade_atendida_id
+	INNER JOIN [dbo].[estados_atendidos] e ON e.id = c.estado_atendido_id
+	WHERE p.id = @id
+
+END
+GO
+
+
+CREATE PROCEDURE sp_listar_pontos_sensoriamento
+AS
+BEGIN
+	
+	SELECT * FROM fnc_listar_pontos_sensoriamento()
+
+END
+GO
+
+CREATE PROCEDURE sp_insert_pontos_sensoriamento
+(
+	@helix_id VARCHAR(100),
+	@ativo_helix BIT,
+	@cidade_atendida_id INT,
+	@latitude DECIMAL(9,6),
+	@longitude DECIMAL(9,6),
+	@usuario_id INT
+)
+AS
+BEGIN
+	INSERT INTO [dbo].[pontos_sensoriamento]
+	(helix_id, ativo_helix, cidade_atendida_id, latitude, longitude, usuario_id)
+	VALUES
+	(@helix_id, @ativo_helix, @cidade_atendida_id, @latitude, @longitude, @usuario_id)
+END
+GO
+
+CREATE PROCEDURE sp_update_pontos_sensoriamento
+(
+	@id INT,
+	@helix_id VARCHAR(100),
+	@ativo_helix BIT,
+	@cidade_atendida_id INT,
+	@latitude DECIMAL(9,6),
+	@longitude DECIMAL(9,6),
+	@usuario_id INT
+)
+AS
+BEGIN
+	UPDATE [dbo].[pontos_sensoriamento] SET
+	helix_id = @helix_id, 
+	ativo_helix = @ativo_helix, 
+	cidade_atendida_id = @cidade_atendida_id, 
+	latitude = @latitude, 
+	longitude = @longitude, 
+	usuario_id = @usuario_id
+	WHERE id = @id
+END
+GO
+
+CREATE PROCEDURE sp_pesquisa_avancada_pontos_sensoriamento
+(
+	@helixId VARCHAR(100),
+	@ativo varchar(1),
+	@usuarioId VARCHAR(MAX),
+	@estadoId VARCHAR(MAX),
+	@cidadeId VARCHAR(MAX)
+)
+AS
+BEGIN
+
+	SELECT p.*, 
+	u.nome_completo as 'nome_completo_usuario',
+	c.descricao as 'cidade_descricao',
+	c.codigo_cidade,
+	e.id as 'estado_atendido_id',
+	e.descricao as 'estado_descricao',
+	e.uf as 'estado_uf',
+	E.codigo_estado
+	FROM [dbo].[pontos_sensoriamento] p
+	INNER JOIN [dbo].[usuarios] u ON u.id = p.usuario_id 
+	INNER JOIN [dbo].[cidades_atendidas] c ON c.id = p.cidade_atendida_id
+	INNER JOIN [dbo].[estados_atendidos] e ON e.id = c.estado_atendido_id
+	WHERE p.helix_id  LIKE '%' + @helixId +'%'
+	AND p.ativo_helix LIKE '%' + @ativo +'%'
+	AND p.usuario_id LIKE '%' + @usuarioId +'%'
+	AND p.cidade_atendida_id   LIKE '%' + @cidadeId +'%'
+	AND c.estado_atendido_id LIKE '%' + @estadoId +'%'
+
+END
+GO
+
+CREATE PROCEDURE sp_consulta_ponto_de_sensoriamento_por_helixid
+(
+	@helixid VARCHAR(100)
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[pontos_sensoriamento] p
+	WHERE p.helix_id = @helixid
+END
+GO
+
+-- SP's Estados Atendidos
+
+CREATE PROCEDURE sp_insert_estados_atendidos
+(
+	@descricao VARCHAR(MAX),
+	@uf VARCHAR(2),
+	@codigo_estado VARCHAR(2)
+)
+AS
+BEGIN
+	INSERT INTO [dbo].[estados_atendidos]
+	(descricao, uf, codigo_estado)
+	VALUES
+	(@descricao, @uf, @codigo_estado)
+END
+GO
+
+CREATE PROCEDURE sp_update_estados_atendidos
+(
+	@id int,
+	@descricao VARCHAR(MAX),
+	@uf VARCHAR(2),
+	@codigo_estado VARCHAR(2)
+)
+AS
+BEGIN
+	UPDATE [dbo].[estados_atendidos] SET
+	descricao = @descricao, 
+	uf = @uf, 
+	codigo_estado = @codigo_estado
+	WHERE id = @id
+END
+GO
+
+CREATE PROCEDURE sp_consulta_estado_atendido_por_codigo
+(
+	@codigo VARCHAR(2)
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[estados_atendidos] e
+	WHERE e.codigo_estado = @codigo
+END
+GO
+
+CREATE PROCEDURE sp_listar_estados_atendidos
+AS
+BEGIN
+	SELECT * FROM [dbo].[estados_atendidos]
+END
+GO
+
+-- SP'S Cidades Atendidas
+
+ 
+CREATE PROCEDURE sp_insert_cidades_atendidas
+(
+	@descricao VARCHAR(MAX),
+	@codigo_cidade VARCHAR(20),
+	@estado_atendido_id INT,
+	@latitude_ref DECIMAL(9,6),
+	@longitude_ref DECIMAL(9,6)
+)
+AS
+BEGIN
+	INSERT INTO [dbo].[cidades_atendidas]
+	(descricao, codigo_cidade, estado_atendido_id, latitude_ref, longitude_ref)
+	VALUES
+	(@descricao, @codigo_cidade, @estado_atendido_id, @latitude_ref, @longitude_ref)
+END
+GO
+
+
+CREATE PROCEDURE sp_update_cidades_atendidas
+(
+	@id INT,
+	@descricao VARCHAR(MAX),
+	@codigo_cidade VARCHAR(20),
+	@estado_atendido_id INT,
+	@latitude_ref DECIMAL(9,6),
+	@longitude_ref DECIMAL(9,6)
+)
+AS
+BEGIN
+	UPDATE [dbo].[cidades_atendidas] SET
+	descricao = @descricao, 
+	codigo_cidade = @codigo_cidade,
+	estado_atendido_id = @estado_atendido_id,
+	latitude_ref = @latitude_ref,
+	longitude_ref = @longitude_ref
+	WHERE id = @id
+END
+GO
+
+CREATE PROCEDURE sp_consulta_cidade_atendida_por_codigo
+(
+	@codigo VARCHAR(20)
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[cidades_atendidas] c
+	WHERE c.codigo_cidade = @codigo
+END
+GO
+
+CREATE PROCEDURE sp_listar_cidades_atendidas
+AS
+BEGIN
+	SELECT * FROM [dbo].[cidades_atendidas]
+END
+GO
+
+CREATE PROCEDURE sp_listar_cidades_atendidas_por_estado
+(
+	@estado_atendido_id INT
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[cidades_atendidas] WHERE estado_atendido_id = @estado_atendido_id
+END
+GO
+
+-- SP's Sensoriamento Atual
+
+
+CREATE PROCEDURE sp_consulta_sensoriamentoAtual_por_pontoDeSensoriamentoId
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[sensoriamento_atual] s
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id
+END
+GO
+
+
+CREATE PROCEDURE sp_update_sensoriamento_atual
+(
+	@id INT,
+	@ponto_sensoriamento_id INT,
+	@nivel_pluviosidade DECIMAL(6,2),
+	@vazao_da_agua DECIMAL(6,2),
+	@altura_agua DECIMAL(6,2)
+)
+AS
+BEGIN
+	UPDATE [dbo].[sensoriamento_atual] SET
+	nivel_pluviosidade = @nivel_pluviosidade, 
+	altura_agua = @altura_agua,
+	vazao_agua = @vazao_da_agua,
+	ultima_atualizacao = GETDATE()
+	WHERE id = @id AND ponto_sensoriamento_id = @ponto_sensoriamento_id
+END
+GO
+
 
 -- TRIGGERS
 
@@ -315,7 +610,10 @@ AS
 BEGIN
 	SET NOCOUNT ON
 
-	DECLARE @ponto_sensoriamento_id INT = (SELECT id FROM deleted)
+	DECLARE @cidade_atendida_id INT
+	DECLARE @ponto_sensoriamento_id INT
+
+	SELECT @ponto_sensoriamento_id = id, @cidade_atendida_id = cidade_atendida_id FROM deleted
 
 	DELETE FROM [dbo].[sensoriamento_atual]  
 		WHERE [ponto_sensoriamento_id] = @ponto_sensoriamento_id
@@ -323,7 +621,69 @@ BEGIN
 	DELETE FROM [dbo].[notificacoes_historico]  
 		WHERE [ponto_sensoriamento_id] = @ponto_sensoriamento_id
 
+	DELETE FROM [dbo].[pontos_sensoriamento]
+		WHERE id = @ponto_sensoriamento_id
+
+	if (SELECT COUNT(p.id) FROM [dbo].[pontos_sensoriamento] p WHERE p.cidade_atendida_id = @cidade_atendida_id) = 0 BEGIN
+		DELETE [dbo].[cidades_atendidas] 
+			WHERE id = @cidade_atendida_id
+	END
+
 	SET NOCOUNT OFF
 END
 GO
+
+
+CREATE TRIGGER trg_atualizaDependenciasDoPontoDeSensoriamento ON [dbo].[pontos_sensoriamento]
+FOR UPDATE
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	DECLARE @cidade_atendida_id INT = (SELECT cidade_atendida_id FROM deleted)
+
+	if (SELECT COUNT(p.id) FROM [dbo].[pontos_sensoriamento] p WHERE p.cidade_atendida_id = @cidade_atendida_id) = 0 BEGIN
+		DELETE [dbo].[cidades_atendidas] 
+			WHERE id = @cidade_atendida_id
+	END
+
+	SET NOCOUNT OFF
+END
+GO
+
+
+CREATE TRIGGER trg_excluiEstadoCasoNaoHajaCidades ON [dbo].[cidades_atendidas]
+INSTEAD OF DELETE
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	DECLARE @estado_atendido_id INT 
+	DECLARE @cidade_atendida_id INT
+
+	SELECT @estado_atendido_id = estado_atendido_id, @cidade_atendida_id = id FROM deleted
+
+	if (SELECT COUNT(p.id) FROM [dbo].[pontos_sensoriamento] p WHERE p.cidade_atendida_id = @cidade_atendida_id) > 0 BEGIN
+		ROLLBACK TRANSACTION
+		RETURN
+	END
+
+	UPDATE [dbo].[usuarios] SET
+	cidade_atendida_id = null,
+	primeiro_login = 1 
+	WHERE cidade_atendida_id = @cidade_atendida_id
+
+	DELETE FROM [dbo].[cidades_atendidas]
+		WHERE id = @cidade_atendida_id
+
+	if (SELECT COUNT(c.id) FROM [dbo].[cidades_atendidas] c WHERE c.estado_atendido_id = @estado_atendido_id) = 0 BEGIN
+		DELETE FROM [dbo].[estados_atendidos]  
+			WHERE id = @estado_atendido_id
+	END
+	SET NOCOUNT OFF
+END
+GO
+
+exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
+
 
