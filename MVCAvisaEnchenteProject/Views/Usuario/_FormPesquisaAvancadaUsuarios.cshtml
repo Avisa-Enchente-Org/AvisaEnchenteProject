@@ -1,40 +1,58 @@
 ﻿@model PesquisaAvancadaUsuariosViewModel
-
-
-<h6 class="text-primary">Filtrar por: </h6>
-<form asp-action="PesquisaAvancadaUsuarios" onsubmit="return realizaPesquisaAvancada(this);" id="pesquisa-avancada-usuarios">
-    <div class="row">
-
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="NomeCompleto" class="control-label text-primary"></label>
-                <input asp-for="NomeCompleto" class="form-control form-control-sm" placeholder="Nome Completo"/>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="Email" class="control-label text-primary"></label>
-                <input asp-for="Email" class="form-control form-control-sm" placeholder="Email"/>
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <label asp-for="TipoUsuario" class="control-label text-primary"></label>
-                @Html.DropDownListFor(m => m.TipoUsuario, Model.SelectListTipoUsuario, "Selecione...", new { @class = "form-control form-control-sm" })
-                <span asp-validation-for="TipoUsuario" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-2" style=" padding-top: 2rem; ">
-            <div class="form-group">
-                <button type="submit" value="Pesquisar" class="btn btn-primary btn-block btn-sm">
-                    <i class="fa-solid fa-filter mr-1"></i> 
-                    Filtrar
-                </button>
-            </div>
-        </div>
-
+<div id="accordion">
+    <div class="w-100">
+        <button onclick="ChangeIconButtonFiltro()" class="btn btn-sm btn-primary mb-2" style="width: 100%; max-width: 90px; font-size: 1rem" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Filtros <i id="filtrar-collapse-icon" class="fa-solid fa-caret-up ml-2 showing-collapse"></i>
+        </button>
+        <a onclick="abrirFormModal('@Url.Action("CriarOuEditarUsuario", "Usuario", null, Context.Request.Scheme)', 'Cadastrar Usuário')" class="btn btn-primary btn-sm text-white float-end" style="width: 100%; max-width: 300px; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-2"></i>Cadastrar Usuário</a>
     </div>
-</form>
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card">
 
+            <div class="card-body">
+                <h6 class="text-primary">Filtrar por: </h6>
+                <form asp-action="PesquisaAvancadaUsuarios" onsubmit="return realizaPesquisaAvancada(this);" id="pesquisa-avancada-usuarios">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="NomeCompleto" class="control-label text-primary"></label>
+                                <input asp-for="NomeCompleto" class="form-control form-control-sm" placeholder="Nome Completo" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label text-primary"></label>
+                                <input asp-for="Email" class="form-control form-control-sm" placeholder="Email" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label asp-for="TipoUsuario" class="control-label text-primary"></label>
+                                @Html.DropDownListFor(m => m.TipoUsuario, Model.SelectListTipoUsuario, "Selecione...", new { @class = "form-control form-control-sm" })
+                                <span asp-validation-for="TipoUsuario" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style=" padding-top: 1rem; text-align: end">
+                            <div class="form-group">
+                                <button type="submit" value="Pesquisar" style="width: 100%; max-width: 140px" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-filter mr-1"></i>
+                                    Filtrar
+                                </button>
+                                <button type="reset" value="Limpar" style="width: 100%; max-width: 100px" class="btn btn-outline-secondary btn-sm ">
+                                    <i class="fa-solid fa-eraser mr-1"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

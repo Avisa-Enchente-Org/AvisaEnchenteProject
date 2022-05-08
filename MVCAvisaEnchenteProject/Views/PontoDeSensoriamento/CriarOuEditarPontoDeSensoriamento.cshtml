@@ -1,0 +1,90 @@
+﻿@model CriarEditarPontoDeSensoriamentoViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" id="form-criar-editar-ponto-de-sensoriamento" asp-action="SalvarPontoDeSensoriamento" asp-route-id="@Model.Id" onsubmit="return salvarAjax(this);">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Ativo" />
+            <div class="form-group">
+                <label asp-for="HelixId" class="control-label text-primary"></label>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">urn:ngsi-ld:entity:</span>
+                    </div>
+                    <input asp-for="HelixId" class="form-control form-control-sm" placeholder="Helix Id" aria-describedby="basic-addon1" />
+                </div>
+                <span asp-validation-for="HelixId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CodigoEstado" class="control-label text-primary"></label>
+                @Html.DropDownListFor(m => m.CodigoEstado, Model.Estados, "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstado" })
+                <span asp-validation-for="CodigoEstado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CodigoCidade" class="control-label text-primary"></label>
+                <div id="Municipios">
+                    @Html.DropDownListFor(m => m.CodigoCidade, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidades" })
+                </div>
+                <span asp-validation-for="CodigoCidade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Latitude" class="control-label text-primary"></label>
+                <input asp-for="Latitude" class="form-control form-control-sm" placeholder="Helix Id" />
+                <span asp-validation-for="Latitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Longitude" class="control-label text-primary"></label>
+                <input asp-for="Longitude" class="form-control form-control-sm" placeholder="Helix Id" />
+                <span asp-validation-for="Longitude" class="text-danger"></span>
+            </div>
+
+            <div class="modal-footer" style="padding: 10px 0 0px; margin-top: 40px;">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Fechar</button>
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        realizaBuscaCidades();
+
+        $('#selectEstado').change(() => realizaBuscaCidades());
+
+    });
+
+    console.log('@Model.Ativo')
+    realizaBuscaCidades = () => {
+        $.ajax({
+            type: 'POST',
+            url: "/PontoDeSensoriamento/ObtemSelectListCidadesPorUF",
+            data: { uf: $('#selectEstado').val() },
+            datatype: 'JSON',
+            traditional: true,
+            success: function (data) {
+                var municipiosHtml = "<select class='form-control form-control-sm' data-val='true' data-val-required='O campo Cidade é obrigatório' id='selectCidade' name='CodigoCidade'>";
+                municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
+                for (var i = 0; i < data.length; i++) {
+                    municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                }
+                municipiosHtml = municipiosHtml + '</select>';
+                $('#Municipios').html(municipiosHtml);
+                $('#selectCidade').val(@Model.CodigoCidade)
+            }
+        })
+    };
+
+</script>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

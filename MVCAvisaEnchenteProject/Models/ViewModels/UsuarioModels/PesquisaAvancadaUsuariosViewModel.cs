@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
+namespace MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels
 {
     public class PesquisaAvancadaUsuariosViewModel
     {

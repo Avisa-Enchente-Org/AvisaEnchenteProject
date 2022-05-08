@@ -8,7 +8,7 @@ using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
 using MVCAvisaEnchenteProject.Models.ViewModels;
-using MVCAvisaEnchenteProject.Models.ViewModels.Request;
+using MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,7 +121,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         [Authorize]
         public IActionResult PrimeiroLogin()
         {
-            return View(new PrimeiroLoginViewModel());
+            return View(new PrimeiroLoginViewModel(ObtemSelectListEstadosAtendidos()));
         }
 
         [HttpPost]
@@ -129,13 +129,14 @@ namespace MVCAvisaEnchenteProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult PrimeiroLogin(PrimeiroLoginViewModel primeiroLogin)
         {
+            primeiroLogin.Estados = ObtemSelectListEstadosAtendidos();
             if (ModelState.IsValid)
             {
                 try
                 {
                     var usuarioId = User.FindFirst("UsuarioId").Value;
                     DAOPrincipal.DefineCidadeUsuario(Convert.ToInt32(usuarioId), primeiroLogin.CidadeAtendidaId);
-                    HttpContext.Session.SetString("PrimeiroLogin", "false");
+                    HttpContext.Session.Remove("PrimeiroLogin");
 
                     return RedirectToAction("Index", "Home");
                 }

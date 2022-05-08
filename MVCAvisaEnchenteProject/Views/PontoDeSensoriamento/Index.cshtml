@@ -1,0 +1,49 @@
+﻿@model IndexPontoDeSensoriamentoViewModel
+
+@{
+    ViewData["Title"] = "Pontos De Sensoriamento";
+}
+
+<h4 class="text-primary pt-3">@ViewData["Title"]</h4>
+
+<div id="pv-pesquisa-avancada-usuarios" class="my-3">
+        @await Html.PartialAsync("_FormPesquisaAvancadaPontosDeSensoriamento", Model.PesquisaAvancadaPontosDeSensoriamento)
+</div>
+
+<div id="pv-listar-pontos-sensoriamento">
+    @await Html.PartialAsync("_ListarPontosDeSensoriamento", Model.PontoDeSensoriamentos)
+</div>
+
+@section Scripts {
+    <script src="~/js/configurations.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            realizaBuscaCidadesAtendidas();
+            ChangeIconButtonFiltro();
+            $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+        });
+
+
+        realizaBuscaCidadesAtendidas = () => {
+            $.ajax({
+                type: 'POST',
+                url: "/PontoDeSensoriamento/ObtemSelectListCidadesAtendidas",
+                data: { estadoId: $('#selectEstadoAtendido').val() },
+                datatype: 'JSON',
+                traditional: true,
+                success: function (data) {
+                    var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeId'>";
+                    municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    municipiosHtml = municipiosHtml + '</select>';
+                    $('#MunicipiosAtendidos').html(municipiosHtml);
+                    $('#selectCidadeAtendida').val(@Model.PesquisaAvancadaPontosDeSensoriamento.CidadeId)
+                }
+            })
+        };
+
+    </script>
+}

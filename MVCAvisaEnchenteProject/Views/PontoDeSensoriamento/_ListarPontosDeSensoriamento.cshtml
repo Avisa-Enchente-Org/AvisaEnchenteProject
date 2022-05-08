@@ -1,0 +1,62 @@
+﻿@model IEnumerable<PontoDeSensoriamento>
+
+<div class="card">
+    <div class="card-header text-primary"><h5> Pontos de Sensoriamento </h5></div>
+    <div class="card-body">
+        <table class="table-sm table-striped table-responsive-xl"
+               id="table"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-list="[5, 10, 15, 20, 25, 50, 100, ALL]">
+            <thead>
+                <tr>
+                    <th data-field="id" data-sortable="true" data-width="5" data-width-unit="%">Id</th>
+                    <th data-field="helix-id" data-sortable="true" data-width="17" data-width-unit="%">Helix Id</th>
+                    <th data-field="ativo-helix" data-sortable="true" data-width="5" data-width-unit="%">Ativo</th>
+                    <th data-field="tipo-usuario" data-sortable="true" data-width="20" data-width-unit="%">Última Edição Por:</th>
+                    <th data-field="estado" data-sortable="true" data-width="5" data-width-unit="%">Estado</th>
+                    <th data-field="cidade" data-sortable="true" data-width="20" data-width-unit="%">Cidade</th>
+                    <th data-field="acoes" data-width="28" data-width-unit="%">Ações</th>
+                </tr>
+            </thead>
+            <tbody style=" font-size: 0.9rem;">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.Id
+                        </td>
+                        <td>
+                            @item.HelixId
+                        </td>
+                        <td style="text-align: center">
+                            @if (!item.AtivoHelix)
+                            {
+
+                                <a onclick="ativaPontoDeSensoriamento('@Url.Action("SalvaPontoDeSensoriamentoHelix", "PontoDeSensoriamento", null, Context.Request.Scheme)', @item.Id)" class="btn icon text-danger" title="Desativado"><i class="fa-solid fa-signal fa-xl"></i></a>
+                            }
+                            else
+                            {
+                                <a class="btn icon text-success" title="Ativado"><i class="fa-solid fa-signal fa-xl"></i></a>
+                            }
+                        </td>
+                        <td>
+                            @item.Usuario.NomeCompleto
+                        </td>
+                        <td>
+                            @item.EstadoAtendido.UF
+                        </td>
+                        <td>
+                            @item.CidadeAtendida.Descricao
+                        </td>
+                        <td>
+                            <a href="/PontoDeSensoriamento/@item.Id/ParametrosNotificacao" class="btn btn-info btn-sm text-white" role="button"><i class="fa-solid fa-bell mr-1"></i>Notificações</a>
+                            <a onclick="abrirFormModal('@Url.Action("CriarOuEditarPontoDeSensoriamento", "PontoDeSensoriamento", new {id=item.Id}, Context.Request.Scheme)', 'Editar Ponto De Sensoriamento')" class="btn btn-warning btn-sm text-white" role="button"><i class="fa-solid fa-pen-to-square mr-1"></i>Editar</a>
+                            <a onclick="deletarPorIdEController(@item.Id, 'PontoDeSensoriamento')" class="btn btn-danger btn-sm text-white" role="button"><i class="fa-solid fa-trash mr-1"></i>Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

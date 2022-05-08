@@ -24,8 +24,12 @@ namespace MVCAvisaEnchenteProject.Infrastructure.CustomAttributes
             else
             {
                 var userId = context.HttpContext.User.FindFirst("UsuarioId").Value;
-                context.HttpContext.Session.SetString("PrimeiroLogin", !string.IsNullOrEmpty(userId) ? _usuarioDAO.ConsultarPorId(Convert.ToInt32(userId)).PrimeiroLogin.ToString().ToLower() : "false");
-                VerificaPrimeiroLogin(context, context.HttpContext.Session.GetString("PrimeiroLogin"));
+                var primeiroLoginUsuario = !string.IsNullOrEmpty(userId) ? _usuarioDAO.ConsultarPorId(Convert.ToInt32(userId)).PrimeiroLogin : false;
+                if (primeiroLoginUsuario)
+                {
+                    context.HttpContext.Session.SetString("PrimeiroLogin", "true");
+                    VerificaPrimeiroLogin(context, context.HttpContext.Session.GetString("PrimeiroLogin"));
+                }
             }
         }
 

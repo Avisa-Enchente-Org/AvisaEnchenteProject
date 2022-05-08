@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.ViewModels;
-using MVCAvisaEnchenteProject.Models.ViewModels.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,12 +38,25 @@ namespace MVCAvisaEnchenteProject.Controllers
             try
             {
                 DAOPrincipal.Deletar(id);
-                return Json(new JsonFormResponse());
+                return Json(new JsonResponse());
             }
             catch (Exception erro)
             {
-                return Json(new JsonFormResponse(messageErro: "Ocorreu um erro ao tentar Excluir!"));
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao tentar Excluir!"));
             }
+        }
+
+        protected SelectList ObtemSelectListEstadosAtendidos()
+        {
+            var estadoDAO = new EstadoAtendidoDAO();
+            var estados = estadoDAO.Listar();
+            List<SelectListItem> selectEstados = new List<SelectListItem>();
+            estados.ToList().ForEach(x =>
+            {
+                selectEstados.Add(new SelectListItem { Text = x.Descricao, Value = x.Id.ToString() });
+            });
+
+            return new SelectList(selectEstados, "Value", "Text");
         }
 
         protected bool UsuarioEstaLogado() => !string.IsNullOrEmpty(User?.FindFirst("UsuarioId")?.Value);
