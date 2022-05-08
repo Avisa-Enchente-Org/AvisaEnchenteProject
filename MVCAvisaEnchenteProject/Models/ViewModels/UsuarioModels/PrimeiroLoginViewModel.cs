@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
+namespace MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels
 {
     public class PrimeiroLoginViewModel
     {
@@ -16,5 +17,16 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
         [DisplayName("Cidade")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int CidadeAtendidaId { get; set; }
+
+        public SelectList Estados { get; set; }
+
+        public PrimeiroLoginViewModel(SelectList selectEstados)
+        {
+            Estados = selectEstados;
+        }
+        public PrimeiroLoginViewModel()
+        {
+                
+        }
     }
 }

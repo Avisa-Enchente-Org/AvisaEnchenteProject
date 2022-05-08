@@ -1,4 +1,7 @@
-﻿
+﻿$(document).ready(function () {
+    ChangeIconButtonFiltro();
+});
+
 $(function () {
 
     if ($("div.notification").length) {
@@ -51,7 +54,10 @@ salvarAjax = (form) => {
                             var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
                             return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
                         }
-   
+                        if (form.id === "form-criar-editar-ponto-de-sensoriamento") {
+                            var pesquisaAvancadaPontosDeSensoriamento = document.getElementById('pesquisa-avancada-pontos-de-sensoriamento');
+                            return realizaPesquisaAvancada(pesquisaAvancadaPontosDeSensoriamento);
+                        }
                     }
                     else {
                         $('#form-modal .modal-body').html(res.html);
@@ -93,8 +99,11 @@ realizaPesquisaAvancada = form => {
                 else {
                     if (form.id === "pesquisa-avancada-usuarios") {
                         $('#pv-listar-usuarios').html(res.html);
-                        rebuild();
                     }
+                    if (form.id === "pesquisa-avancada-pontos-de-sensoriamento") {
+                        $('#pv-listar-pontos-sensoriamento').html(res.html);
+                    }
+                    rebuild();
                 }
 
             },
@@ -151,12 +160,49 @@ function deletarPorIdEController(id, controllerName) {
                             var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
                             return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
                         }
+                        if (controllerName.toLowerCase() === "pontodesensoriamento") {
+                            var pesquisaAvancadaPontosDeSensoriamento = document.getElementById('pesquisa-avancada-pontos-de-sensoriamento');
+                            return realizaPesquisaAvancada(pesquisaAvancadaPontosDeSensoriamento);
+                        }
                     }
 
                 }
             })
         }
     })
+}
+
+ativaPontoDeSensoriamento = (url, id) => {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: { id: id },
+        success: function (res) {
+            if (res.valido) {
+                Swal.fire({
+                    title: "Entidade Ativada no Helix com Sucesso!",
+                    confirmButtonColor: '#08357c',
+                    customClass: {
+                        confirmButton: 'btn btn-primary btn-md',
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var pesquisaAvancadaPontosDeSensoriamento = document.getElementById('pesquisa-avancada-pontos-de-sensoriamento');
+                        return realizaPesquisaAvancada(pesquisaAvancadaPontosDeSensoriamento);
+                    }
+                })
+            }
+            else {
+                Swal.fire({
+                    title: "Erro ao tentar ativa entidade no Helix!",
+                    confirmButtonColor: '#08357c',
+                    customClass: {
+                        confirmButton: 'btn btn-primary btn-md',
+                    },
+                })
+            }
+        }
+    });
 }
 
 function loadingTemplate(message) {
@@ -169,3 +215,19 @@ function rebuild() {
         .bootstrapTable('showLoading')
         .bootstrapTable()
 }
+
+
+ChangeIconButtonFiltro = () => {
+    var icon = $('#filtrar-collapse-icon');
+
+    if (icon[0].classList.contains("showing-collapse")) {
+        icon[0].classList.remove("fa-angle-down")
+        icon[0].classList.remove("showing-collapse")
+        icon[0].classList.add("fa-angle-up")
+    } else {
+        icon[0].classList.remove("fa-angle-up")
+        icon[0].classList.add("fa-angle-down")
+        icon[0].classList.add("showing-collapse")
+    }
+
+};

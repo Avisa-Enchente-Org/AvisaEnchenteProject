@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/custom-bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="/lib/fa-icons/all.css" />
+    <link rel="stylesheet" href="/lib/fa-icons/all.min.css" />
     <link rel="stylesheet" href="/lib/sweet-alert/dist/sweetalert2.min.css" />
     <link rel="stylesheet" href="/lib/bootstrap-table/dist/bootstrap-table.min.css" />
 </head>
@@ -45,14 +45,15 @@
 
                                     if (userRole == ETipoUsuario.Admin.GetDescription())
                                     {
-                                        <li class="nav-item dropdown mr-3 text-primary ">
-                                            <a class="nav-link dropdown-toggle text-primary" id="configuracoes" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa-solid fa-gear"></i> Configurações
-                                            </a>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item nav-link-dropdown" asp-controller="Usuario" asp-action="Index"><i class="fa-solid fa-users-gear pr-2"></i>Usuários</a>
-                                            </div>
-                                        </li>
+                            <li class="nav-item dropdown mr-3 text-primary ">
+                                <a class="nav-link dropdown-toggle text-primary" id="configuracoes" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa-solid fa-gear"></i> Configurações
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item nav-link-dropdown" asp-controller="Usuario" asp-action="Index"><i class="fa-solid fa-users-gear pr-2"></i>Usuários</a>
+                                    <a class="dropdown-item nav-link-dropdown" asp-controller="PontoDeSensoriamento" asp-action="Index"><i class="fa-solid fa-users-gear pr-2"></i>Pontos de Sensoriamento</a>
+                                </div>
+                            </li>
                                     }
 
                                     <li class="nav-item dropdown meu-perfil-button">

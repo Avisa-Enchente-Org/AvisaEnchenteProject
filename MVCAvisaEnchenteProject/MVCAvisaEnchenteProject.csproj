@@ -16,4 +16,8 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Integracoes\Integracoes.csproj" />
+  </ItemGroup>
+
 </Project>

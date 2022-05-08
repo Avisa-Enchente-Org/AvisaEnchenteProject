@@ -1,0 +1,85 @@
+﻿@model PesquisaAvancadaPontosDeSensoriamento
+
+
+<div id="accordion">
+    <div class="w-100">
+        <button onclick="ChangeIconButtonFiltro()" class="btn btn-sm btn-primary mb-2" style="width: 100%; max-width: 90px; font-size: 1rem" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Filtros <i id="filtrar-collapse-icon" class="fa-solid fa-caret-up ml-2 showing-collapse"></i>
+        </button>
+        <a onclick="abrirFormModal('@Url.Action("CriarOuEditarPontoDeSensoriamento", "PontoDeSensoriamento", null, Context.Request.Scheme)', 'Cadastrar Ponto de Sensoriamento')" class="btn btn-primary btn-sm text-white mb-2 float-end" style="width: 100%; max-width: 340px; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-2"></i>Cadastrar Ponto de Sensoriamento</a>
+    </div>
+    
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="text-primary">Filtrar por: </h6>
+                <form asp-action="PesquisaAvancadaPontosDeSensoriamento" onsubmit="return realizaPesquisaAvancada(this);" id="pesquisa-avancada-pontos-de-sensoriamento">
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="HelixId" class="control-label text-primary"></label>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon2">urn:ngsi-ld:entity:</span>
+                                    </div>
+                                    <input asp-for="HelixId" class="form-control form-control-sm" placeholder="Helix Id" aria-describedby="basic-addon2" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label asp-for="Ativo" class="control-label text-primary"></label>
+                                <select class='form-control form-control-sm' asp-for="Ativo">
+                                    <option value="">Selecione</option>
+                                    <option value="true">Sim</option>
+                                    <option value="false">Não</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="UsuarioId" class="control-label text-primary"></label>
+                                @Html.DropDownListFor(m => m.UsuarioId, Model.UsuariosAdmin, "Selecione o Usuário...", new { @class = "form-control form-control-sm", @id = "selectUsuariosAdmin" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="EstadoId" class="control-label text-primary"></label>
+                                @Html.DropDownListFor(m => m.EstadoId, Model.Estados, "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CidadeId" class="control-label text-primary"></label>
+                                <div id="MunicipiosAtendidos">
+                                    @Html.DropDownListFor(m => m.CidadeId, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidadeAtendida" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5" style="padding-top: 2rem; text-align: end">
+                            <div class="form-group">
+                                <button type="submit" value="Pesquisar" style="width: 100%; max-width: 140px" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-filter mr-1"></i>
+                                    Filtrar
+                                </button>
+                                <button type="reset" value="Limpar" style="width: 100%; max-width: 100px" class="btn btn-outline-secondary btn-sm ">
+                                    <i class="fa-solid fa-eraser mr-1"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

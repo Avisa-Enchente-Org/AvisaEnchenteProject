@@ -17,7 +17,6 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
         }
 
         protected string Tabela { get; set; }
-        protected string NomeSpListagem { get; set; } = "sp_listar";
         protected abstract SqlParameter[] CriaParametros(T model);
         protected abstract T MontaEntidadePadrao(DataRow registro);
         protected abstract void SetTabela();
@@ -34,13 +33,20 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
 
         public virtual void Deletar(int id)
         {
-            var p = new SqlParameter[]
+            try
             {
-                new SqlParameter("id", id),
-                new SqlParameter("tabela", Tabela)
-            };
+                var p = new SqlParameter[]
+                {
+                    new SqlParameter("id", id),
+                    new SqlParameter("tabela", Tabela)
+                };
 
-            HelperDAO.ExecutaProc("sp_delete", p);
+                HelperDAO.ExecutaProc("sp_delete", p);
+            }
+            catch (Exception e)
+            {
+                
+            }
         }
 
         public virtual T ConsultarPorId(int id)
@@ -61,11 +67,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
 
         public virtual List<T> Listar()
         {
-            var p = new SqlParameter[]
-            {
-                new SqlParameter("tabela", Tabela)
-            };
-            var tabela = HelperDAO.ExecutaProcSelect(NomeSpListagem, p);
+            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_"+ Tabela, Array.Empty<SqlParameter>());
 
             List<T> lista = new List<T>();
 
@@ -73,6 +75,16 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO.DAOConfig
                 lista.Add(MontaEntidadePadrao(registro));
 
             return lista;
+        }
+
+        public virtual int ProximoId()
+        {
+            var p = new SqlParameter[]
+            {
+                new SqlParameter("tabela", Tabela)
+            };
+            var tabela = HelperDAO.ExecutaProcSelect("spProximoId", p);
+            return Convert.ToInt32(tabela.Rows[0][0]);
         }
     }
 }

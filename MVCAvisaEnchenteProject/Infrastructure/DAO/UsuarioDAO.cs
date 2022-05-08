@@ -2,7 +2,7 @@
 using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
-using MVCAvisaEnchenteProject.Models.ViewModels.Request;
+using MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,6 +19,17 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             Tabela = "usuarios";
         }
 
+        public List<Usuario> ListarUsuariosAdministradores()
+        {
+            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_usuarios_administradores", Array.Empty<SqlParameter>());
+
+            var lista = new List<Usuario>();
+
+            foreach (DataRow registro in tabela.Rows)
+                lista.Add(MontaEntidadePadrao(registro));
+
+            return lista;
+        }
         public Usuario LogarUsuario(LoginUsuarioRequest login)
         {
             SqlParameter[] parametros = {
@@ -110,15 +121,18 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
 
         protected override SqlParameter[] CriaParametros(Usuario usuario)
         {
-            SqlParameter[] usuarioParametros = {
+            var usuarioParametros = new List<SqlParameter> 
+            {
                 new SqlParameter("nome_completo", usuario.NomeCompleto),
                 new SqlParameter("email", usuario.Email),
                 new SqlParameter("senha", usuario.Senha),
                 new SqlParameter("tipo_usuario", usuario.TipoUsuario),
                 new SqlParameter("primeiro_login", usuario.PrimeiroLogin),
             };
+            if (usuario.Id > 0)
+                usuarioParametros.Add(new SqlParameter("id", usuario.Id));
 
-            return usuarioParametros;
+            return usuarioParametros.ToArray();
         }
         #endregion
     }

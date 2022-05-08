@@ -7,8 +7,7 @@ using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
 using MVCAvisaEnchenteProject.Models.ViewModels;
-using MVCAvisaEnchenteProject.Models.ViewModels.Request;
-using MVCAvisaEnchenteProject.Models.ViewModels.Response;
+using MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +18,9 @@ namespace MVCAvisaEnchenteProject.Controllers
 {
     public class UsuarioController : BaseController<Usuario, UsuarioDAO>
     {
-        public UsuarioController()
+        public UsuarioController() : base()
         {
-            DAOPrincipal = new UsuarioDAO();
+            
         }
 
         [HttpGet]
@@ -36,7 +35,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         public override IActionResult Deletar(int id)
         {
             if(id == Convert.ToInt32(ObterIdUsuarioLogado()))
-                return Json(new JsonFormResponse(messageErro: "Você não pode excluir seu proprio Usuário!"));
+                return Json(new JsonResponse(messageErro: "Você não pode excluir seu proprio Usuário!"));
 
             return base.Deletar(id);
         }
@@ -58,7 +57,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> CriarOuEditarUsuario(int id, AdminCriarEditarUsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> SalvarUsuario(int id, [Bind("Id, NomeCompleto, Email, Senha, TipoUsuario")] AdminCriarEditarUsuarioViewModel usuarioViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +66,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                     if(!usuarioViewModel.EdicaoModel() && string.IsNullOrEmpty(usuarioViewModel.Senha))
                     {
                         ModelState.AddModelError("Senha", "A senha é Obrigatória!");
-                        return Json(new JsonFormResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
+                        return Json(new JsonResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
                     }
 
                     var usuario = new Usuario(usuarioViewModel);
@@ -76,24 +75,24 @@ namespace MVCAvisaEnchenteProject.Controllers
                         if (!DAOPrincipal.EmailJaExiste(usuarioViewModel.Email))               
                             DAOPrincipal.Inserir(usuario);                 
                         else
-                            return Json(new JsonFormResponse(messageErro: "Email já Existe!"));                   
+                            return Json(new JsonResponse(messageErro: "Email já Existe!"));                   
                     }
                     else
                     {
                         if(DAOPrincipal.ConsultarPorId(id) != null)
                             DAOPrincipal.AtualizarUsuarioAdmin(usuarioViewModel);
                         else
-                            return Json(new JsonFormResponse(messageErro: "Usuário não encontrado!"));
+                            return Json(new JsonResponse(messageErro: "Usuário não encontrado!"));
                     }
 
-                    return Json(new JsonFormResponse(valido: true));
+                    return Json(new JsonResponse(valido: true));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    return Json(new JsonFormResponse(messageErro: "Ocorreu um erro ao tentar salvar o usuário!"));
+                    return Json(new JsonResponse(messageErro: "Ocorreu um erro ao tentar salvar o usuário!"));
                 }
             }
-            return Json(new JsonFormResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
+            return Json(new JsonResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "CriarOuEditarUsuario", usuarioViewModel)));
         }
 
         [HttpPost]
@@ -102,11 +101,11 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             try
             {
-                return Json(new JsonFormResponse(valido: true, html: HelperRenderRazorView.RenderRazorViewToString(this, "_ListarUsuarios", DAOPrincipal.PesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios))));
+                return Json(new JsonResponse(valido: true, html: HelperRenderRazorView.RenderRazorViewToString(this, "_ListarUsuarios", DAOPrincipal.PesquisaAvancadaUsuarios(pesquisaAvancadaUsuarios))));
             }
             catch (Exception e)
             {
-                return Json(new JsonFormResponse(messageErro: "Ocorreu um erro ao pesquisar os Usuários!"));
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao pesquisar os Usuários!"));
             }   
         }
 

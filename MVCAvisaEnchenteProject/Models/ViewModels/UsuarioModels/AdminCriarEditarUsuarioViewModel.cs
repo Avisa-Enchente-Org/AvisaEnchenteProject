@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAvisaEnchenteProject.Infrastructure.Helpers;
-using MVCAvisaEnchenteProject.Models.Entidades;
-using MVCAvisaEnchenteProject.Models.Enum;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using MVCAvisaEnchenteProject.Models.ViewModels;
+using MVCAvisaEnchenteProject.Models.Entidades;
 
-namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
+namespace MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels
 {
     public class AdminCriarEditarUsuarioViewModel : BaseCadastroEdicaoViewModel
     {
@@ -34,7 +30,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.Request
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int? TipoUsuario { get; set; }
 
-        public SelectList SelectListTipoUsuario => TipoDeUsuarioHelper.GetTiposDeUsuario(TipoUsuario);
+        public SelectList SelectListTipoUsuario => EnumHelper.GetTiposDeUsuario(TipoUsuario);
 
         public AdminCriarEditarUsuarioViewModel(Usuario usuario)
         {

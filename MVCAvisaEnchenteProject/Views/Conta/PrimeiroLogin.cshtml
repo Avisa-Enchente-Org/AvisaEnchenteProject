@@ -7,28 +7,30 @@
 <div class="row" style=" height: calc(100vh - 10vh)">
     <div class="col-sm-11 my-auto">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
 
-                <h3 class="text-primary mb-3">Olá Daniel, Vamos Começar?</h3>
-                <p class="text-dark">Selecine a sua Localização para que possamos alerta-lo dos possiveis alagamentos e enchentes! </p>
+                <h3 class="text-primary mb-2">Olá Daniel, Vamos Começar?</h3>
+                <p class="text-dark mb-4">Selecine a sua Localização para que possamos alerta-lo dos possiveis alagamentos e enchentes! </p>
 
                 <form asp-action="PrimeiroLogin">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <div class="form-group">
-                        <label asp-for="EstadoAtendidoId" class="control-label"></label>
-                        <input asp-for="EstadoAtendidoId" class="form-control" />
+                        <label asp-for="EstadoAtendidoId" class="control-label text-primary"></label>
+                        @Html.DropDownListFor(m => m.EstadoAtendidoId, Model.Estados, "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
                         <span asp-validation-for="EstadoAtendidoId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="CidadeAtendidaId" class="control-label"></label>
-                        <input asp-for="CidadeAtendidaId" class="form-control" />
+                        <label asp-for="CidadeAtendidaId" class="control-label text-primary"></label>
+                        <div id="MunicipiosAtendidos">
+                            @Html.DropDownListFor(m => m.CidadeAtendidaId, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidadeAtendida" })
+                        </div>
                         <span asp-validation-for="CidadeAtendidaId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mt-4">
-                        <input type="submit" value="Pronto!" class="btn btn-primary" />
+                        <input type="submit" value="Pronto!" class="btn btn-primary btn-block"/>
                     </div>
                 </form>
             </div>
@@ -40,11 +42,39 @@
 
 <div class="d-none d-md-block">
     <div class="tela-inicial-image">
-        <img src="/img/tela-inicial-image.jpg" />
+        <img style="width: 54vw" src="/img/tela-inicial-image.jpg" />
     </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/pagina-inicial.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+        });
+
+
+        realizaBuscaCidadesAtendidas = () => {
+            $.ajax({
+                type: 'POST',
+                url: "/PontoDeSensoriamento/ObtemSelectListCidadesAtendidas",
+                data: { estadoId: $('#selectEstadoAtendido').val() },
+                datatype: 'JSON',
+                traditional: true,
+                success: function (data) {
+                    var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeAtendidaId'>";
+                    municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    municipiosHtml = municipiosHtml + '</select>';
+                    $('#MunicipiosAtendidos').html(municipiosHtml);
+                }
+            })
+        };
+
+    </script>
 }

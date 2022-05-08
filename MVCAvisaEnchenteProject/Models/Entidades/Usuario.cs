@@ -1,5 +1,6 @@
 ﻿using MVCAvisaEnchenteProject.Models.Enum;
-using MVCAvisaEnchenteProject.Models.ViewModels.Request;
+using MVCAvisaEnchenteProject.Models.ViewModels;
+using MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

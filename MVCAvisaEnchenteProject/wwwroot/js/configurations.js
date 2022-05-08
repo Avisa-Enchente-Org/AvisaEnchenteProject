@@ -8,4 +8,3 @@ window.addEventListener('load', function () {
     $('#configuracoes').addClass('active');
 
 });
-
