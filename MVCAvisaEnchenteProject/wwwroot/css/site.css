@@ -60,8 +60,10 @@ button.accept-policy {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+    overflow-y: overlay;
+    overflow-x: overlay;
 }
 
 body {
@@ -193,9 +195,4 @@ a#configuracoes:focus {
         margin-bottom: 0;
     }
 
-}
-@media (min-width: 767px) {
-    #pesquisa-avancada-usuarios .row div {
-        padding-right: 0px
-    }
 }
