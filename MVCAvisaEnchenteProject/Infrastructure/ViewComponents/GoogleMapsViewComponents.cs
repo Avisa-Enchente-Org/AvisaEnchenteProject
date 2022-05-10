@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Models.ViewModels.GoogleMapsViewComponent;
 using System;
@@ -21,17 +22,23 @@ namespace MVCAvisaEnchenteProject.Infrastructure.ViewComponents
             _estadoDAO = new EstadoAtendidoDAO();
             _pdsDAO = new PontoDeSensoriamentoDAO();
         }
-        public IViewComponentResult Invoke(string usuarioLogadoId)
+        public IViewComponentResult Invoke()
         {
-            if (int.TryParse(usuarioLogadoId, out int usuarioId))
-            {
+            var userStringId = HttpContext.User?.FindFirst("UsuarioId")?.Value;
+            if (int.TryParse(userStringId, out int usuarioId))
+            {         
                 var usuarioEnderecoLogado = _usuarioDAO.ConsultarEnderecoUsuario(usuarioId);
-                var enderecoUsuario = $"{usuarioEnderecoLogado.CidadeAtendida.Descricao}, {usuarioEnderecoLogado.EstadoAtendido.Descricao}";
+                if(usuarioEnderecoLogado != null)
+                {
+                    var enderecoUsuario = $"{usuarioEnderecoLogado.CidadeAtendida.Descricao}, {usuarioEnderecoLogado.EstadoAtendido.Descricao}";
 
-                var pontosDeSensoriamento = _pdsDAO.ListarPorCidade(usuarioEnderecoLogado.CidadeAtendida.Id);
+                    var pontosDeSensoriamento = _pdsDAO.ListarPorCidade(usuarioEnderecoLogado.CidadeAtendida.Id);
 
-                var mapPointCenter = new GoogleMapsModel(enderecoUsuario, pontosDeSensoriamento);
-                return View(mapPointCenter);
+                    var mapPointCenter = new GoogleMapsModel(enderecoUsuario, pontosDeSensoriamento);
+                    return View(mapPointCenter);
+                }
+
+                return View(new GoogleMapsModel());
             }
 
             return View(new GoogleMapsModel());

@@ -52,6 +52,17 @@
                 optimized: false,
             });
 
+            const cityCircle = new google.maps.Circle({
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35,
+                map,
+                center: { lat: markerAtual.position.lat, lng: markerAtual.position.lng },
+                radius: 1000
+                ,
+            });
 
             marker.addListener("click", () => {
                 infoWindow.close();
