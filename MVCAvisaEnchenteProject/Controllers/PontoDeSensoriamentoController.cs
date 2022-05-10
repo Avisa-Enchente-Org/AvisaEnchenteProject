@@ -161,7 +161,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                 var estadoSelecionado = await _integracaoIBGE.ObterEstadoPorCodigo(codigoEstado);
                 var cidadeSelecionada = await _integracaoIBGE.ObterCidadePorCodigo(codigoCidade);
 
-                var localizacaoValida = await ValidaLocalizacao(estadoSelecionado, cidadeSelecionada, latitude, longitude);
+                var (localizacaoValida, latitudeCidade, longitudeEstado) = await ValidaLocalizacao(estadoSelecionado, cidadeSelecionada, latitude, longitude);
                 if(localizacaoValida.Erro)
                     return (JsonResponse: localizacaoValida, CidadeAtendidaId: 0);
 
@@ -181,7 +181,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
                 if (cidadeAtendida == null)
                 {
-                    cidadeAtendida = new CidadeAtendida(cidadeSelecionada.Nome, cidadeSelecionada.Id.ToString(), estadoAtendidoId, -23.8046745M, -46.6718363M);
+                    cidadeAtendida = new CidadeAtendida(cidadeSelecionada.Nome, cidadeSelecionada.Id.ToString(), estadoAtendidoId, latitudeCidade, longitudeEstado);
                     cidadeAtendidaId = _cidadeAtendidaDAO.ProximoId();
                     _cidadeAtendidaDAO.Inserir(cidadeAtendida);
                 }
@@ -198,30 +198,30 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
         }
 
-        private async Task<JsonResponse> ValidaLocalizacao(Estado estadoSelecionado, Municipio cidadeSelecionada, string latitude, string longitude)
+        private async Task<(JsonResponse JsonResponse, decimal Latitude, decimal Longitude)> ValidaLocalizacao(Estado estadoSelecionado, Municipio cidadeSelecionada, string latitude, string longitude)
         {
             if (latitude.Contains(",") || longitude.Contains(","))
-                return new JsonResponse(messageErro: "Latitude ou Longitude Inválidos, utilize o ponto (.) ao invés da virgula!");
+                return (JsonResponse: new JsonResponse(messageErro: "Latitude ou Longitude Inválidos, utilize o ponto (.) ao invés da virgula!"), Latitude: 0M, Longitude: 0M);
 
             var validLatitude = decimal.TryParse(latitude.Replace(".", ","), out decimal latitudeDecimal);
             var validLongitude = decimal.TryParse(longitude.Replace(".", ","), out decimal longitudeDecimal);
             if(!validLatitude || !validLongitude)
-                return new JsonResponse(messageErro: "Latitude ou Longitude Inválidos");
+                return (JsonResponse: new JsonResponse(messageErro: "Latitude ou Longitude Inválidos"), Latitude: 0M, Longitude: 0M);
 
             var localizacaoLatLng = await _integracaoGeocode.ObtemLocalizacaoPorLatLng(latitude, longitude);
 
             if (localizacaoLatLng.status == Status.Ok)
             {
-                var estadoLocalizado = localizacaoLatLng.results.Any(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.EstadoType) && e.long_name == estadoSelecionado.Nome || e.short_name == estadoSelecionado.Sigla));
-                var cidadeLocalizada = localizacaoLatLng.results.Any(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.CidadeType) && e.long_name == cidadeSelecionada.Nome || e.short_name == cidadeSelecionada.Nome));
+                var estadoLocalizado = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.EstadoType) && e.long_name == estadoSelecionado.Nome || e.short_name == estadoSelecionado.Sigla)).First();
+                var cidadeLocalizada = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.CidadeType) && e.long_name == cidadeSelecionada.Nome || e.short_name == cidadeSelecionada.Nome)).First();
 
-                if (!estadoLocalizado || !cidadeLocalizada)
-                    return new JsonResponse(messageErro: "Erro, essa latitude e longitude não Coincidem com o Estado e Cidade Selecionados!");
+                if (estadoLocalizado == null || cidadeLocalizada == null)
+                    return (JsonResponse: new JsonResponse(messageErro: "Erro, essa latitude e longitude não Coincidem com o Estado e Cidade Selecionados!"), Latitude: 0M, Longitude: 0M);
 
-                return new JsonResponse();
+                return (JsonResponse: new JsonResponse(), Latitude: cidadeLocalizada.geometry.location.lat, Longitude: cidadeLocalizada.geometry.location.lng);
             }
             else
-                return new JsonResponse(messageErro: "Erro, Latitude ou Longitude Inválidos!");
+                return (JsonResponse: new JsonResponse(messageErro: "Erro, Latitude ou Longitude Inválidos!"), Latitude: 0M, Longitude: 0M);
         }
 
         [HttpPost]
