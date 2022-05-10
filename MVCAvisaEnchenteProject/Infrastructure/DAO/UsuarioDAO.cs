@@ -97,6 +97,21 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return lista;
         }
 
+        public Usuario ConsultarEnderecoUsuario(int usuarioId)
+        {
+            var p = new SqlParameter[]
+            {
+                new SqlParameter("id", usuarioId),
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("sp_consultar_usuario_com_endereco", p);
+
+            if (tabela.Rows.Count == 0)
+                return null;
+            else
+                return MontaEntidadeUsuarioComEndereco(tabela.Rows[0]);
+        } 
+
         #region Helpers
 
         protected override Usuario MontaEntidadePadrao(DataRow registro)
@@ -114,6 +129,31 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             if (registro["cidade_atendida_id"] != DBNull.Value)
                 usuario.CidadeAtendidaId = Convert.ToInt32(registro["cidade_atendida_id"]);
             
+
+            return usuario;
+        }
+
+        protected Usuario MontaEntidadeUsuarioComEndereco(DataRow registro)
+        {
+            var usuario = new Usuario
+            {
+                Id = Convert.ToInt32(registro["id"]),
+                NomeCompleto = registro["nome_completo"].ToString(),
+                Email = registro["email"].ToString(),
+                CidadeAtendida = new CidadeAtendida
+                {
+                    Id = Convert.ToInt32(registro["cidade_atendida_id"]),
+                    Descricao = registro["cidade_descricao"].ToString(),
+                    CodigoCidade = registro["codigo_cidade"].ToString(),
+                },
+                EstadoAtendido = new EstadoAtendido
+                {
+                    Id = Convert.ToInt32(registro["estado_atendido_id"]),
+                    Descricao = registro["estado_descricao"].ToString(),
+                    UF = registro["estado_uf"].ToString(),
+                    CodigoEstado = registro["codigo_estado"].ToString()
+                }
+            };
 
             return usuario;
         }

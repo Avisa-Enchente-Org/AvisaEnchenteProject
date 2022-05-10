@@ -5,9 +5,10 @@
 
 @if (User?.Identity?.IsAuthenticated ?? false)
 {
-    <div class="pt-3">
-        <h4 class="text-primary">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
-    </div>
+<div class="pt-3">
+    <h4 class="text-primary mb-2">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
+    @await Component.InvokeAsync("GoogleMaps", User?.FindFirst("UsuarioId")?.Value)
+</div>
 }
 
 @section Scripts {

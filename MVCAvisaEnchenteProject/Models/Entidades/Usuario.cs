@@ -22,6 +22,9 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
 
         public bool PrimeiroLogin { get; set; }
 
+        public CidadeAtendida CidadeAtendida { get; set; }
+        public EstadoAtendido EstadoAtendido { get; set; }
+
         public Usuario()  { }
 
         public Usuario(RegistrarUsuarioViewModel usuarioRequest)

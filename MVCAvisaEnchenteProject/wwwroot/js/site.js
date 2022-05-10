@@ -220,14 +220,16 @@ function rebuild() {
 ChangeIconButtonFiltro = () => {
     var icon = $('#filtrar-collapse-icon');
 
-    if (icon[0].classList.contains("showing-collapse")) {
-        icon[0].classList.remove("fa-angle-down")
-        icon[0].classList.remove("showing-collapse")
-        icon[0].classList.add("fa-angle-up")
-    } else {
-        icon[0].classList.remove("fa-angle-up")
-        icon[0].classList.add("fa-angle-down")
-        icon[0].classList.add("showing-collapse")
-    }
+    if (icon.val() !== undefined) {
+        if (icon[0].classList.contains("showing-collapse")) {
+            icon[0].classList.remove("fa-angle-down")
+            icon[0].classList.remove("showing-collapse")
+            icon[0].classList.add("fa-angle-up")
+        } else {
+            icon[0].classList.remove("fa-angle-up")
+            icon[0].classList.add("fa-angle-down")
+            icon[0].classList.add("showing-collapse")
+        }
 
+    }
 };
