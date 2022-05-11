@@ -472,6 +472,7 @@ BEGIN
 	WHERE p.cidade_atendida_id = @cidade_atendida_id
 
 END
+GO
 
 -- SP's Estados Atendidos
 
@@ -730,5 +731,3 @@ END
 GO
 
 exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
-
-

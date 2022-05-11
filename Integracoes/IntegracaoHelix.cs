@@ -75,5 +75,17 @@ namespace Integracoes
 
             return Array.Empty<T>();
         }
+
+        protected override Dictionary<string, string> GerarHeaderBasico()
+        {
+            var listRequestHeader = new Dictionary<string, string>
+            {
+                { "accept", "application/json" },
+                { "fiware-service", "helixiot"},
+                { "fiware-servicepath", "/"}
+            };
+
+            return listRequestHeader;
+        }
     }
 }
