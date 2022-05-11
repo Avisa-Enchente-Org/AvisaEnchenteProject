@@ -53,9 +53,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 {
                     new SqlParameter("descricao", cidadeAtendida.Descricao),
                     new SqlParameter("codigo_cidade", cidadeAtendida.CodigoCidade),
-                    new SqlParameter("estado_atendido_id", cidadeAtendida.EstadoAtendidoId),
-                    new SqlParameter("latitude_ref", cidadeAtendida.LatitudeRef),
-                    new SqlParameter("longitude_ref", cidadeAtendida.LongitudeRef)
+                    new SqlParameter("estado_atendido_id", cidadeAtendida.EstadoAtendidoId)
                 };
             if (cidadeAtendida.Id > 0)
                 estadoParametros.Add(new SqlParameter("id", cidadeAtendida.Id));
@@ -70,9 +68,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 Id = Convert.ToInt32(registro["id"]),
                 Descricao = registro["descricao"].ToString(),
                 CodigoCidade = registro["codigo_cidade"].ToString(),
-                EstadoAtendidoId = Convert.ToInt32(registro["estado_atendido_id"]),
-                LatitudeRef = Convert.ToDecimal(registro["latitude_ref"]),
-                LongitudeRef = Convert.ToDecimal(registro["longitude_ref"]),
+                EstadoAtendidoId = Convert.ToInt32(registro["estado_atendido_id"])
             };
 
             return cidadeAtendida;
