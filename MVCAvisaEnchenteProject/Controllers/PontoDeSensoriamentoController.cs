@@ -158,7 +158,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             EstadoAtendido estadoAtendido;
             CidadeAtendida cidadeAtendida;
-            int cidadeAtendidaId = default;
+            int cidadeAtendidaId;
 
             try
             {
