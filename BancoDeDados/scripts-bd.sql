@@ -25,8 +25,6 @@ CREATE TABLE [dbo].[cidades_atendidas](
 	[descricao] VARCHAR(max) NOT NULL,
 	[codigo_cidade] VARCHAR(20) NOT NULL,
 	[estado_atendido_id] INT NOT NULL,
-	[latitude_ref] DECIMAL(9,6) NOT NULL,
-	[longitude_ref] DECIMAL(9,6) NOT NULL,
 
 	CONSTRAINT [pk_cidades_atendidas_id] PRIMARY KEY([id]),
 	CONSTRAINT [fk_cidades_atendidas_estado_atendido_id] FOREIGN KEY([estado_atendido_id])
@@ -309,7 +307,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE sp_consultar_usuario_com_endereco
+CREATE PROCEDURE sp_consultar_usuario_com_endereco
 (
 	@id INT
 )
@@ -533,16 +531,14 @@ CREATE PROCEDURE sp_insert_cidades_atendidas
 (
 	@descricao VARCHAR(MAX),
 	@codigo_cidade VARCHAR(20),
-	@estado_atendido_id INT,
-	@latitude_ref DECIMAL(9,6),
-	@longitude_ref DECIMAL(9,6)
+	@estado_atendido_id INT
 )
 AS
 BEGIN
 	INSERT INTO [dbo].[cidades_atendidas]
-	(descricao, codigo_cidade, estado_atendido_id, latitude_ref, longitude_ref)
+	(descricao, codigo_cidade, estado_atendido_id)
 	VALUES
-	(@descricao, @codigo_cidade, @estado_atendido_id, @latitude_ref, @longitude_ref)
+	(@descricao, @codigo_cidade, @estado_atendido_id)
 END
 GO
 
@@ -552,18 +548,14 @@ CREATE PROCEDURE sp_update_cidades_atendidas
 	@id INT,
 	@descricao VARCHAR(MAX),
 	@codigo_cidade VARCHAR(20),
-	@estado_atendido_id INT,
-	@latitude_ref DECIMAL(9,6),
-	@longitude_ref DECIMAL(9,6)
+	@estado_atendido_id INT
 )
 AS
 BEGIN
 	UPDATE [dbo].[cidades_atendidas] SET
 	descricao = @descricao, 
 	codigo_cidade = @codigo_cidade,
-	estado_atendido_id = @estado_atendido_id,
-	latitude_ref = @latitude_ref,
-	longitude_ref = @longitude_ref
+	estado_atendido_id = @estado_atendido_id
 	WHERE id = @id
 END
 GO
@@ -730,4 +722,7 @@ BEGIN
 END
 GO
 
-exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
+--exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
+--exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
+--exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '126544', 1
+--exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
