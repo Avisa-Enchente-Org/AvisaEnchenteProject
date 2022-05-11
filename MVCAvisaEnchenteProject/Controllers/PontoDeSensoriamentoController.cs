@@ -71,45 +71,49 @@ namespace MVCAvisaEnchenteProject.Controllers
             pontoDeSensoriamentoViewModel.Estados = await ObtemSelectListEstados(pontoDeSensoriamentoViewModel.CodigoEstado);
             if (ModelState.IsValid)
             {
-                #region Valida e Atualiza Informações da Cidade e Estado no Banco
-
-                var (jsonResponse, cidadeAtendidaId) = await AtualizaInfosEstadoECidade(pontoDeSensoriamentoViewModel.CodigoEstado, 
-                                                                                        pontoDeSensoriamentoViewModel.CodigoCidade, 
-                                                                                        pontoDeSensoriamentoViewModel.Latitude, 
-                                                                                        pontoDeSensoriamentoViewModel.Longitude);
-                if (jsonResponse.Erro)
-                    return Json(jsonResponse);
-
-                #endregion
-
                 try
                 {
-                    var pontoDeSensoriamento = new PontoDeSensoriamento(pontoDeSensoriamentoViewModel, cidadeAtendidaId: cidadeAtendidaId, usuarioId: Convert.ToInt32(ObterIdUsuarioLogado()));
-
-                    var integracaoHelixResponse = await SalvaPontoDeSensoriamentoHelix(pontoDeSensoriamento: pontoDeSensoriamento);
-                    if (integracaoHelixResponse.Erro)
+                    using (var transacao = new System.Transactions.TransactionScope())
                     {
-                        _cidadeAtendidaDAO.Deletar(cidadeAtendidaId);
-                        return Json(integracaoHelixResponse);
-                    }
+                        #region Valida e Atualiza Informações da Cidade e Estado no Banco
 
-                    if (id == 0)
-                    { 
-                        DAOPrincipal.Inserir(pontoDeSensoriamento);
-                    }
-                    else
-                    {
-                        if (DAOPrincipal.ConsultarPorId(id) != null)
-                            DAOPrincipal.Atualizar(pontoDeSensoriamento);
+                        var (jsonResponse, cidadeAtendidaId) = await AtualizaInfosEstadoECidade(pontoDeSensoriamentoViewModel.CodigoEstado,
+                                                                                                pontoDeSensoriamentoViewModel.CodigoCidade,
+                                                                                                pontoDeSensoriamentoViewModel.Latitude,
+                                                                                                pontoDeSensoriamentoViewModel.Longitude);
+                        if (jsonResponse.Erro)
+                            return Json(jsonResponse);
+
+                        #endregion
+
+
+                        var pontoDeSensoriamento = new PontoDeSensoriamento(pontoDeSensoriamentoViewModel, cidadeAtendidaId: cidadeAtendidaId, usuarioId: Convert.ToInt32(ObterIdUsuarioLogado()));
+
+                        var integracaoHelixResponse = await SalvaPontoDeSensoriamentoHelix(pontoDeSensoriamento: pontoDeSensoriamento);
+                        if (integracaoHelixResponse.Erro)
+                        {
+                            return Json(integracaoHelixResponse);
+                        }
+
+                        if (id == 0)
+                        {
+                            DAOPrincipal.Inserir(pontoDeSensoriamento);
+                        }
                         else
-                            return Json(new JsonResponse(messageErro: "Ponto de Sensoriamento não encontrado!"));
-                    }
+                        {
+                            if (DAOPrincipal.ConsultarPorId(id) != null)
+                                DAOPrincipal.Atualizar(pontoDeSensoriamento);
+                            else
+                                return Json(new JsonResponse(messageErro: "Ponto de Sensoriamento não encontrado!"));
+                        }
 
-                    return Json(new JsonResponse(valido: true));
+
+                        transacao.Complete();
+                        return Json(new JsonResponse(valido: true));
+                    }                  
                 }
                 catch (Exception e)
                 {
-                    _cidadeAtendidaDAO.Deletar(cidadeAtendidaId);
                     return Json(new JsonResponse(messageErro: "Ocorreu um erro ao tentar salvar o Ponto de Sensoriamento!"));
                 }
             }
@@ -161,7 +165,7 @@ namespace MVCAvisaEnchenteProject.Controllers
                 var estadoSelecionado = await _integracaoIBGE.ObterEstadoPorCodigo(codigoEstado);
                 var cidadeSelecionada = await _integracaoIBGE.ObterCidadePorCodigo(codigoCidade);
 
-                var (localizacaoValida, latitudeCidade, longitudeEstado) = await ValidaLocalizacao(estadoSelecionado, cidadeSelecionada, latitude, longitude);
+                var localizacaoValida = await ValidaLocalizacao(estadoSelecionado, cidadeSelecionada, latitude, longitude);
                 if(localizacaoValida.Erro)
                     return (JsonResponse: localizacaoValida, CidadeAtendidaId: 0);
 
@@ -181,7 +185,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
                 if (cidadeAtendida == null)
                 {
-                    cidadeAtendida = new CidadeAtendida(cidadeSelecionada.Nome, cidadeSelecionada.Id.ToString(), estadoAtendidoId, latitudeCidade, longitudeEstado);
+                    cidadeAtendida = new CidadeAtendida(cidadeSelecionada.Nome, cidadeSelecionada.Id.ToString(), estadoAtendidoId);
                     cidadeAtendidaId = _cidadeAtendidaDAO.ProximoId();
                     _cidadeAtendidaDAO.Inserir(cidadeAtendida);
                 }
@@ -193,20 +197,19 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
             catch (Exception e)
             {
-                _cidadeAtendidaDAO.Deletar(cidadeAtendidaId);
                 return (JsonResponse: new JsonResponse(messageErro: "Ocorreu um erro ao tentar salvar a cidade ou estado!"), CidadeAtendidaId: 0);
             }
         }
 
-        private async Task<(JsonResponse JsonResponse, decimal Latitude, decimal Longitude)> ValidaLocalizacao(Estado estadoSelecionado, Municipio cidadeSelecionada, string latitude, string longitude)
+        private async Task<JsonResponse> ValidaLocalizacao(Estado estadoSelecionado, Municipio cidadeSelecionada, string latitude, string longitude)
         {
             if (latitude.Contains(",") || longitude.Contains(","))
-                return (JsonResponse: new JsonResponse(messageErro: "Latitude ou Longitude Inválidos, utilize o ponto (.) ao invés da virgula!"), Latitude: 0M, Longitude: 0M);
+                return new JsonResponse(messageErro: "Latitude ou Longitude Inválidos, utilize o ponto (.) ao invés da virgula!");
 
             var validLatitude = decimal.TryParse(latitude.Replace(".", ","), out decimal latitudeDecimal);
             var validLongitude = decimal.TryParse(longitude.Replace(".", ","), out decimal longitudeDecimal);
             if(!validLatitude || !validLongitude)
-                return (JsonResponse: new JsonResponse(messageErro: "Latitude ou Longitude Inválidos"), Latitude: 0M, Longitude: 0M);
+                return new JsonResponse(messageErro: "Latitude ou Longitude Inválidos");
 
             var localizacaoLatLng = await _integracaoGeocode.ObtemLocalizacaoPorLatLng(latitude, longitude);
 
@@ -216,12 +219,12 @@ namespace MVCAvisaEnchenteProject.Controllers
                 var cidadeLocalizada = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.CidadeType) && e.long_name == cidadeSelecionada.Nome || e.short_name == cidadeSelecionada.Nome)).First();
 
                 if (estadoLocalizado == null || cidadeLocalizada == null)
-                    return (JsonResponse: new JsonResponse(messageErro: "Erro, essa latitude e longitude não Coincidem com o Estado e Cidade Selecionados!"), Latitude: 0M, Longitude: 0M);
+                    return new JsonResponse(messageErro: "Erro, essa latitude e longitude não Coincidem com o Estado e Cidade Selecionados!");
 
-                return (JsonResponse: new JsonResponse(), Latitude: cidadeLocalizada.geometry.location.lat, Longitude: cidadeLocalizada.geometry.location.lng);
+                return new JsonResponse();
             }
             else
-                return (JsonResponse: new JsonResponse(messageErro: "Erro, Latitude ou Longitude Inválidos!"), Latitude: 0M, Longitude: 0M);
+                return new JsonResponse(messageErro: "Erro, Latitude ou Longitude Inválidos!");
         }
 
         [HttpPost]
