@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MVCAvisaEnchenteProject.Models.ViewModels.GoogleMapsViewComponent
+namespace MVCAvisaEnchenteProject.Models.ViewModels.GoogleMaps
 {
     public class PontosDeSensoriamentoMapMarkers
     {
         public int Id { get; set; }
         public Location Location { get; set; }
+        public int TipoRisco { get; set; }
 
-        public PontosDeSensoriamentoMapMarkers(int id, decimal latitude, decimal longitude)
+        public PontosDeSensoriamentoMapMarkers(int id, decimal latitude, decimal longitude, int tipoRisco)
         {
             Id = id;
             Location = new Location(latitude, longitude);
+            TipoRisco = tipoRisco;
         }
     }
     public class Location

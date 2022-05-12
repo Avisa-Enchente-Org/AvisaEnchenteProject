@@ -18,21 +18,6 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             Tabela = "pontos_sensoriamento";
         }
 
-        public virtual List<PontoDeSensoriamento> ListarPorCidade(int cidadeId)
-        {
-            SqlParameter[] cidadeIdParametro = {
-                new SqlParameter("cidade_atendida_id", cidadeId),
-            };
-
-            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_pontos_por_cidade", cidadeIdParametro);
-
-            var lista = new List<PontoDeSensoriamento>();
-
-            foreach (DataRow registro in tabela.Rows)
-                lista.Add(MontaEntidadePadrao(registro));
-
-            return lista;
-        }
         public List<PontoDeSensoriamento> PesquisaAvancadaPontosSensoriamento(PesquisaAvancadaPontosDeSensoriamento pesquisaAvancadaPontosDeSensoriamento)
         {
             var ativo = pesquisaAvancadaPontosDeSensoriamento.Ativo;

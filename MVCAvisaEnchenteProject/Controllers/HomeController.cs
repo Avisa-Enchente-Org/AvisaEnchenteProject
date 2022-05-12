@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
+using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.ViewModels;
+using MVCAvisaEnchenteProject.Models.ViewModels.GoogleMaps;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,18 +26,12 @@ namespace MVCAvisaEnchenteProject.Controllers
             _usuarioDAO = new UsuarioDAO();
         }
 
-        [RequiredFirstAccessConfig]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [Route("/")]
         [AllowAnonymous]
-        public IActionResult PaginaApresentacao()
+        public IActionResult Index()
         {
             if (!string.IsNullOrEmpty(HttpContext.User.FindFirst("UsuarioId")?.Value))
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "SensoriamentoAtual");
 
             return View();
         }

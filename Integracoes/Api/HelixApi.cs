@@ -6,7 +6,7 @@ namespace Integracoes.Api
 {
     public class HelixApi : BaseApi
     {
-        private const string localUrl = "http://10.5.10.34:1026/";
+        private const string localUrl = "http://localhost:1026/";
 
         /// <summary>
         /// permite alterar o host

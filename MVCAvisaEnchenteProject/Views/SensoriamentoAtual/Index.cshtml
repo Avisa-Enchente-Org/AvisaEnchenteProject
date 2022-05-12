@@ -1,0 +1,123 @@
+﻿@model GoogleMapsModel
+
+@{
+    ViewData["Title"] = "Página Inicial";
+}
+
+<link rel="stylesheet" href="~/css/style-google-maps.css" />
+
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+    <div class="pt-3">
+        <h4 class="text-primary mb-2">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
+
+        <p>
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" value="Centralizar" onclick="centrarlizarLocalizacao()" />
+            </div>
+        </p>
+
+        <div id="googleMap"></div>
+
+    </div>
+
+    @section Scripts {
+        <script>
+        let map;
+        let geocoder;
+        let marker;
+        let markers = [];
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("googleMap"), {
+                zoom: 13,
+                mapTypeControl: false,
+            });
+            geocoder = new google.maps.Geocoder();
+
+            marker = new google.maps.Marker({
+                map,
+            });
+            const infoWindow = new google.maps.InfoWindow();
+
+            function Marker(id, lat, lng, tipoRisco) {
+                this.id = id;
+                this.position = new Position(lat, lng);
+                this.tipoRisco = tipoRisco;
+
+                function Position(lat, lng) {
+                    this.lat = lat;
+                    this.lng = lng;
+                }
+            }
+
+            @foreach(var marker in Model.PontosDeSensoriamentosMarkers)
+            {
+
+                <text>
+                    markers.push(new Marker(@marker.Id, @marker.Location.Lat, @marker.Location.Lng, @marker.TipoRisco))
+                </text>
+            }
+            markers.forEach((markerAtual, i) => {
+                const marker = new google.maps.Marker({
+                    position: { lat: markerAtual.position.lat, lng: markerAtual.position.lng },
+                    map,
+                    title: `Vizualizar Dashboard`,
+                    optimized: false,
+                });
+                atualizaPontoDeSensoriamento(markerAtual.id)
+
+                marker.addListener("click", () => {
+                    infoWindow.close();
+                    infoWindow.setContent(`<a href="https://localhost:44367/Home/SobreNos/${markerAtual.id}" class="btn btn-info" target="blank">Ver Dados em Tempo Real</a>`);
+                    infoWindow.open(marker.getMap(), marker);
+                });
+            });
+
+            centrarlizarLocalizacao()
+        }
+
+        function geocode(request) {
+            geocoder
+                .geocode(request)
+                .then((result) => {
+                    const { results } = result;
+
+                    map.setCenter(results[0].geometry.location);
+                    return results;
+                })
+                .catch((e) => {
+                    alert("Geocode was not successful for the following reason: " + e);
+                });
+        }
+
+        function centrarlizarLocalizacao() {
+            geocode({ address: '@Model.EnderecoCentral' })
+        }
+
+        function atualizaPontoDeSensoriamento(id) {
+            const marker = markers.find(m => m.id === id);
+            if (marker.tipoRisco !== 0) {
+
+                if (marker.tipoRisco === 3) {
+                    const cityCircle = new google.maps.Circle({
+                        strokeOpacity: 0.8,
+                        fillColor: "#FF2D00",
+                        strokeWeight: 2,
+                        strokeColor: "#FF2D00",
+                        fillOpacity: 0.35,
+                        map,
+                        center: { lat: marker.position.lat, lng: marker.position.lng },
+                        radius: 1000
+                    });
+                }
+            }
+        }
+
+
+        window.initMap = initMap;
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmKEgJE1bL32pc7W8MudLTLQ2I1seN0VQ&callback=initMap"></script>
+        <script src="~/js/pagina-inicial.js"></script>
+    }
+}

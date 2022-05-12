@@ -14,5 +14,6 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
         public double AlturaAgua { get; set; }
         public DateTime UltimaAtualizacao { get; set; }
         public ETipoRisco TipoRisco { get; set; }
+        public PontoDeSensoriamento PontoDeSensoriamento { get; set; }
     }
 }

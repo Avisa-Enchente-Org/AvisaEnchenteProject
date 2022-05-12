@@ -11,6 +11,7 @@ using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
 using MVCAvisaEnchenteProject.Models.ViewModels;
+using MVCAvisaEnchenteProject.Models.ViewModels.GoogleMaps;
 using MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels;
 using RestSharp;
 using System;
@@ -76,7 +77,6 @@ namespace MVCAvisaEnchenteProject.Controllers
                     using (var transacao = new System.Transactions.TransactionScope())
                     {
                         #region Valida e Atualiza Informações da Cidade e Estado no Banco
-
                         var (jsonResponse, cidadeAtendidaId) = await AtualizaInfosEstadoECidade(pontoDeSensoriamentoViewModel.CodigoEstado,
                                                                                                 pontoDeSensoriamentoViewModel.CodigoCidade,
                                                                                                 pontoDeSensoriamentoViewModel.Latitude,
@@ -109,6 +109,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
 
                         transacao.Complete();
+                        transacao.Dispose();
                         return Json(new JsonResponse(valido: true));
                     }                  
                 }

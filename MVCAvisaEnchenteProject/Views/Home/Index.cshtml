@@ -1,15 +1,26 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Página Inicial";
 }
 
-@if (User?.Identity?.IsAuthenticated ?? false)
-{
-<div class="pt-3">
-    <h4 class="text-primary mb-2">Bem Vindo, @User?.Identity?.Name.Split(" ")[0]!</h4>
-    @await Component.InvokeAsync("GoogleMaps")
+<div class="row" style=" height: calc(100vh - 10vh);">
+    <div class="col-md-6 my-auto tela-inicial-text">
+        <h1 class="text-primary font-weight-bold">
+            Um Website de
+            Monitoramento de
+            Enchentes e Alagamentos
+        </h1>
+        <div class="text-dark mb-4">
+            Nosso sistema consegue identificar em
+            pontos estratégios, possiveis riscos de enchentes
+            e alagamentos em tempo real!
+        </div>
+        <a class="btn btn-primary btn-entrar-tela-inicial" asp-controller="Conta" asp-action="Login">Entrar</a>
+        <div class="text-dark fa-1x nao-possui-conta-text">Não Possui uma conta? <a class="link-text" href="/conta/registro">Cadastre-se</a></div>
+    </div>
 </div>
-}
+<div class="tela-inicial-image d-none d-md-block">
+    <img src="/img/tela-inicial-image.jpg" />
+</div>
 
 @section Scripts {
     <script src="~/js/pagina-inicial.js"></script>

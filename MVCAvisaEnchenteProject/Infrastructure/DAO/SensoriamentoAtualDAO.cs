@@ -33,6 +33,21 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 return MontaEntidadePadrao(tabela.Rows[0]);
         }
 
+        public List<SensoriamentoAtual> ListarSensoriamentoAtualPorCidade(int cidadeId)
+        {
+            SqlParameter[] cidadeIdParametro = {
+                new SqlParameter("cidade_atendida_id", cidadeId),
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_sensoriamento_atual_por_cidade", cidadeIdParametro);
+
+            var lista = new List<SensoriamentoAtual>();
+
+            foreach (DataRow registro in tabela.Rows)
+                lista.Add(MontaSensoriamentoAtualComPontoDeSensoriamento(registro));
+
+            return lista;
+        }
 
         protected override SqlParameter[] CriaParametros(SensoriamentoAtual sensoriamentoAtual)
         {
@@ -65,5 +80,43 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return pontoDeSensoriamento;
         }
 
+        protected SensoriamentoAtual MontaSensoriamentoAtualComPontoDeSensoriamento(DataRow registro)
+        {
+            var sensoriamento = new SensoriamentoAtual
+            {
+                Id = Convert.ToInt32(registro["id"]),
+                PontoDeSensoriamentoId = Convert.ToInt32(registro["ponto_sensoriamento_id"]),
+                NivelPluviosidade = Convert.ToDouble(registro["nivel_pluviosidade"]),
+                VazaoDaAgua = Convert.ToDouble(registro["vazao_agua"]),
+                AlturaAgua = Convert.ToDouble(registro["altura_agua"]),
+                UltimaAtualizacao = Convert.ToDateTime(registro["ultima_atualizacao"]),
+                TipoRisco = (ETipoRisco)Convert.ToInt32(registro["tipo_risco"]),
+                PontoDeSensoriamento = new PontoDeSensoriamento
+                {
+                    Id = Convert.ToInt32(registro["ponto_sensoriamento_id"]),
+                    Latitude = Convert.ToDecimal(registro["latitude"]),
+                    Longitude = Convert.ToDecimal(registro["longitude"]),
+                    CidadeAtendidaId = Convert.ToInt32(registro["cidade_atendida_id"])
+                }
+            };
+
+            return sensoriamento;
+        }
+
+
+        public override void Atualizar(SensoriamentoAtual model)
+        {
+            throw new NotImplementedException("Esse metodo não foi implementado");
+        }
+
+        public override void Inserir(SensoriamentoAtual model)
+        {
+            throw new NotImplementedException("Esse metodo não foi implementado");
+        }
+
+        public override List<SensoriamentoAtual> Listar()
+        {
+            throw new NotImplementedException("Esse metodo não foi implementado");
+        }
     }
 }

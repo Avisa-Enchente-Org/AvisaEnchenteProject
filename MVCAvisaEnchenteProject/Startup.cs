@@ -70,7 +70,7 @@ namespace MVCAvisaEnchenteProject
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=PaginaInicialUsuarioNaoLogado}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
