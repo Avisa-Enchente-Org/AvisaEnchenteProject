@@ -115,9 +115,27 @@
         }
 
 
+        function AtualizaPontosDeSensoriamento() {
+            $.get("/SensoriamentoAtual/ObtemSensoriamentosAtuaisPorCidade", function (data) {
+                $("#userProfileCard").html(data);
+            });
+            $.ajax({
+                type: 'GET',
+                url: "/SensoriamentoAtual/ObtemSensoriamentosAtuaisPorCidade",
+                data: { cidadeAtendidaId: @Model.CidadeAtendidaId },
+                datatype: 'JSON',
+                traditional: true,
+                success: function (data) {
+                    
+                }
+            })
+        }
+
+        setInterval(AtualizaPontosDeSensoriamento, 1000);
+
         window.initMap = initMap;
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmKEgJE1bL32pc7W8MudLTLQ2I1seN0VQ&callback=initMap"></script>
-        <script src="~/js/pagina-inicial.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmKEgJE1bL32pc7W8MudLTLQ2I1seN0VQ&callback=initMap"></script>
+    <script src="~/js/pagina-inicial.js"></script>
     }
 }

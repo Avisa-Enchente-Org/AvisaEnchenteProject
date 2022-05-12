@@ -31,7 +31,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
                 var pontosDeSensoriamento = DAOPrincipal.ListarSensoriamentoAtualPorCidade(usuarioEnderecoLogado.CidadeAtendida.Id);
 
-                var mapPointCenter = new GoogleMapsModel(enderecoUsuario, pontosDeSensoriamento);
+                var mapPointCenter = new GoogleMapsModel(enderecoUsuario, pontosDeSensoriamento, usuarioEnderecoLogado.CidadeAtendida.Id);
                 return View(mapPointCenter);
             }
 
