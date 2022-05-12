@@ -38,7 +38,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             return View(new GoogleMapsModel());
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult> ObtemSensoriamentosAtuaisPorCidade(int cidadeAtendidaId)
         {
             var pontosDeSensoriamentosMarkers = new List<PontosDeSensoriamentoMapMarkers>();
