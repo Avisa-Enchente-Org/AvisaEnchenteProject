@@ -31,6 +31,7 @@ salvarAjax = (form) => {
             type: "POST",
             url: form.action,
             data: new FormData(form),
+            async: false,
             contentType: false,
             processData: false,
             success: function (res) {
@@ -83,6 +84,7 @@ realizaPesquisaAvancada = form => {
             type: "POST",
             url: form.action,
             data: new FormData(form),
+            async: false,
             contentType: false,
             processData: false,
             success: function (res) {

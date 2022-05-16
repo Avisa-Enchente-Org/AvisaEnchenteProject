@@ -3582,10 +3582,26 @@ textarea.form-control-lg {
     background-color: #cff4fc;
     border-color: #b6effb
 }
+.alert-baixo-risco {
+    color: #726e00;
+    background-color: #fffca6;
+    border: 1px solid #fdf868;
+}
+.alert-medio-risco {
+    color: #7e4c00;
+    background-color: #ffdba6;
+    border: 1px solid #ffc775;
+}
 
-    .alert-info .alert-link {
-        color: #04414d
-    }
+.alert-alto-risco {
+    color: #6c0000;
+    background-color: #ffa6a6;
+    border: 1px solid #ff8787;
+}
+
+.alert-info .alert-link {
+    color: #04414d
+}
 
 .alert-warning {
     color: #664d03;

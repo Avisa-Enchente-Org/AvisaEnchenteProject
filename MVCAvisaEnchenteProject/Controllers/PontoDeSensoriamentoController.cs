@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace MVCAvisaEnchenteProject.Controllers
 {
@@ -29,7 +30,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         private readonly IntegracaoHelix _integracaoHelix;
         private readonly EstadoAtendidoDAO _estadoAtendidoDAO;
         private readonly CidadeAtendidaDAO _cidadeAtendidaDAO;
-        private readonly UsuarioDAO _usuarioDAO;
+
         public PontoDeSensoriamentoController() : base()
         {
             _integracaoIBGE = new IntegracaoIBGE(new IBGEApi());
@@ -37,28 +38,28 @@ namespace MVCAvisaEnchenteProject.Controllers
             _integracaoHelix = new IntegracaoHelix(new HelixApi());
             _estadoAtendidoDAO = new EstadoAtendidoDAO();
             _cidadeAtendidaDAO = new CidadeAtendidaDAO();
-            _usuarioDAO = new UsuarioDAO();
+
         }
 
         [HttpGet]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
         public override IActionResult Index()
         {
-            var indexViewModel = new IndexPontoDeSensoriamentoViewModel(ObtemSelectListEstadosAtendidos(), ObtemSelectListUsuariosAdmin(), DAOPrincipal.Listar());
+            var indexViewModel = new IndexPontoDeSensoriamentoViewModel(DAOPrincipal.Listar());
             return View(indexViewModel);
         }
 
         [HttpGet]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> CriarOuEditarPontoDeSensoriamento(int id = 0)
+        public IActionResult CriarOuEditarPontoDeSensoriamento(int id = 0)
         {
             if (id == 0)
-                return View(new CriarEditarPontoDeSensoriamentoViewModel(await ObtemSelectListEstados()));
+                return View(new CriarEditarPontoDeSensoriamentoViewModel());
 
             var pontoDeSensoriamento = DAOPrincipal.ConsultarPorId(id);
             if (pontoDeSensoriamento != null)
             {      
-                return View(new CriarEditarPontoDeSensoriamentoViewModel(pontoDeSensoriamento, await ObtemSelectListEstados(pontoDeSensoriamento.EstadoAtendido.CodigoEstado)));
+                return View(new CriarEditarPontoDeSensoriamentoViewModel(pontoDeSensoriamento));
             }
 
             TempData["Error"] = "Ponto de Sensoriamento não existe!";
@@ -69,14 +70,14 @@ namespace MVCAvisaEnchenteProject.Controllers
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
         public async Task<IActionResult> SalvarPontoDeSensoriamento(int id, [Bind("Id, HelixId, Ativo, CodigoEstado, CodigoCidade, Latitude, Longitude")] CriarEditarPontoDeSensoriamentoViewModel pontoDeSensoriamentoViewModel)
         {
-            pontoDeSensoriamentoViewModel.Estados = await ObtemSelectListEstados(pontoDeSensoriamentoViewModel.CodigoEstado);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    using (var transacao = new System.Transactions.TransactionScope())
+                    using (var transacao = new System.Transactions.TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                     {
                         #region Valida e Atualiza Informações da Cidade e Estado no Banco
+
                         var (jsonResponse, cidadeAtendidaId) = await AtualizaInfosEstadoECidade(pontoDeSensoriamentoViewModel.CodigoEstado,
                                                                                                 pontoDeSensoriamentoViewModel.CodigoCidade,
                                                                                                 pontoDeSensoriamentoViewModel.Latitude,
@@ -107,11 +108,9 @@ namespace MVCAvisaEnchenteProject.Controllers
                                 return Json(new JsonResponse(messageErro: "Ponto de Sensoriamento não encontrado!"));
                         }
 
-
                         transacao.Complete();
-                        transacao.Dispose();
-                        return Json(new JsonResponse(valido: true));
-                    }                  
+                    }
+                    return Json(new JsonResponse(valido: true));
                 }
                 catch (Exception e)
                 {
@@ -230,7 +229,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> PesquisaAvancadaPontosDeSensoriamento(PesquisaAvancadaPontosDeSensoriamento pesquisaAvancadaPontosDeSensoriamento)
+        public IActionResult PesquisaAvancadaPontosDeSensoriamento(PesquisaAvancadaPontosDeSensoriamento pesquisaAvancadaPontosDeSensoriamento)
         {
             try
             {
@@ -242,68 +241,5 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
         }
 
-        private async Task<SelectList> ObtemSelectListEstados(string codigoEstado = null)
-        {
-            var estados = await _integracaoIBGE.ListarEstados();
-            List<SelectListItem> selectEstados = new List<SelectListItem>();
-            estados.ToList().ForEach(x =>
-            {
-                selectEstados.Add(new SelectListItem { Text = x.Nome, Value = x.Id.ToString() });
-            });
-
-            return new SelectList(selectEstados, "Value", "Text", codigoEstado);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> ObtemSelectListCidadesPorUF(string uf)
-        {
-            List<SelectListItem> selectCidades = new List<SelectListItem>();
-
-            if (!string.IsNullOrEmpty(uf))
-            {
-                var cidades = await _integracaoIBGE.ListarCidades(uf);
-                cidades.ToList().ForEach(x =>
-                {
-                    selectCidades.Add(new SelectListItem { Text = x.Nome, Value = x.Id.ToString() });
-                });
-
-            }
-            return Json(selectCidades);
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> ObtemSelectListCidadesAtendidas(int estadoId)
-        {
-            List<SelectListItem> selectCidades = new List<SelectListItem>();
-
-            var cidades = _cidadeAtendidaDAO.ListarCidadesAtendidasPorEstadoId(estadoId);
-            cidades.ToList().ForEach(x =>
-            {
-                selectCidades.Add(new SelectListItem { Text = x.Descricao, Value = x.Id.ToString() });
-            });
-     
-            return Json(selectCidades);
-        }
-
-        private SelectList ObtemSelectListUsuariosAdmin()
-        {
-            var usuarios = _usuarioDAO.ListarUsuariosAdministradores();
-            List<SelectListItem> selectUsuarios = new List<SelectListItem>();
-            usuarios.ToList().ForEach(x =>
-            {
-                selectUsuarios.Add(new SelectListItem { Text = x.NomeCompleto, Value = x.Id.ToString() });
-            });
-
-            return new SelectList(selectUsuarios, "Value", "Text");
-        }
-
-        public override IActionResult Deletar(int id)
-        {
-            var helixId = DAOPrincipal.ConsultarPorId(id).HelixId;
-            _integracaoHelix.DeleteById(helixId).Wait();
-
-            return base.Deletar(id);
-        }
     }
 }

@@ -22,12 +22,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="CodigoEstado" class="control-label text-primary"></label>
-                @Html.DropDownListFor(m => m.CodigoEstado, Model.Estados, "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstado" })
+                <div id="estados">
+                    @Html.DropDownListFor(m => m.CodigoEstado, new List<SelectListItem>(), "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstados" })
+                </div>
                 <span asp-validation-for="CodigoEstado" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CodigoCidade" class="control-label text-primary"></label>
-                <div id="Municipios">
+                <div id="municipios">
                     @Html.DropDownListFor(m => m.CodigoCidade, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidades" })
                 </div>
                 <span asp-validation-for="CodigoCidade" class="text-danger"></span>
@@ -51,31 +53,54 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function () {
-        realizaBuscaCidades();
+            realizaBuscaEstados();
+            realizaBuscaCidades();
 
-        $('#selectEstado').change(() => realizaBuscaCidades());
+        });
 
-    });
+        realizaBuscaEstados = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListEstados",
+                datatype: 'JSON',
+                traditional: true,
+                async: true,
+                success: function (data) {
+                    var estadosHtml = "<select class='form-control form-control-sm' id='selectEstados' name='CodigoEstado'>";
+                    estadosHtml = estadosHtml + '<option value="">Selecione o Estado...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        estadosHtml = estadosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    estadosHtml = estadosHtml + '</select>';
+                    $('#estados').html(estadosHtml);
+                    $('#selectEstados').val('@Model.CodigoEstado')
+                    $('#selectEstados').change(() => realizaBuscaCidades());
+                }
+            })
 
-    console.log('@Model.Ativo')
+        };
+
     realizaBuscaCidades = () => {
+        let value = '@Model.CodigoEstado' !== '' ? '@Model.CodigoEstado' : $('#selectEstados').val();
         $.ajax({
-            type: 'POST',
-            url: "/PontoDeSensoriamento/ObtemSelectListCidadesPorUF",
-            data: { uf: $('#selectEstado').val() },
+            type: 'GET',
+            url: "/Localizacao/ObtemSelectListCidadesPorUF",
+            data: { estado: value },
             datatype: 'JSON',
             traditional: true,
+            async: true,
             success: function (data) {
-                var municipiosHtml = "<select class='form-control form-control-sm' data-val='true' data-val-required='O campo Cidade é obrigatório' id='selectCidade' name='CodigoCidade'>";
+                var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidades' name='CodigoCidade'>";
                 municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
                 for (var i = 0; i < data.length; i++) {
                     municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
                 }
                 municipiosHtml = municipiosHtml + '</select>';
-                $('#Municipios').html(municipiosHtml);
-                $('#selectCidade').val(@Model.CodigoCidade)
+                $('#municipios').html(municipiosHtml);
+                $('#selectCidades').val('@Model.CodigoCidade')
             }
         })
     };

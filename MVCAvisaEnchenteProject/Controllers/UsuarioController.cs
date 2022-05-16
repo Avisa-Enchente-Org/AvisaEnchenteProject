@@ -57,7 +57,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> SalvarUsuario(int id, [Bind("Id, NomeCompleto, Email, Senha, TipoUsuario")] AdminCriarEditarUsuarioViewModel usuarioViewModel)
+        public IActionResult SalvarUsuario(int id, [Bind("Id, NomeCompleto, Email, Senha, TipoUsuario")] AdminCriarEditarUsuarioViewModel usuarioViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public async Task<IActionResult> PesquisaAvancadaUsuarios(PesquisaAvancadaUsuariosViewModel pesquisaAvancadaUsuarios)
+        public IActionResult PesquisaAvancadaUsuarios(PesquisaAvancadaUsuariosViewModel pesquisaAvancadaUsuarios)
         {
             try
             {
@@ -107,6 +107,20 @@ namespace MVCAvisaEnchenteProject.Controllers
             {
                 return Json(new JsonResponse(messageErro: "Ocorreu um erro ao pesquisar os Usuários!"));
             }   
+        }
+
+        [HttpGet]
+        [Authorize(Roles = nameof(ETipoUsuario.Admin))]
+        public IActionResult ObtemSelectListUsuariosAdmin()
+        {
+            var usuarios = DAOPrincipal.ListarUsuariosAdministradores();
+            List<SelectListItem> selectUsuarios = new List<SelectListItem>();
+            usuarios.ToList().ForEach(x =>
+            {
+                selectUsuarios.Add(new SelectListItem { Text = x.NomeCompleto, Value = x.Id.ToString() });
+            });
+
+            return Ok(selectUsuarios);
         }
 
         [HttpGet]

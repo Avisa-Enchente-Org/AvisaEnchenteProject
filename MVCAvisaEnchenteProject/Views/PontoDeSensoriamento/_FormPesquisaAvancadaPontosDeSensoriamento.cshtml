@@ -8,7 +8,7 @@
         </button>
         <a onclick="abrirFormModal('@Url.Action("CriarOuEditarPontoDeSensoriamento", "PontoDeSensoriamento", null, Context.Request.Scheme)', 'Cadastrar Ponto de Sensoriamento')" class="btn btn-primary btn-sm text-white mb-2 float-end" style="width: 100%; max-width: 18rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Ponto de Sensoriamento</a>
     </div>
-    
+
     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card">
             <div class="card-body">
@@ -42,7 +42,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label asp-for="UsuarioId" class="control-label text-primary"></label>
-                                @Html.DropDownListFor(m => m.UsuarioId, Model.UsuariosAdmin, "Selecione o Usuário...", new { @class = "form-control form-control-sm", @id = "selectUsuariosAdmin" })
+                                <div id="usuarios-admin">
+                                    @Html.DropDownListFor(m => m.UsuarioId, new List<SelectListItem>(), "Selecione o Usuário...", new { @class = "form-control form-control-sm", @id = "selectUsuariosAdmin" })
+                                </div>
                             </div>
                         </div>
 
@@ -52,13 +54,15 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label asp-for="EstadoId" class="control-label text-primary"></label>
-                                @Html.DropDownListFor(m => m.EstadoId, Model.Estados, "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                                <div id="estados-atendidos">
+                                    @Html.DropDownListFor(m => m.EstadoId, new List<SelectListItem>(), "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="CidadeId" class="control-label text-primary"></label>
-                                <div id="MunicipiosAtendidos">
+                                <div id="municipios-atendidos">
                                     @Html.DropDownListFor(m => m.CidadeId, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidadeAtendida" })
                                 </div>
                             </div>
@@ -83,3 +87,71 @@
         </div>
     </div>
 </div>
+
+
+    @*<script>
+        $(document).ready(function () {
+            realizaBuscaEstadosAtendidas();
+            ChangeIconButtonFiltro();
+        });
+
+        realizaBuscaEstadosAtendidas = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListEstadosAtendidos",
+                datatype: 'JSON',
+                traditional: true,
+                success: function (data) {
+                    var estadosHtml = "<select class='form-control form-control-sm' id='selectEstadoAtendido' name='EstadoId'>";
+                    estadosHtml = estadosHtml + '<option value="">Selecione o Estado...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        estadosHtml = estadosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    estadosHtml = estadosHtml + '</select>';
+                    $('#estados-atendidos').html(estadosHtml);
+                    $('#selectEstadoAtendido').val(@Model.EstadoId)
+                    $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+                }
+            })
+        };
+
+        realizaBuscaCidadesAtendidas = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListCidadesAtendidasPorEstadoId",
+                data: { estado: $('#selectEstadoAtendido').val() },
+                datatype: 'JSON',
+                traditional: true,
+                success: function (data) {
+                    var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeId'>";
+                    municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    municipiosHtml = municipiosHtml + '</select>';
+                    $('#municipios-atendidos').html(municipiosHtml);
+                    $('#selectCidadeAtendida').val(@Model.CidadeId)
+                }
+            })
+        };
+
+        realizaBuscaUsuariosAdmin = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Usuario/ObtemSelectListUsuariosAdmin",
+                datatype: 'JSON',
+                traditional: true,
+                success: function (data) {
+                    var municipiosHtml = "<select class='form-control form-control-sm' id='selectUsuariosAdmin' name='UsuarioId'>";
+                    municipiosHtml = municipiosHtml + '<option value="">Selecione o Usuário...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    municipiosHtml = municipiosHtml + '</select>';
+                    $('#municipios-atendidos').html(municipiosHtml);
+                    $('#selectUsuariosAdmin').val(@Model.UsuarioId)
+                }
+            })
+        };
+
+    </script>*@

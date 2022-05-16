@@ -33,10 +33,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public string Longitude { get; set; }
 
-        public SelectList Estados { get; set; }
-        public SelectList Cidades { get; set; }
-
-        public CriarEditarPontoDeSensoriamentoViewModel(PontoDeSensoriamento pontoDeSensoriamento, SelectList selectEstados)
+        public CriarEditarPontoDeSensoriamentoViewModel(PontoDeSensoriamento pontoDeSensoriamento)
         {
             HelixId = pontoDeSensoriamento.HelixId.Replace("urn:ngsi-ld:entity:", "");
             Ativo = pontoDeSensoriamento.AtivoHelix;
@@ -44,13 +41,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels
             CodigoCidade = pontoDeSensoriamento.CidadeAtendida.CodigoCidade;
             Latitude = pontoDeSensoriamento.Latitude.ToString();
             Longitude = pontoDeSensoriamento.Longitude.ToString();
-            Estados = selectEstados;
             CodigoCidade = pontoDeSensoriamento.CidadeAtendida.CodigoCidade;
-        }
-
-        public CriarEditarPontoDeSensoriamentoViewModel(SelectList selectEstados)
-        {
-            Estados = selectEstados;
         }
 
         public CriarEditarPontoDeSensoriamentoViewModel()

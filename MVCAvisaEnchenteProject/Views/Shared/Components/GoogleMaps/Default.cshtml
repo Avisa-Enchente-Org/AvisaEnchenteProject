@@ -1,0 +1,321 @@
+﻿@model GoogleMapsModel
+
+<link rel="stylesheet" href="~/css/style-google-maps.css" />
+
+<div class="row">
+    <div class="col-md-8">
+        <div id="googleMap" style="border-radius: 30px"></div>
+    </div>
+    <div class="col-md-4 secao-legenda">
+        <h4 class="text-primary">Legenda</h4>
+        <ul class="text-primary pl-0" style=" list-style-type: none;">
+            <li style=" display: flex; align-items: center;" class="mb-3">
+                <div class="legenda sem-risco-border"><div class="legenda sem-risco" style=" margin-right: 10px;"></div></div>Sem Risco
+            </li>
+            <li style=" display: flex; align-items: center;" class="mb-3">
+                <div class="legenda baixo-risco-border"><div class="legenda baixo-risco" style=" margin-right: 10px;"></div></div>Baixo Risco
+            </li>
+            <li style=" display: flex; align-items: center;" class="mb-3">
+                <div class="legenda medio-risco-border"><div class="legenda medio-risco" style=" margin-right: 10px;"></div></div>Médio Risco
+            </li>
+            <li style=" display: flex; align-items: center;" class="mb-3">
+                <div class="legenda alto-risco-border"><div class="legenda alto-risco" style=" margin-right: 10px;"></div></div>Alto Risco
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+
+<script>
+    let map;
+    let geocoder;
+    let marker;
+    let markers = [];
+    let shapes = [];
+    let pontosDeSensoriamentoMarkers = [];
+    let pontosDeSensoriamentoShapes = [];
+    let iconMarker;
+
+    function PontosDeSensoriamentoShape(id, shape) {
+        this.id = id;
+        this.shape = shape;
+    }
+
+    function PontosDeSensoriamentoMarker(id, lat, lng, tipoRisco) {
+        this.id = id;
+        this.position = new Position(lat, lng);
+        this.tipoRisco = tipoRisco;
+
+        function Position(lat, lng) {
+            this.lat = lat;
+            this.lng = lng;
+        }
+    }
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("googleMap"), {
+            zoom: 13,
+            mapTypeControl: true,
+            streetViewControl: false,
+            fullscreenControl: false,
+            rotateControl: false,
+            styles: [
+            {
+                "featureType": "poi",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit.station.bus",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.business",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }]
+        });
+        geocoder = new google.maps.Geocoder();
+
+
+        var iconLocalizaoAtualMarker = {
+            url: "/lib/map-icons/street-view-solid.svg",
+            anchor: new google.maps.Point(10, 20),
+            scaledSize: new google.maps.Size(20, 20),
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    const markerLocalizacaoAtual = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        icon: iconLocalizaoAtualMarker,
+                        title: `Sua Localização`,
+                        optimized: false,
+                    });
+                }
+            );
+        }
+
+        const locationButton = document.createElement("button");
+        locationButton.textContent = "Centralizar";
+        locationButton.classList.add("btn");
+        locationButton.classList.add("btn-primary");
+        locationButton.classList.add("btn-sm");
+        locationButton.classList.add("mr-3");
+        locationButton.classList.add("mt-2");
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(locationButton);
+        locationButton.addEventListener("click", () => {
+            centrarlizarLocalizacao();
+        });
+
+        const infoWindow = new google.maps.InfoWindow();
+
+        @foreach(var marker in Model.PontosDeSensoriamentosMarkers)
+        {
+            <text>
+                pontosDeSensoriamentoMarkers.push(new PontosDeSensoriamentoMarker(@marker.Id, @marker.Position.Lat, @marker.Position.Lng, @marker.TipoRisco));
+            </text>
+        }
+
+
+        pontosDeSensoriamentoMarkers.forEach(function (markerAtual, i) {
+
+                const marker = new google.maps.Marker({
+                    position: { lat: markerAtual.position.lat, lng: markerAtual.position.lng },
+                    map: map,
+                    title: `Vizualizar Dashboard`,
+                    optimized: false,
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.close();
+                    infoWindow.setContent(`<a href="https://localhost:44367/SensoriamentoAtual/DashboardSensoriamento/${markerAtual.id}" class="btn btn-outline-secondary" target="blank"><i class="fa-solid fa-chart-line fa-1x mr-2"></i>Dashboard</a>`);
+                    infoWindow.open(marker.getMap(), marker);
+                });
+
+                pontosDeSensoriamentoMarkers[i].marker = marker;
+
+                atualizaRiscos(markerAtual.id);
+        });
+
+        centrarlizarLocalizacao();
+    }
+
+    function geocode(request) {
+        geocoder
+            .geocode(request)
+            .then((result) => {
+                const { results } = result;
+
+                map.setCenter(results[0].geometry.location);
+                return results;
+            })
+            .catch((e) => {
+                alert("Geocode was not successful for the following reason: " + e);
+            });
+    }
+
+    function centrarlizarLocalizacao() {
+        geocode({ address: '@Model.EnderecoCentral' })
+    }
+
+
+    function atualizaRiscos(id) {
+        const pdsMarker = pontosDeSensoriamentoMarkers.find(m => m.id === id);
+
+        const pdsShapeIndex = pontosDeSensoriamentoShapes.findIndex(m => m.id === id);
+
+        let cityCircle;
+        if (pdsMarker.tipoRisco === 0) {
+            cityCircle = new google.maps.Circle({
+                strokeOpacity: 0.6,
+                fillColor: "#08357C",
+                strokeWeight: 2,
+                strokeColor: "#08357C",
+                fillOpacity: 0.15,
+                map,
+                center: { lat: pdsMarker.position.lat, lng: pdsMarker.position.lng },
+                radius: 1000
+            });
+            iconMarker = {
+                url: "/lib/map-icons/location-dot-solid-padrao.svg",
+                anchor: new google.maps.Point(15, 25),
+                scaledSize: new google.maps.Size(30, 30),
+            }
+            pdsMarker.marker.setIcon(iconMarker);
+        }
+        if (pdsMarker.tipoRisco === 1) {
+            cityCircle = new google.maps.Circle({
+                strokeOpacity: 0.8,
+                fillColor: "#fff700",
+                strokeWeight: 2,
+                strokeColor: "#fff700",
+                fillOpacity: 0.35,
+                map,
+                center: { lat: pdsMarker.position.lat, lng: pdsMarker.position.lng },
+                radius: 1000
+            });
+            iconMarker = {
+                url: "/lib/map-icons/location-dot-solid-baixo.svg",
+                anchor: new google.maps.Point(15, 25),
+                scaledSize: new google.maps.Size(30, 30),
+            }
+            pdsMarker.marker.setIcon(iconMarker);
+        }
+        else if (pdsMarker.tipoRisco === 2) {
+            cityCircle = new google.maps.Circle({
+                strokeOpacity: 0.8,
+                fillColor: "#ff9900",
+                strokeWeight: 2,
+                strokeColor: "#ff9900",
+                fillOpacity: 0.35,
+                map,
+                center: { lat: pdsMarker.position.lat, lng: pdsMarker.position.lng },
+                radius: 1000
+            });
+            iconMarker = {
+                url: "/lib/map-icons/location-dot-solid-medio.svg",
+                anchor: new google.maps.Point(15, 25),
+                scaledSize: new google.maps.Size(30, 30),
+            }
+            pdsMarker.marker.setIcon(iconMarker);
+        }
+        else if (pdsMarker.tipoRisco === 3) {
+            cityCircle = new google.maps.Circle({
+                strokeOpacity: 0.8,
+                fillColor: "#ff0000",
+                strokeWeight: 2,
+                strokeColor: "#ff0000",
+                fillOpacity: 0.35,
+                map,
+                center: { lat: pdsMarker.position.lat, lng: pdsMarker.position.lng },
+                radius: 1000
+            });
+            iconMarker = {
+                url: "/lib/map-icons/location-dot-solid-alto.svg",
+                anchor: new google.maps.Point(15, 25),
+                scaledSize: new google.maps.Size(30, 30),
+            }
+            pdsMarker.marker.setIcon(iconMarker);
+        }
+
+        if (pdsShapeIndex !== -1) {
+            pontosDeSensoriamentoShapes[pdsShapeIndex].shape = cityCircle
+        } else {
+            pontosDeSensoriamentoShapes.push(new PontosDeSensoriamentoShape(id, cityCircle));
+        }
+    }
+
+    function AtualizaPontosDeSensoriamento() {
+
+        $.ajax({
+            type: 'GET',
+            url: "/SensoriamentoAtual/ObtemSensoriamentosAtuaisPorCidade",
+            data: { cidadeAtendidaId: @Model.CidadeAtendidaId },
+            success: function (data) {
+                let atualizarPontos = data.length !== pontosDeSensoriamentoMarkers.length;
+
+                if (atualizarPontos) {
+                    location.reload(true)
+                    return;
+                }
+                for (var i = 0; i < data.length; i++) {
+
+                    const pdsIndex = pontosDeSensoriamentoMarkers.findIndex(m => m.id === data[i].id);
+                    if (pdsIndex !== -1) {
+                        if (data[i].tipoRisco !== pontosDeSensoriamentoMarkers[pdsIndex].tipoRisco) {
+
+                            pontosDeSensoriamentoMarkers[pdsIndex].tipoRisco = data[i].tipoRisco;
+
+                            const pdsShapeIndex = pontosDeSensoriamentoShapes.findIndex(m => m.id === data[i].id);
+                            pontosDeSensoriamentoShapes[pdsShapeIndex]?.shape?.setMap(null);
+
+                            atualizaRiscos(data[i].id);
+                            DisparaNotificacao(data[i].tipoRisco)
+                        }
+                    }
+
+                }
+            }
+        })
+    }
+
+    function DisparaNotificacao(tipoRisco) {
+        if (tipoRisco === 1) {
+            $("#baixo-risco-alert").fadeTo(8000, 500).slideUp(500, function () {
+                $("#baixo-risco-alert").slideUp(500);
+            });
+        }
+        else if (tipoRisco === 2) {
+            $("#medio-risco-alert").fadeTo(8000, 500).slideUp(500, function () {
+                $("#medio-risco-alert").slideUp(500);
+            });
+        }
+        else if (tipoRisco === 3) {
+            $("#alto-risco-alert").fadeTo(8000, 500).slideUp(500, function () {
+                $("#alto-risco-alert").slideUp(500);
+            });
+        }
+    }
+
+    setInterval(AtualizaPontosDeSensoriamento, 10000);
+
+    window.initMap = initMap;
+</script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmKEgJE1bL32pc7W8MudLTLQ2I1seN0VQ&callback=initMap" defer></script>
+    <script src="~/js/pagina-inicial.js"></script>
+
+

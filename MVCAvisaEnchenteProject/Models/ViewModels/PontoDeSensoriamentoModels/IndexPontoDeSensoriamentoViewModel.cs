@@ -12,9 +12,9 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels
         public PesquisaAvancadaPontosDeSensoriamento PesquisaAvancadaPontosDeSensoriamento { get; set; }
         public IEnumerable<PontoDeSensoriamento> PontoDeSensoriamentos { get; set; }
 
-        public IndexPontoDeSensoriamentoViewModel(SelectList estados, SelectList usuarios,IEnumerable<PontoDeSensoriamento> pontosDeSensoriamentos)
+        public IndexPontoDeSensoriamentoViewModel(IEnumerable<PontoDeSensoriamento> pontosDeSensoriamentos)
         {
-            PesquisaAvancadaPontosDeSensoriamento = new PesquisaAvancadaPontosDeSensoriamento(estados, usuarios);
+            PesquisaAvancadaPontosDeSensoriamento = new PesquisaAvancadaPontosDeSensoriamento();
             PontoDeSensoriamentos = pontosDeSensoriamentos;
         }
     }

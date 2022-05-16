@@ -4,6 +4,7 @@ using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.ViewModels.GoogleMaps;
+using MVCAvisaEnchenteProject.Models.ViewModels.SensoriamentoAtualModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,19 +28,25 @@ namespace MVCAvisaEnchenteProject.Controllers
             var usuarioEnderecoLogado = _usuarioDAO.ConsultarEnderecoUsuario(Convert.ToInt32(ObterIdUsuarioLogado()));
             if (usuarioEnderecoLogado != null)
             {
-                var enderecoUsuario = $"{usuarioEnderecoLogado.CidadeAtendida.Descricao}, {usuarioEnderecoLogado.EstadoAtendido.Descricao}";
-
-                var pontosDeSensoriamento = DAOPrincipal.ListarSensoriamentoAtualPorCidade(usuarioEnderecoLogado.CidadeAtendida.Id);
-
-                var mapPointCenter = new GoogleMapsModel(enderecoUsuario, pontosDeSensoriamento, usuarioEnderecoLogado.CidadeAtendida.Id);
-                return View(mapPointCenter);
+                var model = new IndexSensoriamentoAtualViewModel(usuarioEnderecoLogado);
+                return View(model);
             }
 
-            return View(new GoogleMapsModel());
+            return View(new IndexSensoriamentoAtualViewModel());
+        }
+
+        [RequiredFirstAccessConfig]
+        public IActionResult DashboardSensoriamento(int id)
+        {
+            var pontoDeSensoriamentoAtual = DAOPrincipal.ConsultarPorPontoDeSensoriamentoId(id);
+            if(pontoDeSensoriamentoAtual != null)
+                return View(pontoDeSensoriamentoAtual);
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<ActionResult> ObtemSensoriamentosAtuaisPorCidade(int cidadeAtendidaId)
+        public IActionResult ObtemSensoriamentosAtuaisPorCidade(int cidadeAtendidaId)
         {
             var pontosDeSensoriamentosMarkers = new List<PontosDeSensoriamentoMapMarkers>();
             var pontosDeSensoriamentoAtuais = DAOPrincipal.ListarSensoriamentoAtualPorCidade(cidadeAtendidaId);
@@ -47,6 +54,22 @@ namespace MVCAvisaEnchenteProject.Controllers
             pontosDeSensoriamentosMarkers.AddRange(pontosDeSensoriamentoAtuais.Select(p => new PontosDeSensoriamentoMapMarkers(p.PontoDeSensoriamento.Id, p.PontoDeSensoriamento.Latitude, p.PontoDeSensoriamento.Longitude, (int)p.TipoRisco)));
 
             return Json(pontosDeSensoriamentosMarkers);
+        }
+
+        [HttpGet]
+        public IActionResult ObtemSensoriamentoAtual(int pontoDeSensoriamentoId)
+        {
+            var pontoDeSensoriamentoAtual = DAOPrincipal.ConsultarPorPontoDeSensoriamentoId(pontoDeSensoriamentoId);
+            if(pontoDeSensoriamentoAtual != null)
+                return Json(new { notFound = false, data = pontoDeSensoriamentoAtual });
+
+            return Json(new { notFound = true });
+        }
+
+        [HttpGet]
+        public IActionResult AtualizaGoogleMapsComponent()
+        {
+            return ViewComponent("GoogleMaps", _usuarioDAO.ConsultarEnderecoUsuario(Convert.ToInt32(ObterIdUsuarioLogado())));
         }
 
         public override IActionResult Deletar(int id)

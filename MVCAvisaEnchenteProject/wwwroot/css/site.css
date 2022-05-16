@@ -151,6 +151,9 @@ a#configuracoes:focus {
     padding-top: 10px;
     z-index: 9999
 }
+#baixo-risco-alert, #medio-risco-alert, #alto-risco-alert, #baixo-risco-alert-sensor-atual, #medio-risco-alert-sensor-atual, #alto-risco-alert-sensor-atual {
+    display: none;
+}
 
 .tela-inicial-image img {
     height: 100%;
@@ -195,4 +198,163 @@ a#configuracoes:focus {
         margin-bottom: 0;
     }
 
+}
+
+.navbar {
+    -webkit-transition: all 0.6s ease-out;
+    -moz-transition: all 0.6s ease-out;
+    -o-transition: all 0.6s ease-out;
+    -ms-transition: all 0.6s ease-out;
+    transition: all 0.6s ease-out;
+    border-radius: 0px;
+}
+
+    .navbar-brand img {
+        width: 100px;
+        height: 100px;
+    }
+
+
+.navbar-default {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+}
+
+.navbar-right {
+    padding-top: 20px;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #07d4de;
+}
+
+    .navbar-default .navbar-nav > li > a:hover {
+        color: #fff;
+        background-color: #07d4de;
+    }
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    background-color: #07d4de;
+    color: white;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #07d4de;
+}
+
+    .navbar-default .navbar-toggle:hover {
+        background-color: #07d4de;
+    }
+
+.navbar-toggle {
+    margin-top: 30px;
+}
+
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+    border-color: #07d4de;
+    text-align: center;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #07ded4;
+}
+
+.legenda {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 10px
+}
+.sem-risco {
+    background-color: #08357C;
+    opacity: 0.15
+}
+.baixo-risco {
+    background-color: #fff700;
+    opacity: 0.35
+}
+
+.medio-risco {
+    background-color: #ff9900;
+    opacity: 0.35
+}
+.alto-risco {
+    background-color: #ff0000;
+    opacity: 0.35
+}
+.sem-risco-border {
+    border: 1px solid #08357C;
+}
+
+.baixo-risco-border {
+    border: 1px solid #fff700;
+}
+
+.medio-risco-border {
+    border: 1px solid #ff9900;
+}
+
+.alto-risco-border {
+    border: 1px solid #ff0000;
+}
+.card-vazao-agua, .card-altura-agua, .card-nivel-pluviosidade {
+    color: #FFFFFF;
+    height: 120px;
+    width: 75%;
+    box-shadow: 8px 9px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 15px;
+}
+.card-vazao-agua div, .card-altura-agua div, .card-nivel-pluviosidade div {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.card-vazao-agua p, .card-altura-agua p, .card-nivel-pluviosidade p {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.card-vazao-agua {
+    background-color: #DB4437E3
+}
+
+.card-altura-agua {
+    background-color: #34A853CC;
+    margin: 0 auto;
+}
+
+.card-nivel-pluviosidade {
+    background-color: #4285F4CC;
+    float: right;
+}
+
+
+@media screen and (max-width:767px) {
+
+    .card-vazao-agua, .card-altura-agua, .card-nivel-pluviosidade {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .card-nivel-pluviosidade {
+        float: unset;
+    }
+
+    .secao-legenda {
+        margin-top: 2rem;
+    }
+    .secao-legenda ul {
+        margin-top: 1rem;
+        margin-bottom: 6rem;
+        padding-left: 0;
+    }
+
+}
+.btn-outline-light{
+
+}
+a.text-secondary:focus, a.text-secondary:hover {
+    color: unset;
 }

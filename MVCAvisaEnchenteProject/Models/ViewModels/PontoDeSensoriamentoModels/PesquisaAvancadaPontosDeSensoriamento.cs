@@ -26,20 +26,10 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels
         [DisplayName("Cidade")]
         public int? CidadeId { get; set; }
 
-        public SelectList UsuariosAdmin { get; set; }
-        public SelectList Estados { get; set; }
-
-        public PesquisaAvancadaPontosDeSensoriamento(SelectList selectEstados, SelectList selectUsuarios)
+        public PesquisaAvancadaPontosDeSensoriamento(int estadoId, int usuarioId, int cidadeId)
         {
-            Estados = selectEstados;
-            UsuariosAdmin = selectUsuarios;
-        }
-
-        public PesquisaAvancadaPontosDeSensoriamento(SelectList selectEstados, SelectList selectUsuarios, int estadoId, int usuarioId)
-        {
-            Estados = selectEstados;
-            UsuariosAdmin = selectUsuarios;
             EstadoId = estadoId;
+            CidadeId = cidadeId;
             UsuarioId = usuarioId;
         }
 

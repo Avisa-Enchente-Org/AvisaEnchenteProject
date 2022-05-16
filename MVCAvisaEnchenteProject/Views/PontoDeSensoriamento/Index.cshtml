@@ -19,19 +19,40 @@
 
     <script>
         $(document).ready(function () {
-            realizaBuscaCidadesAtendidas();
+            realizaBuscaEstadosAtendidas();
+            realizaBuscaUsuariosAdmin();
             ChangeIconButtonFiltro();
-            $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
         });
 
+        realizaBuscaEstadosAtendidas = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListEstadosAtendidos",
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var estadosHtml = "<select class='form-control form-control-sm' id='selectEstadoAtendido' name='EstadoId'>";
+                    estadosHtml = estadosHtml + '<option value="">Selecione o Estado...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        estadosHtml = estadosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    estadosHtml = estadosHtml + '</select>';
+                    $('#estados-atendidos').html(estadosHtml);
+                    $('#selectEstadoAtendido').val(@Model.PesquisaAvancadaPontosDeSensoriamento.EstadoId)
+                    $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+                }
+            })
+        };
 
         realizaBuscaCidadesAtendidas = () => {
             $.ajax({
-                type: 'POST',
-                url: "/PontoDeSensoriamento/ObtemSelectListCidadesAtendidas",
-                data: { estadoId: $('#selectEstadoAtendido').val() },
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListCidadesAtendidasPorEstadoId",
+                data: { estado: $('#selectEstadoAtendido').val() },
                 datatype: 'JSON',
                 traditional: true,
+                async: false,
                 success: function (data) {
                     var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeId'>";
                     municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
@@ -39,8 +60,28 @@
                         municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
                     }
                     municipiosHtml = municipiosHtml + '</select>';
-                    $('#MunicipiosAtendidos').html(municipiosHtml);
+                    $('#municipios-atendidos').html(municipiosHtml);
                     $('#selectCidadeAtendida').val(@Model.PesquisaAvancadaPontosDeSensoriamento.CidadeId)
+                }
+            })
+        };
+
+        realizaBuscaUsuariosAdmin = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Usuario/ObtemSelectListUsuariosAdmin",
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var usuariosHtml = "<select class='form-control form-control-sm' id='selectUsuariosAdmin' name='UsuarioId'>";
+                    usuariosHtml = usuariosHtml + '<option value="">Selecione o Usuário...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        usuariosHtml = usuariosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    usuariosHtml = usuariosHtml + '</select>';
+                    $('#usuarios-admin').html(usuariosHtml);
+                    $('#selectUsuariosAdmin').val(@Model.PesquisaAvancadaPontosDeSensoriamento.UsuarioId)
                 }
             })
         };

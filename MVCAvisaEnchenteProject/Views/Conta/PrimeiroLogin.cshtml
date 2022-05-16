@@ -17,20 +17,22 @@
 
                     <div class="form-group">
                         <label asp-for="EstadoAtendidoId" class="control-label text-primary"></label>
-                        @Html.DropDownListFor(m => m.EstadoAtendidoId, Model.Estados, "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                        <div id="estados-atendidos">
+                            @Html.DropDownListFor(m => m.EstadoAtendidoId, new List<SelectListItem>(), "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                        </div>
                         <span asp-validation-for="EstadoAtendidoId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="CidadeAtendidaId" class="control-label text-primary"></label>
-                        <div id="MunicipiosAtendidos">
+                        <div id="municipios-atendidos">
                             @Html.DropDownListFor(m => m.CidadeAtendidaId, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidadeAtendida" })
                         </div>
                         <span asp-validation-for="CidadeAtendidaId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group mt-4">
-                        <input type="submit" value="Pronto!" class="btn btn-primary btn-block"/>
+                        <input type="submit" value="Pronto!" class="btn btn-primary btn-block" />
                     </div>
                 </form>
             </div>
@@ -52,26 +54,47 @@
 
     <script>
         $(document).ready(function () {
-
-            $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+            realizaBuscaEstadosAtendidos();
         });
 
+        realizaBuscaEstadosAtendidos = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListEstadosAtendidos",
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var estadosHtml = "<select class='form-control form-control-sm' id='selectEstadoAtendido' name='EstadoAtendidoId'>";
+                    estadosHtml = estadosHtml + '<option value="0">Selecione o Estado...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        estadosHtml = estadosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    estadosHtml = estadosHtml + '</select>';
+                    $('#estados-atendidos').html(estadosHtml);
+                    $('#selectEstadoAtendido').val('@Model.EstadoAtendidoId')
+                    $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+                }
+            })
+        };
 
         realizaBuscaCidadesAtendidas = () => {
             $.ajax({
-                type: 'POST',
-                url: "/PontoDeSensoriamento/ObtemSelectListCidadesAtendidas",
-                data: { estadoId: $('#selectEstadoAtendido').val() },
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListCidadesAtendidasPorEstadoId",
+                data: { estado: $('#selectEstadoAtendido').val() },
                 datatype: 'JSON',
                 traditional: true,
+                async: false,
                 success: function (data) {
                     var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeAtendidaId'>";
-                    municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
+                    municipiosHtml = municipiosHtml + '<option value="0">Selecione a Cidade...</option>';
                     for (var i = 0; i < data.length; i++) {
                         municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
                     }
                     municipiosHtml = municipiosHtml + '</select>';
-                    $('#MunicipiosAtendidos').html(municipiosHtml);
+                    $('#municipios-atendidos').html(municipiosHtml);
+                    $('#selectCidadeAtendida').val('@Model.CidadeAtendidaId')
                 }
             })
         };
