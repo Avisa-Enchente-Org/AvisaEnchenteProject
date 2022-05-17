@@ -33,6 +33,11 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
         }
 
+        public virtual IActionResult Index(int id = 0)
+        {
+            return View();
+        }
+
         public virtual IActionResult Deletar(int id)
         {
             try

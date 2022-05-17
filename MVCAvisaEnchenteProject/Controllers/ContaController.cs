@@ -121,7 +121,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         [Authorize]
         public IActionResult PrimeiroLogin()
         {
-            return View(new PrimeiroLoginViewModel(ObtemSelectListEstadosAtendidos()));
+            return View(new PrimeiroLoginViewModel(/*ObtemSelectListEstadosAtendidos()*/));
         }
 
         [HttpPost]
@@ -129,7 +129,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult PrimeiroLogin(PrimeiroLoginViewModel primeiroLogin)
         {
-            primeiroLogin.Estados = ObtemSelectListEstadosAtendidos();
+            //primeiroLogin.Estados = ObtemSelectListEstadosAtendidos();
             if (ModelState.IsValid)
             {
                 try

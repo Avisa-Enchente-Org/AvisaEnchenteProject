@@ -640,6 +640,41 @@ BEGIN
 END
 GO
 
+-- SP's Parametros Notificação
+
+CREATE PROCEDURE sp_insert_notificacoes_parametros
+(
+	@ponto_sensoriamento_id INT,
+	@tipo_risco INT,
+	@nivel_pluviosidade DECIMAL(6,2),
+	@vazao_da_agua DECIMAL(6,2),
+	@altura_agua DECIMAL(6,2)
+)
+AS
+BEGIN
+	INSERT INTO [dbo].[notificacoes_parametros]
+	(tipo_risco, nivel_pluviosidade, vazao_agua, altura_agua, ponto_sensoriamento_id)
+	VALUES
+	(@tipo_risco,
+	@nivel_pluviosidade, 
+	@vazao_da_agua,
+	@altura_agua,
+	GETDATE())
+
+END
+GO
+
+
+CREATE PROCEDURE sp_listar_notificacoes_parametros_por_pds
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[notificacoes_parametros] WHERE ponto_sensoriamento_id = @ponto_sensoriamento_id
+END
+GO
+
 
 -- TRIGGERS
 
@@ -741,15 +776,17 @@ END
 GO
 
 exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
---exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
---exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '3548708', 1
---exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
+-- exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
+-- exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '3548708', 1
+-- exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
 
 
-select * from sensoriamento_atual
-select * from pontos_sensoriamento
-select * from cidades_atendidas
+-- select * from sensoriamento_atual
+-- select * from pontos_sensoriamento
+-- select * from cidades_atendidas
 update sensoriamento_atual
 set tipo_risco = 3,
-vazao_agua = 54.2
+vazao_agua = 54.2,
+nivel_pluviosidade = 152.0,
+altura_agua = 15.5
 where id = 1
