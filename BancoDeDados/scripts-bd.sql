@@ -659,8 +659,7 @@ BEGIN
 	@nivel_pluviosidade, 
 	@vazao_da_agua,
 	@altura_agua,
-	GETDATE())
-
+	@ponto_sensoriamento_id)
 END
 GO
 
