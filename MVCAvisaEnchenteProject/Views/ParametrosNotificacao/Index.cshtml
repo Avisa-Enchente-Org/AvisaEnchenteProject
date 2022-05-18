@@ -1,0 +1,66 @@
+﻿@model ParametrosNotificaoIndexViewModel
+@{
+    ViewData["Title"] = "Parametros de Notificação";
+}
+
+
+<div class="pt-2 pb-2">
+    <h4 class="text-primary pt-1">@ViewData["Title"]</h4>
+</div>
+<div class="card card-body">
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label text-primary" style="font-weight: bold">Helix Id</label>
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon2">urn:ngsi-ld:entity:</span>
+                    </div>
+                    <input asp-for="PontoDeSensoriamento.HelixId" class="form-control form-control-sm" placeholder="Helix Id" aria-describedby="basic-addon2" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label text-primary" style="font-weight: bold">Ativo no Helix</label>
+                <div class="input-group input-group-sm">
+                    @if (!PontoDeSensoriamento.AtivoHelix)
+                    {
+
+                        <a onclick="ativaPontoDeSensoriamento('@Url.Action("SalvaPontoDeSensoriamentoHelix", "PontoDeSensoriamento", null, Context.Request.Scheme)', @item.Id)" class="btn icon text-danger" title="Desativado"><i class="fa-solid fa-signal fa-xl"></i></a>
+                    }
+                    else
+                    {
+                        <a class="btn icon text-success" title="Ativado"><i class="fa-solid fa-signal fa-xl"></i></a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label text-primary" style="font-weight: bold">Ultima edição por:</label>
+                <div class="input-group input-group-sm">
+                    <span class="text-primary">@(Model.PontoDeSensoriamento.Usuario.NomeCompleto)</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label text-primary" style="font-weight: bold">Cidade</label>
+                <div class="input-group input-group-sm">
+                    <span class="text-primary">@(Model.PontoDeSensoriamento.CidadeAtendida.Descricao)</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-group">
+                <label class="control-label text-primary" style="font-weight: bold">UF</label>
+                <div class="input-group input-group-sm">
+                    <span class="text-primary">@(Model.PontoDeSensoriamento.EstadoAtendido.UF)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,12 +18,6 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int CidadeAtendidaId { get; set; }
 
-        public SelectList Estados { get; set; }
-
-        public PrimeiroLoginViewModel(SelectList selectEstados)
-        {
-            Estados = selectEstados;
-        }
         public PrimeiroLoginViewModel()
         {
                 

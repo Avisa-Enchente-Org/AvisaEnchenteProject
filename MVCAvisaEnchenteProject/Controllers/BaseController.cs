@@ -20,7 +20,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         protected D DAOPrincipal { get; set; }
         protected string NomeViewIndex { get; set; } = "index";
-        public virtual IActionResult Index()
+        public virtual IActionResult Index(int id)
         {
             try
             {
