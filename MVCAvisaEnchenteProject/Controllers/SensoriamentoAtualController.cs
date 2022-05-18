@@ -23,7 +23,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         }
 
         [RequiredFirstAccessConfig]
-        public override IActionResult Index()
+        public override IActionResult Index(int id)
         {
             var usuarioEnderecoLogado = _usuarioDAO.ConsultarEnderecoUsuario(Convert.ToInt32(ObterIdUsuarioLogado()));
             if (usuarioEnderecoLogado != null)

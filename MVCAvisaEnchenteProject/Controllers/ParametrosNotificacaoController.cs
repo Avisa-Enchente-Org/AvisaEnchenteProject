@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Models.Entidades;
+using MVCAvisaEnchenteProject.Models.ViewModels.ParametrosNotificacao;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             _pontoSensoriamentoDAO = new PontoDeSensoriamentoDAO();
         }
 
-        public override IActionResult Index(int id = 0)
+        public override IActionResult Index(int id)
         {
             var pds = _pontoSensoriamentoDAO.ConsultarPorId(id);
             if (pds == null)
@@ -24,7 +25,9 @@ namespace MVCAvisaEnchenteProject.Controllers
 
             var parametrosNotificacao = DAOPrincipal.ListarParametrosNotificacaoPorPDS(pds.Id);
 
-            return View(id);
+            var indexViewModel = new ParametrosNotificaoIndexViewModel(pds, parametrosNotificacao);
+
+            return View(indexViewModel);
         }
 
     }

@@ -25,9 +25,9 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpGet]
         [Authorize(Roles = nameof(ETipoUsuario.Admin))]
-        public override IActionResult Index()
+        public override IActionResult Index(int id)
         {
-            return base.Index();
+            return base.Index(id);
         }
 
         [HttpDelete]

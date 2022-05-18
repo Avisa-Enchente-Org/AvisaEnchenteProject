@@ -20,7 +20,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         protected D DAOPrincipal { get; set; }
         protected string NomeViewIndex { get; set; } = "index";
-        public virtual IActionResult Index()
+        public virtual IActionResult Index(int id)
         {
             try
             {
@@ -31,11 +31,6 @@ namespace MVCAvisaEnchenteProject.Controllers
             {
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
-        }
-
-        public virtual IActionResult Index(int id = 0)
-        {
-            return View();
         }
 
         public virtual IActionResult Deletar(int id)
