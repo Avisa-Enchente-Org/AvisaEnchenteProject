@@ -94,6 +94,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 PontoDeSensoriamento = new PontoDeSensoriamento
                 {
                     Id = Convert.ToInt32(registro["ponto_sensoriamento_id"]),
+                    HelixId = (registro["helix_id"]).ToString(),
                     Latitude = Convert.ToDecimal(registro["latitude"]),
                     Longitude = Convert.ToDecimal(registro["longitude"]),
                     CidadeAtendidaId = Convert.ToInt32(registro["cidade_atendida_id"])
@@ -103,12 +104,6 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return sensoriamento;
         }
 
-
-        public override void Atualizar(SensoriamentoAtual model)
-        {
-            throw new NotImplementedException("Esse metodo não foi implementado");
-        }
-
         public override void Inserir(SensoriamentoAtual model)
         {
             throw new NotImplementedException("Esse metodo não foi implementado");
@@ -116,7 +111,14 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
 
         public override List<SensoriamentoAtual> Listar()
         {
-            throw new NotImplementedException("Esse metodo não foi implementado");
+            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_" + Tabela, Array.Empty<SqlParameter>());
+
+            List<SensoriamentoAtual> lista = new List<SensoriamentoAtual>();
+
+            foreach (DataRow registro in tabela.Rows)
+                lista.Add(MontaSensoriamentoAtualComPontoDeSensoriamento(registro));
+
+            return lista;
         }
     }
 }

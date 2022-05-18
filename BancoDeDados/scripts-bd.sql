@@ -690,6 +690,21 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE sp_listar_sensoriamento_atual
+AS 
+BEGIN
+
+	SELECT s.*, 
+	p.latitude,
+	p.longitude,
+	p.cidade_atendida_id,
+	p.helix_id
+	FROM [dbo].[sensoriamento_atual] s
+	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
+
+END
+GO
+
 
 -- TRIGGERS
 
@@ -794,4 +809,5 @@ GO
 --exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
 --exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '3548708', 1
 --exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
+
 
