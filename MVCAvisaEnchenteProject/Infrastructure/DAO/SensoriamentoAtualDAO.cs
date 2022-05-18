@@ -94,6 +94,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 PontoDeSensoriamento = new PontoDeSensoriamento
                 {
                     Id = Convert.ToInt32(registro["ponto_sensoriamento_id"]),
+                    HelixId = (registro["helix_id"]).ToString(),
                     Latitude = Convert.ToDecimal(registro["latitude"]),
                     Longitude = Convert.ToDecimal(registro["longitude"]),
                     CidadeAtendidaId = Convert.ToInt32(registro["cidade_atendida_id"])

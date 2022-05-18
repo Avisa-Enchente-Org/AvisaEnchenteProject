@@ -134,7 +134,8 @@ namespace MVCAvisaEnchenteProject.Controllers
 
             if (pontoDeSensoriamento.Id == 0)
             {
-                if (consultaEntidadeHelix != null)
+                var existePDScomHelixId = DAOPrincipal.PontoDeSensoriamentoJaExiste(pontoDeSensoriamento.HelixId);
+                if (consultaEntidadeHelix != null || existePDScomHelixId)
                     return new JsonResponse(messageErro: "Entidade já Cadastrada no Helix!");
 
             }

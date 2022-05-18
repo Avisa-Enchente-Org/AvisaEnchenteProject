@@ -632,7 +632,8 @@ BEGIN
 	SELECT s.*, 
 	p.latitude,
 	p.longitude,
-	p.cidade_atendida_id
+	p.cidade_atendida_id,
+	p.helix_id
 	FROM [dbo].[sensoriamento_atual] s
 	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
 	WHERE p.cidade_atendida_id = @cidade_atendida_id
@@ -647,7 +648,8 @@ BEGIN
 	SELECT s.*, 
 	p.latitude,
 	p.longitude,
-	p.cidade_atendida_id
+	p.cidade_atendida_id,
+	p.helix_id
 	FROM [dbo].[sensoriamento_atual] s
 	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
 
@@ -754,16 +756,9 @@ BEGIN
 END
 GO
 
-exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
+-- exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
 --exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
 --exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '3548708', 1
 --exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
 
 
-select * from sensoriamento_atual
-select * from pontos_sensoriamento
-select * from cidades_atendidas
-update sensoriamento_atual
-set tipo_risco = 3,
-vazao_agua = 54.2
-where id = 1
