@@ -11,9 +11,15 @@ a.navbar-brand {
 a {
     color: #F36E21
 }
-a.link-text {
-    color: #F36E21
-}
+
+    a.btn-header-card {
+        color: #08357c;
+        text-decoration: none
+        
+    }
+    a.link-text {
+        color: #F36E21
+    }
 a.link-text:hover {
     color: #F36E21;
     opacity: 0.8;

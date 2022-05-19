@@ -35,7 +35,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels
 
         public CriarEditarPontoDeSensoriamentoViewModel(PontoDeSensoriamento pontoDeSensoriamento)
         {
-            HelixId = pontoDeSensoriamento.HelixId.Replace("urn:ngsi-ld:entity:", "");
+            HelixId = pontoDeSensoriamento.HelixId.Replace("urn:ngsi-ld:sensor:", "");
             Ativo = pontoDeSensoriamento.AtivoHelix;
             CodigoEstado = pontoDeSensoriamento.EstadoAtendido.CodigoEstado;
             CodigoCidade = pontoDeSensoriamento.CidadeAtendida.CodigoCidade;

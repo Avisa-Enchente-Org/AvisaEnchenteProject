@@ -57,9 +57,9 @@ namespace MVCAvisaEnchenteProject.Services
                 }
                 else
                 {
-                    ls.AlturaAgua = sensor.WaterHeight.Value;
+                    ls.AlturaAgua = sensor.RiverHeight.Value;
                     ls.NivelPluviosidade = sensor.RainIntensity.Value;
-                    ls.VazaoDaAgua = sensor.FlowrateWater.Value;
+                    ls.VazaoDaAgua = sensor.RiverFlowrate.Value;
                     ls.UltimaAtualizacao = DateTime.Now;
                 }
 

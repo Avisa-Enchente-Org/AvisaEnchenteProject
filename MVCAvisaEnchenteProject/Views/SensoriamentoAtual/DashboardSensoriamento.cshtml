@@ -1,4 +1,4 @@
-﻿@model SensoriamentoAtual
+﻿@model DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -6,7 +6,15 @@
 
 <div class="pt-1 pb-2">
     <a class="text-secondary mb-1 btn btn-outline-light pl-0" style="border-color: transparent; background: transparent; " asp-controller="SensoriamentoAtual" asp-action="Index"><i class="fa-solid fa-angle-left fa-1x mr-2"></i>Voltar</a>
-    <h4 class="text-primary pt-1">Dashboard</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="text-primary pt-1">Dashboard</h4>
+        </div>
+        <div class="col-md-6">
+            <p class="text-primary mb-2 float-end">@Model.Endereco <i class="fa-solid fa-location-dot fa-1x mr-2"></i></p>
+        </div>
+    </div>
+
 </div>
 <div class="row">
     <div class="col-md-4">
@@ -15,7 +23,7 @@
                Vazão Atual
             </div>
             <p id="vazao-agua-atual">
-                @Model.VazaoDaAgua m/s
+                @Model.SensoriamentoAtual.VazaoDaAgua m/s
             </p>
         </div>
     </div>
@@ -25,7 +33,7 @@
                Altura da Água
             </div>
             <p id="altura-agua-atual">
-                @Model.AlturaAgua mca
+                @Model.SensoriamentoAtual.AlturaAgua mca
             </p>
         </div>
     </div>
@@ -35,7 +43,7 @@
                 Nivel de Pluviosidade
             </div>
             <p id="nivel-pluviosidade-atual">
-                @Model.NivelPluviosidade kg/m³
+                @Model.SensoriamentoAtual.NivelPluviosidade kg/m³
             </p>
         </div>
     </div>
@@ -45,12 +53,12 @@
 
 
 <script>
-    let tipoRisco = @((int)Model.TipoRisco);
+    let tipoRisco = @((int)Model.SensoriamentoAtual.TipoRisco);
     function AtualizaSensoriamentoAtual() {
         $.ajax({
             type: 'GET',
             url: "/SensoriamentoAtual/ObtemSensoriamentoAtual",
-            data: { pontoDeSensoriamentoId: @Model.PontoDeSensoriamentoId },
+            data: { pontoDeSensoriamentoId: @Model.SensoriamentoAtual.PontoDeSensoriamentoId },
             success: function (result) {
                 if (result.notFound) {
                     window.location.href = "/SensoriamentoAtual/"

@@ -17,5 +17,10 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.ParametrosNotificacao
             PontoSensoriamento.HelixId = pds.HelixId.Replace("urn:ngsi-ld:entity:", "");
             ParametrosNotificacao = parametrosNotificacao;
         }
+
+        public ParametrosNotificaoIndexViewModel()
+        {
+                
+        }
     }
 }

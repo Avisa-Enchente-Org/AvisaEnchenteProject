@@ -4,63 +4,188 @@
 }
 
 
-<div class="pt-2 pb-2">
-    <h4 class="text-primary pt-1">@ViewData["Title"]</h4>
+<div class="pt-3 pb-3">
+    <h4 class="text-primary pt-1">Parametros de Notificações</h4>
+</div>
+
+<div class="pb-2">
+    <h6 class="text-primary pt-1">Ponto de Sensoriamento</h6>
 </div>
 <div class="card card-body">
     <div class="row">
 
         <div class="col-md-3">
             <div class="form-group">
-                <label class="control-label text-primary" style="font-weight: bold">Helix Id</label>
+                <label class="control-label text-primary">Helix Id</label>
                 <div class="input-group input-group-sm">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon2">urn:ngsi-ld:entity:</span>
                     </div>
-                    <input asp-for="PontoDeSensoriamento.HelixId" class="form-control form-control-sm" placeholder="Helix Id" aria-describedby="basic-addon2" />
+                    <input asp-for="PontoSensoriamento.HelixId" class="form-control form-control-sm" readonly aria-describedby="basic-addon2" />
                 </div>
             </div>
         </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label text-primary" style="font-weight: bold">Ativo no Helix</label>
-                <div class="input-group input-group-sm">
-                    @if (!PontoDeSensoriamento.AtivoHelix)
-                    {
-
-                        <a onclick="ativaPontoDeSensoriamento('@Url.Action("SalvaPontoDeSensoriamentoHelix", "PontoDeSensoriamento", null, Context.Request.Scheme)', @item.Id)" class="btn icon text-danger" title="Desativado"><i class="fa-solid fa-signal fa-xl"></i></a>
-                    }
-                    else
-                    {
-                        <a class="btn icon text-success" title="Ativado"><i class="fa-solid fa-signal fa-xl"></i></a>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label class="control-label text-primary" style="font-weight: bold">Ultima edição por:</label>
-                <div class="input-group input-group-sm">
-                    <span class="text-primary">@(Model.PontoDeSensoriamento.Usuario.NomeCompleto)</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label class="control-label text-primary" style="font-weight: bold">Cidade</label>
-                <div class="input-group input-group-sm">
-                    <span class="text-primary">@(Model.PontoDeSensoriamento.CidadeAtendida.Descricao)</span>
-                </div>
-            </div>
-        </div>
         <div class="col-md-1">
             <div class="form-group">
-                <label class="control-label text-primary" style="font-weight: bold">UF</label>
+                <label class="control-label text-primary">Ativo</label>
                 <div class="input-group input-group-sm">
-                    <span class="text-primary">@(Model.PontoDeSensoriamento.EstadoAtendido.UF)</span>
+                    <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.AtivoHelix ? "Sim" : "Não")" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label text-primary">Ultima Edição Por:</label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.Usuario.NomeCompleto)" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label text-primary">Cidade</label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.CidadeAtendida.Descricao)" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label text-primary">Estado</label>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.EstadoAtendido.UF)" />
                 </div>
             </div>
         </div>
     </div>
 </div>
+@if (Model.ParametrosNotificacao.Any())
+{
+    <p>
+        <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-3 float-end" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
+    </p>
+}
+else
+{
+    <div class="pt-3 pb-2">
+        <h6 class="text-primary pt-1">Parametros de Notificação</h6>
+    </div>
+
+    <div class="card my-3">
+        <div class="card-header text-primary font-weight-bold">
+            <a class="btn-header-card" data-toggle="collapse" href="#baixoRiscoCollapse" role="button" aria-expanded="false" aria-controls="baixoRiscoCollapse">
+                Baixo Risco
+            </a>
+        </div>
+        <div class="collapse show" id="baixoRiscoCollapse">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Vazão da Água" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Altura da Água (cm)</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Vazão da Água" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Intensidade da Chuva</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card my-3">
+        <div class="card-header text-primary font-weight-bold">
+
+            <a class="btn-header-card" data-toggle="collapse" href="#medioRiscoCollapse" role="button" aria-expanded="false" aria-controls="medioRiscoCollapse">
+                Médio Risco
+            </a>
+        </div>
+        <div class="collapse show" id="medioRiscoCollapse">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Vazão da Água" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Altura da Água (cm)</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Altura da Água" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Intensidade da Chuva</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card my-3">
+        <div class="card-header text-primary font-weight-bold">
+            <a class="btn-header-card" data-toggle="collapse" href="#altoRiscoCollapse" role="button" aria-expanded="false" aria-controls="altoRiscoCollapse">
+                Alto Risco
+            </a>
+        </div>
+        <div class="collapse show" id="altoRiscoCollapse">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Vazão da Água" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Altura da Água (cm)</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Altura da Água" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-primary">Intensidade da Chuva</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-2 mb-5" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
+}
+
+

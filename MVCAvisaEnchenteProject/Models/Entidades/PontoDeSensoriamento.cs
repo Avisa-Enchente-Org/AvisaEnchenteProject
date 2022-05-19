@@ -21,7 +21,7 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
 
         public PontoDeSensoriamento(CriarEditarPontoDeSensoriamentoViewModel pontoDeSensoriamentoViewModel, int cidadeAtendidaId, int usuarioId) : base(pontoDeSensoriamentoViewModel.Id)
         {
-            HelixId = $"urn:ngsi-ld:entity:{pontoDeSensoriamentoViewModel.HelixId}";
+            HelixId = $"urn:ngsi-ld:sensor:{pontoDeSensoriamentoViewModel.HelixId}";
             AtivoHelix = pontoDeSensoriamentoViewModel.Ativo;
             Latitude = Convert.ToDecimal(pontoDeSensoriamentoViewModel.Latitude.Replace(".", ","));
             Longitude = Convert.ToDecimal(pontoDeSensoriamentoViewModel.Longitude.Replace(".", ","));

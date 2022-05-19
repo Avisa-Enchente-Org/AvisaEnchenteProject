@@ -16,10 +16,12 @@ namespace MVCAvisaEnchenteProject.Controllers
     public class SensoriamentoAtualController : BaseController<SensoriamentoAtual, SensoriamentoAtualDAO>
     {
         private readonly UsuarioDAO _usuarioDAO;
+        private readonly PontoDeSensoriamentoDAO _pdsDAO;
 
         public SensoriamentoAtualController()
         {
             _usuarioDAO = new UsuarioDAO();
+            _pdsDAO = new PontoDeSensoriamentoDAO();
         }
 
         [RequiredFirstAccessConfig]
@@ -39,8 +41,10 @@ namespace MVCAvisaEnchenteProject.Controllers
         public IActionResult DashboardSensoriamento(int id)
         {
             var pontoDeSensoriamentoAtual = DAOPrincipal.ConsultarPorPontoDeSensoriamentoId(id);
+            var pontoDeSensoriamento = _pdsDAO.ConsultarPorId(pontoDeSensoriamentoAtual.PontoDeSensoriamentoId);
+
             if(pontoDeSensoriamentoAtual != null)
-                return View(pontoDeSensoriamentoAtual);
+                return View(new DashboardViewModel(pontoDeSensoriamentoAtual, $"{pontoDeSensoriamento.CidadeAtendida.Descricao}, {pontoDeSensoriamento.EstadoAtendido.UF}"));
 
             return RedirectToAction("Index");
         }
