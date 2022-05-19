@@ -1,0 +1,60 @@
+﻿@model CriarEditarParametrosNotificacaoViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" asp-action="SalvarParametrosNotificacao">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="pt-3">
+                <h6 class="text-primary pt-1">Parametros de Notificação</h6>
+            </div>
+            <input type="hidden" asp-for="IsCriacao" />
+            <input type="hidden" asp-for="PontoDeSensoriamentoId" />
+
+            @for (int i = 0; i < Model.ParametrosNotificacaoModel.Count; i++)
+            {
+                <div class="card my-3">
+                    <div class="card-header text-primary font-weight-bold">
+                        <a class="btn-header-card" data-toggle="collapse" href="#collapse@(Model.ParametrosNotificacaoModel[i].TipoRisco)" role="button" aria-expanded="false" aria-controls="collapse@(Model.ParametrosNotificacaoModel[i].TipoRisco)">
+                            @Model.ParametrosNotificacaoModel[i].TipoRisco.GetDescription()
+                        </a>
+                    </div>
+                    <div class="collapse show" id="collapse@(@Model.ParametrosNotificacaoModel[i].TipoRisco)">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                                        <div class="input-group input-group-sm">
+                                            <input class="form-control form-control-sm" placeholder="Vazão da Água" asp-for="@Model.ParametrosNotificacaoModel[i].VazaoDaAgua" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label text-primary">Altura da Água (cm)</label>
+                                        <div class="input-group input-group-sm">
+                                            <input class="form-control form-control-sm" placeholder="Altura da Água" value="@Model.ParametrosNotificacaoModel[i].AlturaAgua" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label text-primary">Intensidade da Chuva</label>
+                                        <div class="input-group input-group-sm">
+                                            <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" value="@Model.ParametrosNotificacaoModel[i].NivelPluviosidade" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+            <div class="modal-footer" style="padding: 10px 0 0px; margin-top: 40px;">
+                <a type="button" class="btn btn-dark" href="/PontoDeSensoriamento/@Model.PontoDeSensoriamentoId/ParametrosNotificacao/">Voltar</a>
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div> 

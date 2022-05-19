@@ -60,19 +60,63 @@
         </div>
     </div>
 </div>
-@if (Model.ParametrosNotificacao.Any())
+@if (!Model.ParametrosNotificacao.Any())
 {
     <p>
-        <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-3 float-end" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
+        <a href="/PontoDeSensoriamento/@Model.PontoSensoriamento.Id/ParametrosNotificacao/CadastrarEditarParametros" class="btn btn-primary btn-sm text-white mt-3 float-end" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
     </p>
 }
 else
 {
-    <div class="pt-3 pb-2">
+    <div class="pt-3">
         <h6 class="text-primary pt-1">Parametros de Notificação</h6>
     </div>
 
-    <div class="card my-3">
+
+    @foreach (var param in Model.ParametrosNotificacao)
+    {
+        <div class="card my-3">
+            <div class="card-header text-primary font-weight-bold">
+                <a class="btn-header-card" data-toggle="collapse" href="#collapse@(param.TipoRisco)" role="button" aria-expanded="false" aria-controls="collapse@(param.TipoRisco)">
+                    @param.TipoRisco.GetDescription()
+                </a>
+            </div>
+            <div class="collapse show" id="collapse@(param.TipoRisco)">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                                <div class="input-group input-group-sm">
+                                    <input class="form-control form-control-sm" placeholder="Vazão da Água" value="@param.VazaoDaAgua" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label text-primary">Altura da Água (cm)</label>
+                                <div class="input-group input-group-sm">
+                                    <input class="form-control form-control-sm" placeholder="Altura da Água" value="@param.AlturaAgua" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label text-primary">Intensidade da Chuva</label>
+                                <div class="input-group input-group-sm">
+                                    <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" value="@param.NivelPluviosidade" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+
+    @*<div class="card my-3">
         <div class="card-header text-primary font-weight-bold">
             <a class="btn-header-card" data-toggle="collapse" href="#baixoRiscoCollapse" role="button" aria-expanded="false" aria-controls="baixoRiscoCollapse">
                 Baixo Risco
@@ -184,8 +228,8 @@ else
                 </div>
             </div>
         </div>
-    </div>
-   <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-2 mb-5" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a> 
+    </div>*@
+    <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-2 mb-5" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
 }
 
 

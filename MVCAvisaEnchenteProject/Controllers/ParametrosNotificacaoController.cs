@@ -30,5 +30,25 @@ namespace MVCAvisaEnchenteProject.Controllers
             return View(indexViewModel);
         }
 
+        [HttpGet]
+        public IActionResult CadastrarEditarParametros(int id)
+        {
+            var pds = _pontoSensoriamentoDAO.ConsultarPorId(id);
+            if (pds == null)
+                return RedirectToAction("Index", "SensoriamentoAtual");
+
+            var parametrosNotificacao = DAOPrincipal.ListarParametrosNotificacaoPorPDS(id);
+            if (!parametrosNotificacao.Any())
+                return View(new CriarEditarParametrosNotificacaoViewModel(id));
+                    
+
+            return View(new CriarEditarParametrosNotificacaoViewModel(parametrosNotificacao));  
+        }
+
+        [HttpPost]
+        public IActionResult SalvarParametrosNotificacao(CriarEditarParametrosNotificacaoViewModel model)
+        {
+            return RedirectToAction("Index", "SensoriamentoAtual", new { id = model.PontoDeSensoriamentoId});
+        }
     }
 }

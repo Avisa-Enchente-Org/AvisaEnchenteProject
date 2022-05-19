@@ -14,10 +14,10 @@ namespace MVCAvisaEnchenteProject.Models.Enum
         [Description("Baixo Risco")]
         BaixoRisco = 1,
 
-        [Description("Baixo Risco")]
+        [Description("Médio Risco")]
         MedioRisco = 2,
 
-        [Description("Baixo Risco")]
+        [Description("Alto Risco")]
         AltoRisco = 3
     }
 }

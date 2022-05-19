@@ -690,21 +690,6 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE sp_listar_sensoriamento_atual
-AS 
-BEGIN
-
-	SELECT s.*, 
-	p.latitude,
-	p.longitude,
-	p.cidade_atendida_id,
-	p.helix_id
-	FROM [dbo].[sensoriamento_atual] s
-	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
-
-END
-GO
-
 
 -- TRIGGERS
 
