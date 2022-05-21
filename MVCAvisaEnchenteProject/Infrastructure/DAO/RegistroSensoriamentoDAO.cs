@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace MVCAvisaEnchenteProject.Infrastructure.DAO
 {
-    public class SensoriamentoAtualDAO : BaseDAO<SensoriamentoAtual>
+    public class RegistroSensoriamentoDAO : BaseDAO<RegistroSensoriamento>
     {
         protected override void SetTabela()
         {
-            Tabela = "sensoriamento_atual";
+            Tabela = "registros_sensoriamento";
         }
 
-        public SensoriamentoAtual ConsultarPorPontoDeSensoriamentoId(int pontoDeSensoriamento)
+        public RegistroSensoriamento ConsultarPorPontoDeSensoriamentoId(int pontoDeSensoriamento)
         {
             var p = new SqlParameter[]
             {
@@ -33,15 +33,15 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 return MontaEntidadePadrao(tabela.Rows[0]);
         }
 
-        public List<SensoriamentoAtual> ListarSensoriamentoAtualPorCidade(int cidadeId)
+        public List<RegistroSensoriamento> ListarSensoriamentoAtualPorCidade(int cidadeId)
         {
             SqlParameter[] cidadeIdParametro = {
                 new SqlParameter("cidade_atendida_id", cidadeId),
             };
 
-            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_sensoriamento_atual_por_cidade", cidadeIdParametro);
+            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_sensoariamento_atual_por_cidade", cidadeIdParametro);
 
-            var lista = new List<SensoriamentoAtual>();
+            var lista = new List<RegistroSensoriamento>();
 
             foreach (DataRow registro in tabela.Rows)
                 lista.Add(MontaSensoriamentoAtualComPontoDeSensoriamento(registro));
@@ -49,7 +49,7 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return lista;
         }
 
-        protected override SqlParameter[] CriaParametros(SensoriamentoAtual sensoriamentoAtual)
+        protected override SqlParameter[] CriaParametros(RegistroSensoriamento sensoriamentoAtual)
         {
             var sensoriamentoAtualParametros = new List<SqlParameter>
             {
@@ -64,32 +64,32 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return sensoriamentoAtualParametros.ToArray();
         }
 
-        protected override SensoriamentoAtual MontaEntidadePadrao(DataRow registro)
+        protected override RegistroSensoriamento MontaEntidadePadrao(DataRow registro)
         {
-            var pontoDeSensoriamento = new SensoriamentoAtual
+            var pontoDeSensoriamento = new RegistroSensoriamento
             {
                 Id = Convert.ToInt32(registro["id"]),
                 PontoDeSensoriamentoId = Convert.ToInt32(registro["ponto_sensoriamento_id"]),
                 NivelPluviosidade = Convert.ToDouble(registro["nivel_pluviosidade"]),
                 VazaoDaAgua = Convert.ToDouble(registro["vazao_agua"]),
                 AlturaAgua = Convert.ToDouble(registro["altura_agua"]),
-                UltimaAtualizacao = Convert.ToDateTime(registro["ultima_atualizacao"]),
+                DataRegistro = Convert.ToDateTime(registro["data_registro"]),
                 TipoRisco = (ETipoRisco)Convert.ToInt32(registro["tipo_risco"])
             };
 
             return pontoDeSensoriamento;
         }
 
-        protected SensoriamentoAtual MontaSensoriamentoAtualComPontoDeSensoriamento(DataRow registro)
+        protected RegistroSensoriamento MontaSensoriamentoAtualComPontoDeSensoriamento(DataRow registro)
         {
-            var sensoriamento = new SensoriamentoAtual
+            var sensoriamento = new RegistroSensoriamento
             {
                 Id = Convert.ToInt32(registro["id"]),
                 PontoDeSensoriamentoId = Convert.ToInt32(registro["ponto_sensoriamento_id"]),
                 NivelPluviosidade = Convert.ToDouble(registro["nivel_pluviosidade"]),
                 VazaoDaAgua = Convert.ToDouble(registro["vazao_agua"]),
                 AlturaAgua = Convert.ToDouble(registro["altura_agua"]),
-                UltimaAtualizacao = Convert.ToDateTime(registro["ultima_atualizacao"]),
+                DataRegistro = Convert.ToDateTime(registro["data_registro"]),
                 TipoRisco = (ETipoRisco)Convert.ToInt32(registro["tipo_risco"]),
                 PontoDeSensoriamento = new PontoDeSensoriamento
                 {
@@ -104,21 +104,21 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return sensoriamento;
         }
 
-        public override void Inserir(SensoriamentoAtual model)
+        public override void Atualizar(RegistroSensoriamento model)
         {
             throw new NotImplementedException("Esse metodo não foi implementado");
         }
 
-        public override List<SensoriamentoAtual> Listar()
-        {
-            var tabela = HelperDAO.ExecutaProcSelect("sp_listar_" + Tabela, Array.Empty<SqlParameter>());
+        //public override List<RegistroSensoriamento> Listar()
+        //{
+        //    var tabela = HelperDAO.ExecutaProcSelect("sp_listar_" + Tabela, Array.Empty<SqlParameter>());
 
-            List<SensoriamentoAtual> lista = new List<SensoriamentoAtual>();
+        //    List<RegistroSensoriamento> lista = new List<RegistroSensoriamento>();
 
-            foreach (DataRow registro in tabela.Rows)
-                lista.Add(MontaSensoriamentoAtualComPontoDeSensoriamento(registro));
+        //    foreach (DataRow registro in tabela.Rows)
+        //        lista.Add(MontaSensoriamentoAtualComPontoDeSensoriamento(registro));
 
-            return lista;
-        }
+        //    return lista;
+        //}
     }
 }

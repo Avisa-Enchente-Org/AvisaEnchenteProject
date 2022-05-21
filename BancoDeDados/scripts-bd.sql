@@ -65,17 +65,17 @@ CREATE TABLE [dbo].[pontos_sensoriamento](
 )
 GO
 
-CREATE TABLE [dbo].[sensoriamento_atual](
+CREATE TABLE [dbo].[registros_sensoriamento](
 	[id] INT IDENTITY(1,1) NOT NULL,
 	[ponto_sensoriamento_id] INT NULL,
 	[nivel_pluviosidade] decimal(6,2) NOT NULL,
 	[vazao_agua] decimal(6,2) NOT NULL,
 	[altura_agua] decimal(6,2) NOT NULL,
-	[ultima_atualizacao] SMALLDATETIME NOT NULL DEFAULT GETDATE(),	
-	[tipo_risco] INT NOT NULL,
+	[data_registro] DATETIME NOT NULL DEFAULT GETDATE(),	
+	[tipo_risco] INT NOT NULL DEFAULT 0,
 
-	CONSTRAINT [pk_sensoriamento_atual_id] PRIMARY KEY([id]),
-	CONSTRAINT [fk_sensoriamento_atual_ponto_sensoriamento_id] FOREIGN KEY([ponto_sensoriamento_id])
+	CONSTRAINT [pk_registros_sensoriamento_id] PRIMARY KEY([id]),
+	CONSTRAINT [fk_registros_sensoriamento_ponto_sensoriamento_id] FOREIGN KEY([ponto_sensoriamento_id])
         REFERENCES [dbo].[pontos_sensoriamento]([id])
 )
 GO
@@ -86,7 +86,7 @@ CREATE TABLE [dbo].[notificacoes_historico](
 	[nivel_pluviosidade] DECIMAL(6,2) NOT NULL,
 	[vazao_agua] DECIMAL(6,2) NOT NULL,
 	[altura_agua] DECIMAL(6,2) NOT NULL,
-	[data_notificacao] SMALLDATETIME NOT NULL DEFAULT GETDATE(),	
+	[data_notificacao] DATETIME NOT NULL DEFAULT GETDATE(),	
 	[tipo_risco] INT NOT NULL,
 
 	CONSTRAINT [pk_notificacoes_historico_id] PRIMARY KEY([id]),
@@ -472,6 +472,7 @@ BEGIN
 END
 GO
 
+
 -- SP's Estados Atendidos
 
 CREATE PROCEDURE sp_insert_estados_atendidos
@@ -591,21 +592,8 @@ GO
 -- SP's Sensoriamento Atual
 
 
-CREATE PROCEDURE sp_consulta_sensoriamentoAtual_por_pontoDeSensoriamentoId
+CREATE PROCEDURE sp_insert_registros_sensoriamento
 (
-	@ponto_sensoriamento_id INT
-)
-AS
-BEGIN
-	SELECT * FROM [dbo].[sensoriamento_atual] s
-	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id
-END
-GO
-
-
-CREATE PROCEDURE sp_update_sensoriamento_atual
-(
-	@id INT,
 	@ponto_sensoriamento_id INT,
 	@nivel_pluviosidade DECIMAL(6,2),
 	@vazao_da_agua DECIMAL(6,2),
@@ -613,16 +601,38 @@ CREATE PROCEDURE sp_update_sensoriamento_atual
 )
 AS
 BEGIN
-	UPDATE [dbo].[sensoriamento_atual] SET
-	nivel_pluviosidade = @nivel_pluviosidade, 
-	altura_agua = @altura_agua,
-	vazao_agua = @vazao_da_agua,
-	ultima_atualizacao = GETDATE()
-	WHERE id = @id AND ponto_sensoriamento_id = @ponto_sensoriamento_id
+	INSERT INTO [dbo].[registros_sensoriamento]
+	(nivel_pluviosidade, altura_agua, vazao_agua, ponto_sensoriamento_id, data_registro)
+	VALUES
+	(@nivel_pluviosidade, @altura_agua, @vazao_da_agua, @ponto_sensoriamento_id, GETDATE())
 END
 GO
 
-CREATE PROCEDURE sp_listar_sensoriamento_atual_por_cidade
+CREATE PROCEDURE sp_consulta_sensoriamentoAtual_por_pontoDeSensoriamentoId
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT TOP 1 * FROM [dbo].[registros_sensoriamento] s
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id
+	ORDER BY data_registro DESC
+END
+GO
+
+CREATE PROCEDURE sp_consulta_registros_sensoriamento_diario_por_pontoDeSensoriamentoId
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT * FROM [dbo].[registros_sensoriamento] s
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id 
+	AND (datediff(dd,data_registro, getdate()) = 0)
+END
+GO
+
+CREATE PROCEDURE sp_listar_sensoariamento_atual_por_cidade
 (
 	@cidade_atendida_id INT
 )
@@ -634,27 +644,55 @@ BEGIN
 	p.longitude,
 	p.cidade_atendida_id,
 	p.helix_id
-	FROM [dbo].[sensoriamento_atual] s
-	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
-	WHERE p.cidade_atendida_id = @cidade_atendida_id
+	INTO #temp FROM [dbo].[registros_sensoriamento] s
+	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id WHERE 1 = 2
+
+
+	DECLARE @ponto_sensoriamento_id INT;
+
+	DECLARE cursor_pds CURSOR STATIC FORWARD_ONLY FOR
+	SELECT id FROM [dbo].[pontos_sensoriamento] 
+
+	OPEN cursor_pds
+	FETCH NEXT FROM cursor_pds INTO @ponto_sensoriamento_id
+
+	WHILE @@fetch_Status = 0 
+	BEGIN
+		
+		INSERT INTO #temp
+		SELECT TOP 1 s.*, 
+		p.latitude,
+		p.longitude,
+		p.cidade_atendida_id,
+		p.helix_id
+		FROM [dbo].[registros_sensoriamento] s
+		INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id WHERE p.id = @ponto_sensoriamento_id
+		
+	FETCH NEXT FROM cursor_pds INTO @ponto_sensoriamento_id
+	END
+
+	CLOSE cursor_pds
+	DEALLOCATE cursor_pds
+
+	SELECT * FROM #temp
 
 END
 GO
 
-CREATE PROCEDURE sp_listar_sensoriamento_atual
-AS 
-BEGIN
+-- CREATE PROCEDURE sp_listar_registros_sensoriamento
+-- AS 
+-- BEGIN
 
-	SELECT s.*, 
-	p.latitude,
-	p.longitude,
-	p.cidade_atendida_id,
-	p.helix_id
-	FROM [dbo].[sensoriamento_atual] s
-	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
+-- 	SELECT s.*, 
+-- 	p.latitude,
+-- 	p.longitude,
+-- 	p.cidade_atendida_id,
+-- 	p.helix_id
+-- 	FROM [dbo].[registros_sensoriamento] s
+-- 	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
 
-END
-GO
+-- END
+-- GO
 
 -- SP's Parametros Notificação
 
@@ -691,7 +729,7 @@ END
 GO
 
 
--- TRIGGERS
+--TRIGGERS
 
 CREATE TRIGGER trg_criaDependenciasDoPontoDeSensoriamento ON [dbo].[pontos_sensoriamento]
 FOR INSERT
@@ -701,10 +739,10 @@ BEGIN
 
 	DECLARE @ponto_sensoriamento_id INT = (SELECT id FROM inserted)
 
-	INSERT INTO [dbo].[sensoriamento_atual] 
-	(ponto_sensoriamento_id, nivel_pluviosidade, vazao_agua, altura_agua, tipo_risco)
+	INSERT INTO [dbo].[registros_sensoriamento] 
+	(ponto_sensoriamento_id, nivel_pluviosidade, vazao_agua, altura_agua, tipo_risco, data_registro)
 	VALUES 
-	(@ponto_sensoriamento_id, 0.0, 0.0, 0.0, 0)
+	(@ponto_sensoriamento_id, 0.0, 0.0, 0.0, 0, GETDATE())
 
 	SET NOCOUNT OFF
 END
@@ -721,7 +759,7 @@ BEGIN
 
 	SELECT @ponto_sensoriamento_id = id, @cidade_atendida_id = cidade_atendida_id FROM deleted
 
-	DELETE FROM [dbo].[sensoriamento_atual]  
+	DELETE FROM [dbo].[registros_sensoriamento]  
 		WHERE [ponto_sensoriamento_id] = @ponto_sensoriamento_id
 
 	DELETE FROM [dbo].[notificacoes_historico]  
@@ -794,3 +832,6 @@ GO
 -- exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
 -- exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '3548708', 1
 -- exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
+
+
+exec sp_consulta_registros_sensoriamento_diario_por_pontoDeSensoriamentoId 1

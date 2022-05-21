@@ -11,10 +11,10 @@ namespace MVCAvisaEnchenteProject.Infrastructure.ViewComponents
 {
     public class GoogleMapsViewComponent : ViewComponent
     {
-        private readonly SensoriamentoAtualDAO _sensoriamentoAtualDAO;
+        private readonly RegistroSensoriamentoDAO _sensoriamentoAtualDAO;
         public GoogleMapsViewComponent()
         {
-            _sensoriamentoAtualDAO = new SensoriamentoAtualDAO();
+            _sensoriamentoAtualDAO = new RegistroSensoriamentoDAO();
         }
 
         public IViewComponentResult Invoke(Usuario usuarioLogado, string enderecoUsuario)

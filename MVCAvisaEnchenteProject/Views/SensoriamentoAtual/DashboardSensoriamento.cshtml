@@ -6,12 +6,21 @@
 
 <div class="pt-1 pb-2">
     <a class="text-secondary mb-1 btn btn-outline-light pl-0" style="border-color: transparent; background: transparent; " asp-controller="SensoriamentoAtual" asp-action="Index"><i class="fa-solid fa-angle-left fa-1x mr-2"></i>Voltar</a>
-    <div class="row">
-        <div class="col-md-6">
+    @*<div class="row"><div class="col-md-12 text-end"><small class="text-primary">Última Atualização: <strong>@Model.SensoriamentoAtual.DataRegistro</strong></small></div></div>*@
+    <div class="row mb-2" >
+        <div class="col-md-6" style="place-self: center;">
             <h4 class="text-primary pt-1">Dashboard</h4>
         </div>
         <div class="col-md-6">
-            <p class="text-primary mb-2 float-end">@Model.Endereco <i class="fa-solid fa-location-dot fa-1x mr-2"></i></p>
+            <div class="row">
+                <div class="col-md-12  text-end">
+                    <small class="text-primary" style="font-weight: 600;" id="ultima-atualizacao">Última Atualização: @Model.SensoriamentoAtual.DataRegistro</small>
+                </div>
+                <div class="col-md-12  text-end">
+                    <small class="text-primary" style="font-weight: 600;">@Model.Endereco <i class="fa-solid fa-location-dot fa-1x ml-2"></i></small>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -40,10 +49,10 @@
     <div class="col-md-4">
         <div class="card card-nivel-pluviosidade p-3 mb-2">
             <div class="mb-3">
-                Nivel de Pluviosidade
+                Intensidade da Chuva
             </div>
             <p id="nivel-pluviosidade-atual">
-                @Model.SensoriamentoAtual.NivelPluviosidade kg/m³
+                @Model.SensoriamentoAtual.NivelPluviosidade
             </p>
         </div>
     </div>
@@ -54,6 +63,8 @@
 
 <script>
     let tipoRisco = @((int)Model.SensoriamentoAtual.TipoRisco);
+    let dataAtual = new Date();
+
     function AtualizaSensoriamentoAtual() {
         $.ajax({
             type: 'GET',
@@ -63,9 +74,12 @@
                 if (result.notFound) {
                     window.location.href = "/SensoriamentoAtual/"
                 }
+                dataAtual = new Date(result.data.dataRegistro).toLocaleString();
                 $('#vazao-agua-atual').html(`${result.data.vazaoDaAgua} m/s`.replace('.', ','));
                 $('#altura-agua-atual').html(`${result.data.alturaAgua} mca`.replace('.', ','));
                 $('#nivel-pluviosidade-atual').html(`${result.data.nivelPluviosidade} kg/m³`.replace('.', ','));
+                $('#ultima-atualizacao').html(`Última Atualização: ${dataAtual}`);
+
                 if (result.data.tipoRisco !== tipoRisco) {
                     DisparaNotificacao(result.data.tipoRisco);
                     tipoRisco = result.data.tipoRisco;

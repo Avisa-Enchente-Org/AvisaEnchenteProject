@@ -16,7 +16,7 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
         public int UsuarioId { get; set; }
         public CidadeAtendida CidadeAtendida { get; set; }
         public EstadoAtendido EstadoAtendido { get; set; }
-        public SensoriamentoAtual SensoriamentoAtual { get; set; }
+        public RegistroSensoriamento SensoriamentoAtual { get; set; }
         public Usuario Usuario { get; set; }
 
         public PontoDeSensoriamento(CriarEditarPontoDeSensoriamentoViewModel pontoDeSensoriamentoViewModel, int cidadeAtendidaId, int usuarioId) : base(pontoDeSensoriamentoViewModel.Id)

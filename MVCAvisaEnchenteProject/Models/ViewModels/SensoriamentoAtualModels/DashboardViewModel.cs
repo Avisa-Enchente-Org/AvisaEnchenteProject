@@ -8,10 +8,10 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.SensoriamentoAtualModels
 {
     public class DashboardViewModel
     {
-        public SensoriamentoAtual SensoriamentoAtual { get; set; }
+        public RegistroSensoriamento SensoriamentoAtual { get; set; }
         public string Endereco { get; set; }
 
-        public DashboardViewModel(SensoriamentoAtual sensoriamentoAtual, string endereco)
+        public DashboardViewModel(RegistroSensoriamento sensoriamentoAtual, string endereco)
         {
             SensoriamentoAtual = sensoriamentoAtual;
             Endereco = endereco;

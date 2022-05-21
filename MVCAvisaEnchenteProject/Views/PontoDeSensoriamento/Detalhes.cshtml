@@ -1,0 +1,230 @@
+﻿@model PontoSensoriamentoDetalhesViewModel
+@{
+    ViewData["Title"] = "Detalhes do Ponto de Sensoriamento";
+}
+
+
+<div class="pt-3 pb-3">
+    <h5 class="text-primary pt-1">@ViewData["Title"]</h5>
+</div>
+
+<div class="row">
+    <div class="col-md-6 pr-0">
+        <div class="card card-body mb-2">
+
+            <h6 class="text-primary pb-2">Informações Gerais</h6>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Helix Id</small>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon2">urn:ngsi-ld:entity:</span>
+                            </div>
+                            <input asp-for="PontoSensoriamento.HelixId" class="form-control form-control-sm" readonly aria-describedby="basic-addon2" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Ativo</small>
+                        <div class="input-group input-group-sm">
+                            <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.AtivoHelix ? "Sim" : "Não")" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Ultima Edição Por:</small>
+                        <div class="input-group input-group-sm">
+                            <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.Usuario.NomeCompleto)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+
+        <div class="card card-body mb-2">
+
+            <h6 class="text-primary pb-2">Status Atual</h6>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Vazão (m/s)</small>
+                        <input id="vazao-agua-atual" class="form-control form-control-sm" readonly value="412,5" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Altura (cm)</small>
+                        <div class="input-group input-group-sm">
+                            <input id="altura-agua-atual" class="form-control form-control-sm" readonly value="1242,52" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Intensidade da Chuva</small>
+                        <div class="input-group input-group-sm">
+                            <input id="intensidade-chuva-atual" class="form-control form-control-sm" readonly value="45412,5" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Tipo do Risco</small>
+                        <div class="input-group input-group-sm">
+                            <input id="tipo-risco-atual" class="form-control form-control-sm" readonly value="Médio" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <small class="control-label text-primary">Última Atualização</small>
+                        <div class="input-group input-group-sm">
+                            <input id="ultima-atualizacao" class="form-control form-control-sm" readonly value="Médio" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-body">
+
+    <h6 class="text-primary pb-2">Localização</h6>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <small class="control-label text-primary">Estado</small>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.EstadoAtendido.UF)" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <small class="control-label text-primary">Cidade</small>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" readonly value="@(Model.PontoSensoriamento.CidadeAtendida.Descricao)" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <small class="control-label text-primary">Latitude</small>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm geolocalizacao-input" readonly value="@(Model.PontoSensoriamento.Latitude.ToString().Replace("," , "."))" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <small class="control-label text-primary">Longitude</small>
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm geolocalizacao-input" readonly value="@(Model.PontoSensoriamento.Longitude.ToString().Replace("," , "."))" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!Model.ParametrosNotificacao.Any())
+{
+    <p>
+        <a asp-controller="ParametrosNotificacao" asp-action="CadastrarEditarParametros" asp-route-id="@Model.PontoSensoriamento.Id" class="btn btn-primary btn-sm text-white mt-3 float-end" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
+    </p>
+}
+else
+{
+    <div class="pt-3">
+        <h6 class="text-primary pt-1">Parametros de Notificação</h6>
+    </div>
+
+
+    @foreach (var param in Model.ParametrosNotificacao)
+    {
+        <div class="card my-3">
+            <div class="card-header text-primary" style="font-weight: 500;">
+                <a class="btn-header-card" data-toggle="collapse" href="#collapse@(param.TipoRisco)" role="button" aria-expanded="false" aria-controls="collapse@(param.TipoRisco)">
+                    @param.TipoRisco.GetDescription()
+                </a>
+            </div>
+            <div class="collapse show" id="collapse@(param.TipoRisco)">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                                <div class="input-group input-group-sm">
+                                    <input class="form-control form-control-sm" placeholder="Vazão da Água" value="@param.VazaoDaAgua" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label text-primary">Altura da Água (cm)</label>
+                                <div class="input-group input-group-sm">
+                                    <input class="form-control form-control-sm" placeholder="Altura da Água" value="@param.AlturaAgua" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label text-primary">Intensidade da Chuva</label>
+                                <div class="input-group input-group-sm">
+                                    <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" value="@param.NivelPluviosidade" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-2 mb-5" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
+}
+
+@section Scripts
+{
+    <script>
+    let dataAtual = new Date();
+    $(document).ready(function () {
+        AtualizaSensoriamentoAtual();
+    });
+
+    function AtualizaSensoriamentoAtual() {
+        $.ajax({
+            type: 'GET',
+            url: "/SensoriamentoAtual/ObtemSensoriamentoAtual",
+            data: { pontoDeSensoriamentoId: @Model.PontoSensoriamento.Id },
+            success: function (result) {
+                if (result.notFound) {
+                    window.location.href = "/SensoriamentoAtual/"
+                }
+                dataAtual = new Date(result.data.dataRegistro).toLocaleString();
+                $('#vazao-agua-atual').val(`${result.data.vazaoDaAgua}`.replace('.', ','));
+                $('#altura-agua-atual').val(`${result.data.alturaAgua}`.replace('.', ','));
+                $('#intensidade-chuva-atual').val(`${result.data.nivelPluviosidade}`.replace('.', ','));
+                $('#ultima-atualizacao').val(`${dataAtual}`);
+                $('#tipo-risco-atual').val(`${result.data.tipoRiscoTexto}`);
+
+            }
+        })
+    }
+
+
+    setInterval(AtualizaSensoriamentoAtual, 10000);
+    </script>
+}

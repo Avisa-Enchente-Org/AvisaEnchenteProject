@@ -17,18 +17,18 @@ namespace MVCAvisaEnchenteProject.Controllers
             _pontoSensoriamentoDAO = new PontoDeSensoriamentoDAO();
         }
 
-        public override IActionResult Index(int id)
-        {
-            var pds = _pontoSensoriamentoDAO.ConsultarPorId(id);
-            if (pds == null)
-                return RedirectToAction("Index", "SensoriamentoAtual");
+        //public override IActionResult Index(int id)
+        //{
+        //    var pds = _pontoSensoriamentoDAO.ConsultarPorId(id);
+        //    if (pds == null)
+        //        return RedirectToAction("Index", "SensoriamentoAtual");
 
-            var parametrosNotificacao = DAOPrincipal.ListarParametrosNotificacaoPorPDS(pds.Id);
+        //    var parametrosNotificacao = DAOPrincipal.ListarParametrosNotificacaoPorPDS(pds.Id);
 
-            var indexViewModel = new ParametrosNotificaoIndexViewModel(pds, parametrosNotificacao);
+        //    var indexViewModel = new ParametrosNotificaoIndexViewModel(pds, parametrosNotificacao);
 
-            return View(indexViewModel);
-        }
+        //    return View(indexViewModel);
+        //}
 
         [HttpGet]
         public IActionResult CadastrarEditarParametros(int id)
@@ -48,6 +48,13 @@ namespace MVCAvisaEnchenteProject.Controllers
         [HttpPost]
         public IActionResult SalvarParametrosNotificacao(CriarEditarParametrosNotificacaoViewModel model)
         {
+            if (!ModelState.IsValid)
+            {             
+                TempData["Error"] = "Ocorreram erros de Cadastro, Verifique os campos dos parametros de notificação";
+                return View("CadastrarEditarParametros", model);
+            }
+
+
             return RedirectToAction("Index", "SensoriamentoAtual", new { id = model.PontoDeSensoriamentoId});
         }
     }

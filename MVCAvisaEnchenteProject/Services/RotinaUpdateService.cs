@@ -3,6 +3,7 @@ using Integracoes.Models.Helix.PontoDeSensoriamento;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
+using MVCAvisaEnchenteProject.Models.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,15 @@ namespace MVCAvisaEnchenteProject.Services
     {
         private readonly ILogger _logger;
         private readonly IntegracaoHelix _integrecaoHelix;
-        private readonly SensoriamentoAtualDAO _sensoriamentoAtualDAO;
-        private Timer _timer = null!;
-        private int executionCount = 0;
+        private readonly RegistroSensoriamentoDAO _registrosSensoriamentoDAO;
+        private readonly PontoDeSensoriamentoDAO _pontoDeSensoriamentoDAO;
 
         public RotinaUpdateService(ILogger<RotinaUpdateService> logger)
         {
             _logger = logger;
             _integrecaoHelix = new IntegracaoHelix(new Integracoes.Api.HelixApi());
-            _sensoriamentoAtualDAO = new SensoriamentoAtualDAO();
+            _registrosSensoriamentoDAO = new RegistroSensoriamentoDAO();
+            _pontoDeSensoriamentoDAO = new PontoDeSensoriamentoDAO();
 
         }
 
@@ -38,35 +39,42 @@ namespace MVCAvisaEnchenteProject.Services
 
         private async Task AtualizarSensoriamentoAtual()
         {
-            var listaSensores = _sensoriamentoAtualDAO.Listar();
-            var consultaEntidadesHelix = await _integrecaoHelix.ListEntities<PontoDeSensoriamentoHelixEntity>();
-
-            foreach (var ls in listaSensores)
+            try
             {
-                var sensor = consultaEntidadesHelix.ToList().Where(cEH => cEH.Id == ls.PontoDeSensoriamento.HelixId).FirstOrDefault();
+                var listaSensores = _pontoDeSensoriamentoDAO.Listar();
+                var consultaEntidadesHelix = await _integrecaoHelix.ListEntities<PontoDeSensoriamentoHelixEntity>();
 
-                _logger.LogInformation("helixid: {sensor}", ls.PontoDeSensoriamento.HelixId);
-
-                if (sensor == null)
+                foreach (var ls in listaSensores)
                 {
-                    var randomNum = new Random();
-                    ls.AlturaAgua = randomNum.Next(200) + randomNum.NextDouble();
-                    ls.NivelPluviosidade = randomNum.Next(200) + randomNum.NextDouble();
-                    ls.VazaoDaAgua = randomNum.Next(200) + randomNum.NextDouble();
-                    ls.UltimaAtualizacao = DateTime.Now;
-                }
-                else
-                {
-                    ls.AlturaAgua = sensor.RiverHeight.Value;
-                    ls.NivelPluviosidade = sensor.RainIntensity.Value;
-                    ls.VazaoDaAgua = sensor.RiverFlowrate.Value;
-                    ls.UltimaAtualizacao = DateTime.Now;
-                }
+                    var sensor = consultaEntidadesHelix.ToList().Where(cEH => cEH.Id == ls.HelixId).FirstOrDefault();
 
-                _logger.LogInformation($"AlturaAgua: {ls.AlturaAgua} - NivelPluviosidade: {ls.NivelPluviosidade} - VazaoDaAgua: {ls.VazaoDaAgua}");
+                    _logger.LogInformation("helixid: {sensor}", ls.HelixId);
 
-                _sensoriamentoAtualDAO.Atualizar(ls);
+                    var registroSensoriamento = new RegistroSensoriamento(ls.Id);
+                    if (sensor == null)
+                    {
+                        var randomNum = new Random();
+                        registroSensoriamento.AlturaAgua = randomNum.Next(200) + randomNum.NextDouble();
+                        registroSensoriamento.NivelPluviosidade = randomNum.Next(200) + randomNum.NextDouble();
+                        registroSensoriamento.VazaoDaAgua = randomNum.Next(200) + randomNum.NextDouble();
+                    }
+                    else
+                    {
+                        registroSensoriamento.AlturaAgua = sensor.RiverHeight.Value;
+                        registroSensoriamento.NivelPluviosidade = sensor.RainIntensity.Value;
+                        registroSensoriamento.VazaoDaAgua = sensor.RiverFlowrate.Value;
+                    }
+
+                    _logger.LogInformation($"AlturaAgua: {registroSensoriamento.AlturaAgua} - NivelPluviosidade: {registroSensoriamento.NivelPluviosidade} - VazaoDaAgua: {registroSensoriamento.VazaoDaAgua}");
+
+                    _registrosSensoriamentoDAO.Inserir(registroSensoriamento);
+                }
             }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"EXCEPTION: {e.Message}");
+            }
+
         }
     }
 }

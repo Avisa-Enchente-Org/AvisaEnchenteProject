@@ -39,8 +39,8 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels
             Ativo = pontoDeSensoriamento.AtivoHelix;
             CodigoEstado = pontoDeSensoriamento.EstadoAtendido.CodigoEstado;
             CodigoCidade = pontoDeSensoriamento.CidadeAtendida.CodigoCidade;
-            Latitude = pontoDeSensoriamento.Latitude.ToString();
-            Longitude = pontoDeSensoriamento.Longitude.ToString();
+            Latitude = pontoDeSensoriamento.Latitude.ToString().Replace("," , ".");
+            Longitude = pontoDeSensoriamento.Longitude.ToString().Replace(",", ".");
             CodigoCidade = pontoDeSensoriamento.CidadeAtendida.CodigoCidade;
         }
 

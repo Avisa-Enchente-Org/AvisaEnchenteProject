@@ -119,9 +119,5 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return pontoDeSensoriamento;
         }
 
-        internal object ConsultarPorHelixId(int value)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

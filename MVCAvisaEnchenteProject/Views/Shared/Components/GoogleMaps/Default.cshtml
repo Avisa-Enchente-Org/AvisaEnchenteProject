@@ -142,7 +142,7 @@
 
                 marker.addListener("click", () => {
                     infoWindow.close();
-                    infoWindow.setContent(`<a href="https://localhost:44367/SensoriamentoAtual/DashboardSensoriamento/${markerAtual.id}" class="btn btn-outline-secondary" target="blank"><i class="fa-solid fa-chart-line fa-1x mr-2"></i>Dashboard</a>`);
+                    infoWindow.setContent(`<a href="https://localhost:44367/SensoriamentoAtual/DashboardSensoriamento/${markerAtual.id}" class="btn btn-outline-primary" target="blank"><i class="fa-solid fa-chart-line fa-1x mr-2"></i>Dashboard</a>`);
                     infoWindow.open(marker.getMap(), marker);
                 });
 

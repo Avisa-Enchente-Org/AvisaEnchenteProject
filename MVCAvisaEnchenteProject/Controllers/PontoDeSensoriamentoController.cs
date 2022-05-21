@@ -12,6 +12,7 @@ using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
 using MVCAvisaEnchenteProject.Models.ViewModels;
 using MVCAvisaEnchenteProject.Models.ViewModels.GoogleMaps;
+using MVCAvisaEnchenteProject.Models.ViewModels.ParametrosNotificacao;
 using MVCAvisaEnchenteProject.Models.ViewModels.PontoDeSensoriamentoModels;
 using RestSharp;
 using System;
@@ -30,6 +31,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         private readonly IntegracaoHelix _integracaoHelix;
         private readonly EstadoAtendidoDAO _estadoAtendidoDAO;
         private readonly CidadeAtendidaDAO _cidadeAtendidaDAO;
+        private readonly ParametroNotificacaoDAO _parametroNotificaoDAO;
 
         public PontoDeSensoriamentoController() : base()
         {
@@ -38,6 +40,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             _integracaoHelix = new IntegracaoHelix(new HelixApi());
             _estadoAtendidoDAO = new EstadoAtendidoDAO();
             _cidadeAtendidaDAO = new CidadeAtendidaDAO();
+            _parametroNotificaoDAO = new ParametroNotificacaoDAO();
 
         }
 
@@ -214,7 +217,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
             var localizacaoLatLng = await _integracaoGeocode.ObtemLocalizacaoPorLatLng(latitude, longitude);
 
-            if (localizacaoLatLng.status == Status.Ok)
+            if (localizacaoLatLng != null && localizacaoLatLng.status == Status.Ok)
             {
                 var estadoLocalizado = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.EstadoType) && e.long_name == estadoSelecionado.Nome || e.short_name == estadoSelecionado.Sigla)).First();
                 var cidadeLocalizada = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.CidadeType) && e.long_name == cidadeSelecionada.Nome || e.short_name == cidadeSelecionada.Nome)).First();
@@ -242,5 +245,18 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Detalhes(int id)
+        {
+            var pds = DAOPrincipal.ConsultarPorId(id);
+            if (pds == null)
+                return RedirectToAction("Index", "SensoriamentoAtual");
+
+            var parametrosNotificacao = _parametroNotificaoDAO.ListarParametrosNotificacaoPorPDS(pds.Id);
+
+            var indexViewModel = new PontoSensoriamentoDetalhesViewModel(pds, parametrosNotificacao);
+
+            return View(indexViewModel);
+        }
     }
 }

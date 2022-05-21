@@ -75,8 +75,8 @@ namespace MVCAvisaEnchenteProject
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(
-                name: "PontoDeSensoriamento",
-                pattern: "PontoDeSensoriamento/{id}/{controller=ParametrosNotificacao}/{action=Index}");
+                name: "ParamatrosNotificacao",
+                pattern: "PontoDeSensoriamento/{id?}/CadastrarEditarParametros");
             });
         }
     }

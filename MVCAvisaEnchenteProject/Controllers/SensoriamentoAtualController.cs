@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace MVCAvisaEnchenteProject.Controllers
 {
     [Authorize]
-    public class SensoriamentoAtualController : BaseController<SensoriamentoAtual, SensoriamentoAtualDAO>
+    public class SensoriamentoAtualController : BaseController<RegistroSensoriamento, RegistroSensoriamentoDAO>
     {
         private readonly UsuarioDAO _usuarioDAO;
         private readonly PontoDeSensoriamentoDAO _pdsDAO;

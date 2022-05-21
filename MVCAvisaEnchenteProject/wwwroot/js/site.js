@@ -2,6 +2,9 @@
     ChangeIconButtonFiltro();
 });
 
+$(".decimal-input").numeric({ decimal: ",", negative: false, decimalPlaces: 2 });
+$(".geolocalizacao-input").numeric({ decimal: ".", negative: false, decimalPlaces: 9 });
+
 $(function () {
 
     if ($("div.notification").length) {
