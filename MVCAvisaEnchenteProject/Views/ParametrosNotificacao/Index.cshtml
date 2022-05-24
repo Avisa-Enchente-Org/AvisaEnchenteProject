@@ -1,0 +1,171 @@
+﻿@model PesquisaAvancadaAlertasRiscoViewModel
+
+@{
+    ViewData["Title"] = "Alertas de Risco";
+}
+
+
+
+<div id="pv-pesquisa-avancada-alertas-risco" class="my-3">
+
+    <div id="accordion">
+        <div class="w-100">
+            <div class="row pb-2" style="align-items:center;">
+                <div class="col-md-6">
+                    <h4 class="text-primary">@ViewData["Title"]</h4>
+                </div>
+                <div class="col-md-6" style="text-align: end;">
+                    <button onclick="ChangeIconButtonFiltro()" class="btn btn-sm btn-primary" style="width: 100%; max-width: 90px; font-size: 1rem" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Filtros <i id="filtrar-collapse-icon" class="fa-solid fa-caret-up ml-2 showing-collapse"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-primary">Filtrar por: </h6>
+                    <form  asp-action="PesquisaAvancadaAlertasDeRisco" onsubmit="return realizaPesquisaAvancada(this);" id="pesquisa-avancada-alertas-risco">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PontoDeSensoriamentoId" class="control-label text-primary"></label>
+                                    <div id="pontos-sensoriamento">
+                                        @Html.DropDownListFor(m => m.PontoDeSensoriamentoId, new List<SelectListItem>(), "Selecione o Pontos de Sensoriamento...", new { @class = "form-control form-control-sm", @id = "selectPontosDeSensoriamento" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TipoRisco" class="control-label text-primary"></label>
+                                    <select class='form-control form-control-sm' asp-for="TipoRisco">
+                                        <option value="">Nenhum</option>
+                                        <option value="1">Baixo</option>
+                                        <option value="2">Médio</option>
+                                        <option value="3">Alto</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="EstadoId" class="control-label text-primary"></label>
+                                    <div id="estados-atendidos">
+                                        @Html.DropDownListFor(m => m.EstadoId, new List<SelectListItem>(), "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="CidadeId" class="control-label text-primary"></label>
+                                    <div id="municipios-atendidos">
+                                        @Html.DropDownListFor(m => m.CidadeId, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidadeAtendida" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5" style="padding-top: 2rem; text-align: end">
+                                <div class="form-group">
+                                    <button type="submit" value="Pesquisar" style="width: 100%; max-width: 140px" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-filter mr-1"></i>
+                                        Filtrar
+                                    </button>
+                                    <button type="reset" value="Limpar" style="width: 100%; max-width: 100px" class="btn btn-outline-secondary btn-sm ">
+                                        <i class="fa-solid fa-eraser mr-1"></i>
+                                        Limpar
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="pv-listar-alertas-risco">
+    @await Html.PartialAsync("_ListarAlertasRisco", new List<RegistroSensoriamento>())
+</div>
+
+@section Scripts {
+    <script src="~/js/configurations.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            realizaBuscaEstadosAtendidas();
+            realizaBuscaPontosSensoriamento();
+            ChangeIconButtonFiltro();
+        });
+
+        realizaBuscaEstadosAtendidas = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListEstadosAtendidos",
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var estadosHtml = "<select class='form-control form-control-sm' id='selectEstadoAtendido' name='EstadoId'>";
+                    estadosHtml = estadosHtml + '<option value="">Selecione o Estado...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        estadosHtml = estadosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    estadosHtml = estadosHtml + '</select>';
+                    $('#estados-atendidos').html(estadosHtml);
+                    $('#selectEstadoAtendido').val(@Model.EstadoId)
+                    $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+                }
+            })
+        };
+
+        realizaBuscaCidadesAtendidas = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListCidadesAtendidasPorEstadoId",
+                data: { estado: $('#selectEstadoAtendido').val() },
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeId'>";
+                    municipiosHtml = municipiosHtml + '<option value="">Selecione a Cidade...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    municipiosHtml = municipiosHtml + '</select>';
+                    $('#municipios-atendidos').html(municipiosHtml);
+                    $('#selectCidadeAtendida').val(@Model.CidadeId)
+                }
+            })
+        };
+
+        realizaBuscaPontosSensoriamento = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/PontoDeSensoriamento/ObtemSelectListPontosSensoriamento",
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var pdsHtml = "<select class='form-control form-control-sm' id='selectPontosDeSensoriamento' name='PontoDeSensoriamentoId'>";
+                    pdsHtml = pdsHtml + '<option value="">Selecione o Ponto de Sensoriamento...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        pdsHtml = pdsHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    pdsHtml = pdsHtml + '</select>';
+                    $('#pontos-sensoriamento').html(pdsHtml);
+                    $('#selectPontosDeSensoriamento').val(@Model.PontoDeSensoriamentoId)
+                }
+            })
+        };
+
+    </script>
+}

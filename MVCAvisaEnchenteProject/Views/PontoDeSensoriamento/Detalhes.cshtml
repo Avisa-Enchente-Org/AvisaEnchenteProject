@@ -9,10 +9,10 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 pr-0">
+    <div class="col-md-6 pr-2">
         <div class="card card-body mb-2">
 
-            <h6 class="text-primary pb-2">Informações Gerais</h6>
+            <h5 class="text-primary pb-2">Informações Gerais</h5>
 
             <div class="row">
                 <div class="col-md-12">
@@ -46,25 +46,34 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 pl-2">
 
         <div class="card card-body mb-2">
 
-            <h6 class="text-primary pb-2">Status Atual</h6>
+
+            <div class="row pb-2">
+                <div class="col-md-10" style="place-self: center;">
+                    <h5 class="text-primary pb-2">Status Atual</h5>
+                </div>
+                <div class="col-md-2" style="text-align: end;">
+                    <a onclick="AtualizaSensoriamentoAtual()" class="btn btn-sm btn-primary text-white"><i class="fa-solid fa-rotate-right fa-1x"></i></a>
+                </div>
+            </div>
+
 
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <small class="control-label text-primary">Vazão (m/s)</small>
-                        <input id="vazao-agua-atual" class="form-control form-control-sm" readonly value="412,5" />
+                        <small class="control-label text-primary">Vel. do Rio</small>
+                        <input id="vazao-agua-atual" class="form-control form-control-sm" readonly />
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
-                        <small class="control-label text-primary">Altura (cm)</small>
+                        <small class="control-label text-primary">Nível do Rio</small>
                         <div class="input-group input-group-sm">
-                            <input id="altura-agua-atual" class="form-control form-control-sm" readonly value="1242,52" />
+                            <input id="altura-agua-atual" class="form-control form-control-sm" readonly />
                         </div>
                     </div>
                 </div>
@@ -72,7 +81,7 @@
                     <div class="form-group">
                         <small class="control-label text-primary">Intensidade da Chuva</small>
                         <div class="input-group input-group-sm">
-                            <input id="intensidade-chuva-atual" class="form-control form-control-sm" readonly value="45412,5" />
+                            <input id="intensidade-chuva-atual" class="form-control form-control-sm" readonly />
                         </div>
                     </div>
                 </div>
@@ -80,7 +89,7 @@
                     <div class="form-group">
                         <small class="control-label text-primary">Tipo do Risco</small>
                         <div class="input-group input-group-sm">
-                            <input id="tipo-risco-atual" class="form-control form-control-sm" readonly value="Médio" />
+                            <input id="tipo-risco-atual" class="form-control form-control-sm" readonly />
                         </div>
                     </div>
                 </div>
@@ -88,7 +97,7 @@
                     <div class="form-group">
                         <small class="control-label text-primary">Última Atualização</small>
                         <div class="input-group input-group-sm">
-                            <input id="ultima-atualizacao" class="form-control form-control-sm" readonly value="Médio" />
+                            <input id="ultima-atualizacao" class="form-control form-control-sm" readonly />
                         </div>
                     </div>
                 </div>
@@ -99,9 +108,9 @@
 
 
 
-<div class="card card-body">
+<div class="card card-body mt-2">
 
-    <h6 class="text-primary pb-2">Localização</h6>
+    <h5 class="text-primary pb-2">Localização</h5>
 
     <div class="row">
         <div class="col-md-2">
@@ -139,92 +148,220 @@
     </div>
 </div>
 
-@if (!Model.ParametrosNotificacao.Any())
-{
-    <p>
-        <a asp-controller="ParametrosNotificacao" asp-action="CadastrarEditarParametros" asp-route-id="@Model.PontoSensoriamento.Id" class="btn btn-primary btn-sm text-white mt-3 float-end" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
-    </p>
-}
-else
-{
-    <div class="pt-3">
-        <h6 class="text-primary pt-1">Parametros de Notificação</h6>
+
+<div class="card card-body mt-3">
+
+    <div class="row py-2">
+        <div class="col-md-7" style="place-self: center;">
+            <h5 class="text-primary">Parametros de Notificação</h5>
+        </div>
+        <div class="col-md-5">
+            <div class="row">
+
+                @if (Model.ParametrosNotificacao.Any())
+                {
+                    <div class="col-md-6 pr-1">
+                        <a asp-controller="ParametrosNotificacao" asp-action="CadastrarEditarParametros" asp-route-id="@Model.PontoSensoriamento.Id" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 14rem; font-size: 0.9rem; text-align: center"><i class="fa-solid fa-pen-to-square mr-1"></i>Editar Notificações</a>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                        <a onclick="deletarPorIdEController(@Model.PontoSensoriamento.Id, 'ParametrosNotificacao')" class="btn btn-danger btn-sm text-white" style="width: 100%; max-width: 14rem; font-size: 0.9rem; text-align: center"><i class="fa-solid fa-trash mr-1"></i>Excluir Notificações</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-12 pl-1" style=" text-align: end;">
+                        <a asp-controller="ParametrosNotificacao" asp-action="CadastrarEditarParametros" asp-route-id="@Model.PontoSensoriamento.Id" class="btn btn-primary btn-sm text-white" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
+                    </div>
+                }
+
+            </div>
+        </div>
     </div>
 
-
-    @foreach (var param in Model.ParametrosNotificacao)
+    @if (Model.ParametrosNotificacao.Any())
     {
-        <div class="card my-3">
-            <div class="card-header text-primary" style="font-weight: 500;">
-                <a class="btn-header-card" data-toggle="collapse" href="#collapse@(param.TipoRisco)" role="button" aria-expanded="false" aria-controls="collapse@(param.TipoRisco)">
-                    @param.TipoRisco.GetDescription()
-                </a>
-            </div>
-            <div class="collapse show" id="collapse@(param.TipoRisco)">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-primary">Vazão da Água (m/s²)</label>
-                                <div class="input-group input-group-sm">
-                                    <input class="form-control form-control-sm" placeholder="Vazão da Água" value="@param.VazaoDaAgua" readonly />
+        @foreach (var param in Model.ParametrosNotificacao)
+        {
+            <div class="card my-2">
+                <div class="card-header text-primary" style="font-weight: 500;">
+                    <a class="btn-header-card" data-toggle="collapse" href="#collapse@(param.TipoRisco)" role="button" aria-expanded="false" aria-controls="collapse@(param.TipoRisco)">
+                        @param.TipoRisco.GetDescription()
+                    </a>
+                </div>
+                <div class="collapse" id="collapse@(param.TipoRisco)">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label text-primary">Velocidade do Rio (km/h)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input class="form-control form-control-sm" placeholder="Vazão da Água" value="@param.VazaoDaAgua" readonly />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-primary">Altura da Água (cm)</label>
-                                <div class="input-group input-group-sm">
-                                    <input class="form-control form-control-sm" placeholder="Altura da Água" value="@param.AlturaAgua" readonly />
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label text-primary">Nível do Rio (cm)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input class="form-control form-control-sm" placeholder="Altura da Água" value="@param.AlturaAgua" readonly />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-primary">Intensidade da Chuva</label>
-                                <div class="input-group input-group-sm">
-                                    <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" value="@param.NivelPluviosidade" readonly />
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label text-primary">Intensidade da Chuva</label>
+                                    <div class="input-group input-group-sm">
+                                        <input class="form-control form-control-sm" placeholder="Intensidade da Chuva" value="@param.NivelPluviosidade" readonly />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     }
 
-    <a onclick="abrirFormModal()" class="btn btn-primary btn-sm text-white mt-2 mb-5" style="width: 100%; max-width: 16rem; font-size: 1rem; text-align: center"><i class="fa-solid fa-plus mr-1"></i>Cadastrar Notificações</a>
-}
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card card-body mt-2">
+
+            <div class="row py-2">
+                <div class="col-md-10" style="place-self: center;">
+                    <h5 class="text-primary">Últimos 50 Registros de Sensoriamento</h5>
+                </div>
+                <div class="col-md-2" style="text-align: end;">
+                    <a id="ultimos-registros-button" class="btn btn-sm btn-primary text-white"><i class="fa-solid fa-rotate-right fa-1x"></i></a>
+                </div>
+            </div>
+
+            <table class="table-sm table-striped table-responsive-xl"
+                   id="table-ultimos-registros"
+                   data-toggle="table"
+                   data-height="260"
+                   data-ajax="ultimosRegistrosRequest"
+                   data-pagination="true"
+                   data-page-list="[5, 10, 15, 20, 25, 50]">
+                <thead>
+                    <tr>
+                        <th data-field="vazaoDaAgua" data-sortable="true" data-width="20" data-width-unit="%">Velocidade do Rio</th>
+                        <th data-field="alturaAgua" data-sortable="true" data-width="20" data-width-unit="%">Nível do Rio</th>
+                        <th data-field="nivelPluviosidade" data-sortable="true" data-width="20" data-width-unit="%">Intensidade da Chuva</th>
+                        <th data-field="tipoRiscoTexto" data-sortable="true" data-width="20" data-width-unit="%">Tipo do Risco</th>
+                        <th data-field="dataRegistroTexto" data-sortable="true" data-width="20" data-width-unit="%">Data do Registro</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card card-body mt-2">
+
+            <div class="row py-2">
+                <div class="col-md-10" style="place-self: center;">
+                    <h5 class="text-primary">Últimos 50 Alertas de Risco</h5>
+                </div>
+                <div class="col-md-2" style="text-align: end;">
+                    <a id="ultimos-alertas-button" class="btn btn-sm btn-primary text-white"><i class="fa-solid fa-rotate-right fa-1x"></i></a>
+                </div>
+            </div>
+
+            <table class="table-sm table-striped table-responsive-xl"
+                   id="table-ultimos-alertas"
+                   data-toggle="table"
+                   data-height="280"
+                   data-ajax="ultimosAlertasRequest"
+                   data-pagination="true"
+                   data-page-list="[5, 10, 15, 20, 25, 50, 100]">
+                <thead>
+                    <tr>
+                        <th data-field="vazaoDaAgua" data-sortable="true" data-width="20" data-width-unit="%">Velocidade do Rio</th>
+                        <th data-field="alturaAgua" data-sortable="true" data-width="20" data-width-unit="%">Nível do Rio</th>
+                        <th data-field="nivelPluviosidade" data-sortable="true" data-width="20" data-width-unit="%">Intensidade da Chuva</th>
+                        <th data-field="tipoRiscoTexto" data-sortable="true" data-width="20" data-width-unit="%">Tipo do Risco</th>
+                        <th data-field="dataRegistroTexto" data-sortable="true" data-width="20" data-width-unit="%">Data do Registro</th>
+                    </tr>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
 
 @section Scripts
 {
     <script>
-    let dataAtual = new Date();
-    $(document).ready(function () {
-        AtualizaSensoriamentoAtual();
-    });
+        var $tableUltimosRegistros = $('#table-ultimos-registros')
+        var $tableUltimosAlertas = $('#table-ultimos-alertas')
+        var $ultimosRegistrosButton = $('#ultimos-registros-button')
+        var $ultimosAlertasButton = $('#ultimos-alertas-button')
 
-    function AtualizaSensoriamentoAtual() {
-        $.ajax({
-            type: 'GET',
-            url: "/SensoriamentoAtual/ObtemSensoriamentoAtual",
-            data: { pontoDeSensoriamentoId: @Model.PontoSensoriamento.Id },
-            success: function (result) {
-                if (result.notFound) {
-                    window.location.href = "/SensoriamentoAtual/"
+        let dataAtual = new Date();
+        $(document).ready(function () {
+            AtualizaSensoriamentoAtual();
+        });
+
+        function AtualizaSensoriamentoAtual() {
+            $.ajax({
+                type: 'GET',
+                url: "/SensoriamentoAtual/ObtemSensoriamentoAtual",
+                data: { pontoDeSensoriamentoId: @Model.PontoSensoriamento.Id },
+                success: function (result) {
+                    if (result.notFound) {
+                        window.location.href = "/SensoriamentoAtual/"
+                    }
+                    dataAtual = new Date(result.data.dataRegistro).toLocaleString();
+                    $('#vazao-agua-atual').val(`${result.data.vazaoDaAgua} km/h`.replace('.', ','));
+                    $('#altura-agua-atual').val(`${result.data.alturaAgua} m`.replace('.', ','));
+                    $('#intensidade-chuva-atual').val(`${result.data.nivelPluviosidade}`.replace('.', ','));
+                    $('#ultima-atualizacao').val(`${dataAtual}`);
+                    $('#tipo-risco-atual').val(`${result.data.tipoRiscoTexto}`);
+
                 }
-                dataAtual = new Date(result.data.dataRegistro).toLocaleString();
-                $('#vazao-agua-atual').val(`${result.data.vazaoDaAgua}`.replace('.', ','));
-                $('#altura-agua-atual').val(`${result.data.alturaAgua}`.replace('.', ','));
-                $('#intensidade-chuva-atual').val(`${result.data.nivelPluviosidade}`.replace('.', ','));
-                $('#ultima-atualizacao').val(`${dataAtual}`);
-                $('#tipo-risco-atual').val(`${result.data.tipoRiscoTexto}`);
+            })
+        }
 
-            }
+        function ultimosRegistrosRequest(params) {
+            $.ajax({
+                type: 'GET',
+                url: "/PontoDeSensoriamento/UltimosRegistros",
+                data: { pdsId: @Model.PontoSensoriamento.Id },
+                success: function (result) {
+                    params.success(result);
+                }
+            })
+        }
+        function ultimosAlertasRequest(params) {
+            $.ajax({
+                type: 'GET',
+                url: "/PontoDeSensoriamento/UltimosAlertasDeRisco",
+                data: { pdsId: @Model.PontoSensoriamento.Id },
+                success: function (result) {
+                    params.success(result);
+                }
+            })
+        }
+
+
+        $(function () {
+            $ultimosRegistrosButton.click(function () {
+                $tableUltimosRegistros.bootstrapTable('refresh');
+                AtualizaSensoriamentoAtual();
+            })
         })
-    }
 
+        $(function () {
+            $ultimosAlertasButton.click(function () {
+                $tableUltimosAlertas.bootstrapTable('refresh');
+            })
+        })
 
-    setInterval(AtualizaSensoriamentoAtual, 10000);
+        setInterval(AtualizaSensoriamentoAtual, 10000);
     </script>
 }

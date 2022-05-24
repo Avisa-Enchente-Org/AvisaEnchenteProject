@@ -33,7 +33,7 @@ namespace MVCAvisaEnchenteProject.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 await AtualizarSensoriamentoAtual();
-                await Task.Delay(30000, stoppingToken);
+                await Task.Delay(10000, stoppingToken);
             }
         }
 
@@ -54,9 +54,9 @@ namespace MVCAvisaEnchenteProject.Services
                     if (sensor == null)
                     {
                         var randomNum = new Random();
-                        registroSensoriamento.AlturaAgua = randomNum.Next(200) + randomNum.NextDouble();
-                        registroSensoriamento.NivelPluviosidade = randomNum.Next(200) + randomNum.NextDouble();
-                        registroSensoriamento.VazaoDaAgua = randomNum.Next(200) + randomNum.NextDouble();
+                        registroSensoriamento.AlturaAgua = randomNum.Next(500) + randomNum.NextDouble();
+                        registroSensoriamento.NivelPluviosidade = randomNum.Next(1500) + randomNum.NextDouble();
+                        registroSensoriamento.VazaoDaAgua = randomNum.Next(25) + randomNum.NextDouble();
                     }
                     else
                     {

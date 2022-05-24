@@ -5,13 +5,18 @@
 
 @if (User?.Identity?.IsAuthenticated ?? false)
 {
-<div class="pt-3">
-    <div>
-        <h4 class="text-primary mb-1"><i class="fa-solid fa-location-dot fa-1x mr-2"></i>Localização</h4>
-        <p class="text-primary mb-2">@Model.EnderecoUsuario</p>
+    <div class="pt-3">
+        <div>
+            <h4 class="text-primary mb-1"><i class="fa-solid fa-location-dot fa-1x mr-2"></i>Localização</h4>
+            <p class="text-primary mb-2">@Model.EnderecoUsuario</p>
+        </div>
+        <div id="GoogleMapsComponent">
+            @await Component.InvokeAsync("GoogleMaps", new { Model.UsuarioLogado, Model.EnderecoUsuario })
+        </div>
     </div>
-    <div id="GoogleMapsComponent">
-        @await Component.InvokeAsync("GoogleMaps", new { Model.UsuarioLogado, Model.EnderecoUsuario })
-    </div>
-</div>
+}
+
+@section Scripts
+{
+    <script src="~/js/pagina-inicial.js"></script>
 }

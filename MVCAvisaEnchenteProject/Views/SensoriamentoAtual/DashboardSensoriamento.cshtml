@@ -6,12 +6,16 @@
 
 <div class="pt-1 pb-2">
     <a class="text-secondary mb-1 btn btn-outline-light pl-0" style="border-color: transparent; background: transparent; " asp-controller="SensoriamentoAtual" asp-action="Index"><i class="fa-solid fa-angle-left fa-1x mr-2"></i>Voltar</a>
-    @*<div class="row"><div class="col-md-12 text-end"><small class="text-primary">Última Atualização: <strong>@Model.SensoriamentoAtual.DataRegistro</strong></small></div></div>*@
-    <div class="row mb-2" >
+
+    <div class="row mb-2">
         <div class="col-md-6" style="place-self: center;">
-            <h4 class="text-primary pt-1">Dashboard</h4>
+            <div class="row">
+                <div class="col-md-12 ">
+                    <h4 class="text-primary pt-1">Dashboard</h4>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" style="align-self: center;">
             <div class="row">
                 <div class="col-md-12  text-end">
                     <small class="text-primary" style="font-weight: 600;" id="ultima-atualizacao">Última Atualização: @Model.SensoriamentoAtual.DataRegistro</small>
@@ -25,35 +29,57 @@
     </div>
 
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <div class="card card-vazao-agua p-3 mb-2">
-            <div class="mb-3">
-               Vazão Atual
-            </div>
-            <p id="vazao-agua-atual">
-                @Model.SensoriamentoAtual.VazaoDaAgua m/s
-            </p>
+<div class="card card-body">
+
+    <div class="row pb-3">
+        <div class="col-md-10" style="place-self: center;">
+            <h5 class="text-primary">Sensoriamento Atual</h5>
+        </div>
+        <div class="col-md-2" style="text-align: end;">
+            <a onclick="AtualizaSensoriamentoAtual()" class="btn btn-sm btn-primary text-white"><i class="fa-solid fa-rotate-right fa-1x"></i></a>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card card-altura-agua p-3 mb-2">
-            <div class="mb-3">
-               Altura da Água
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card card-vazao-agua p-3 mb-2">
+                <div class="mb-3">
+                    Velocidade do Rio
+                </div>
+                <p id="vazao-agua-atual">
+                    @Model.SensoriamentoAtual.VazaoDaAgua km/h
+                </p>
             </div>
-            <p id="altura-agua-atual">
-                @Model.SensoriamentoAtual.AlturaAgua mca
-            </p>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card card-nivel-pluviosidade p-3 mb-2">
-            <div class="mb-3">
-                Intensidade da Chuva
+        <div class="col-md-3">
+            <div class="card card-altura-agua p-3 mb-2">
+                <div class="mb-3">
+                    Nível do Rio
+                </div>
+                <p id="altura-agua-atual">
+                    @Model.SensoriamentoAtual.AlturaAgua cm
+                </p>
             </div>
-            <p id="nivel-pluviosidade-atual">
-                @Model.SensoriamentoAtual.NivelPluviosidade
-            </p>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-nivel-pluviosidade p-3 mb-2">
+                <div class="mb-3">
+                    Intensidade da Chuva
+                </div>
+                <p id="nivel-pluviosidade-atual">
+                    @Model.SensoriamentoAtual.NivelPluviosidade
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-risco p-3 mb-2">
+                <div class="mb-3">
+                    Risco Atual
+                </div>
+                <p id="tipo-risco-atual">
+                    @Model.SensoriamentoAtual.TipoRiscoTexto
+                </p>
+            </div>
         </div>
     </div>
 
@@ -61,7 +87,171 @@
 
 
 
-<script>
+<div class="card card-body mt-4">
+
+    <div class="row py-2">
+        <div class="col-md-10" style="place-self: center;">
+            <h5 class="text-primary">Média dos últimos 15 dias</h5>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-vazao-tab" data-toggle="tab" href="#nav-vazao" role="tab" aria-controls="nav-vazao" aria-selected="true">Velocidade do Rio</a>
+            <a class="nav-item nav-link" id="nav-altura-tab" data-toggle="tab" href="#nav-altura" role="tab" aria-controls="nav-altura" aria-selected="false">Nível do Rio</a>
+            <a class="nav-item nav-link" id="nav-chuva-tab" data-toggle="tab" href="#nav-chuva" role="tab" aria-controls="nav-chuva" aria-selected="false">Intensidade da Chuva</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade in show active" id="nav-vazao" role="tabpanel" aria-labelledby="nav-vazao-tab">
+            <div class="card card-body" style=" border-top: 0;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <canvas class="mt-2" id="chart-vazao" width="400" height="180"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-altura" role="tabpanel" aria-labelledby="nav-altura-tab">
+            <div class="row">
+                <div class="col-md-12">
+                    <canvas class="mt-2" id="chart-altura" width="400" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-chuva" role="tabpanel" aria-labelledby="nav-chuva-tab">
+            <div class="row">
+                <div class="col-md-12">
+                    <canvas class="mt-2" id="chart-chuva" width="400" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts{
+    <script>
+        const ctxVazao = document.getElementById('chart-vazao');
+        const ctxAltura = document.getElementById('chart-altura');
+        const ctxChuva = document.getElementById('chart-chuva');
+
+        let datas = [];
+        let ontem = new Date().getDate();
+        let diasAtras = new Date().getDate() - 16;
+        let mediasVazao = [];
+        let mediasAltura = [];
+        let mediasChuva = [];
+
+
+        $(document).ready(function () {
+
+            let month = new Date().getMonth() + 1;
+            for (var i = diasAtras; i < ontem; i++) {
+                datas.push(new Date(month+ '/' + i + '/' + new Date().getFullYear()).toLocaleDateString().replace('/' + new Date().getFullYear(), ''))
+            }
+
+
+            AtualizaMediaSensoriamento()
+
+        });
+
+        function getRandom(max) {
+            return parseFloat((Math.random() * max + 1).toFixed(2))
+        }
+
+
+        function AtualizaMediaSensoriamento() {
+            $.ajax({
+                type: 'GET',
+                url: "/SensoriamentoAtual/ObterMediaDeSensoriamento",
+                data: { pdsId: @Model.SensoriamentoAtual.PontoDeSensoriamentoId },
+                async: true,
+                success: function (result) {;
+
+                    if (result.erro !== undefined) {
+                        for (var i = 0; i < datas.length; i++) {
+                            mediasVazao.push(getRandom(25))
+                            mediasAltura.push(getRandom(500))
+                            mediasChuva.push(getRandom(1500))
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < datas.length; i++) {
+
+                            let dataAtual = result.find(r => r.dia == `${datas[i].split('/')[0]}`)
+                            if (dataAtual === undefined || dataAtual === null) {
+                                mediasVazao.push(getRandom(25))
+                                mediasAltura.push(getRandom(500))
+                                mediasChuva.push(getRandom(1500))
+                                continue;
+                            }
+
+                            mediasVazao.push(dataAtual.mediaVazao)
+                            mediasAltura.push(dataAtual.mediaAltura)
+                            mediasChuva.push(dataAtual.mediaChuva)
+                        }
+                    }
+                    const labels = datas;
+                    const dataVazao = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Média de Velocidade do Rio (km/h)',
+                            data: mediasVazao,
+                            fill: false,
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1
+                        }]
+                    };
+                    const dataAltura = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Média de Nível do Rio (cm)',
+                            data: mediasAltura,
+                            fill: false,
+                            borderColor: 'rgb(54, 162, 235)',
+                            tension: 0.1
+                        }]
+                    };
+                    const dataChuva = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Média de Intensidade da Chuva',
+                            data: mediasChuva,
+                            fill: false,
+                            borderColor: '	rgb(0,255,0)',
+                            tension: 0.1
+                        }]
+                    };
+
+
+                    const configVazao = new Chart(ctxVazao, {
+                        type: 'line',
+                        data: dataVazao
+                    });
+
+                    const configAltura = new Chart(ctxAltura, {
+                        type: 'line',
+                        data: dataAltura
+                    });
+
+                    const configChuva = new Chart(ctxChuva, {
+                        type: 'line',
+                        data: dataChuva
+                    });
+
+                }
+            })
+        }
+
+
+
+    </script>
+    <script src="~/js/pagina-inicial.js"></script>
+
+    <script>
     let tipoRisco = @((int)Model.SensoriamentoAtual.TipoRisco);
     let dataAtual = new Date();
 
@@ -75,10 +265,11 @@
                     window.location.href = "/SensoriamentoAtual/"
                 }
                 dataAtual = new Date(result.data.dataRegistro).toLocaleString();
-                $('#vazao-agua-atual').html(`${result.data.vazaoDaAgua} m/s`.replace('.', ','));
-                $('#altura-agua-atual').html(`${result.data.alturaAgua} mca`.replace('.', ','));
-                $('#nivel-pluviosidade-atual').html(`${result.data.nivelPluviosidade} kg/m³`.replace('.', ','));
+                $('#vazao-agua-atual').html(`${result.data.vazaoDaAgua} km/h`.replace('.', ','));
+                $('#altura-agua-atual').html(`${result.data.alturaAgua} cm`.replace('.', ','));
+                $('#nivel-pluviosidade-atual').html(`${result.data.nivelPluviosidade}`.replace('.', ','));
                 $('#ultima-atualizacao').html(`Última Atualização: ${dataAtual}`);
+                $('#tipo-risco-atual').html(`${result.data.tipoRiscoTexto}`);
 
                 if (result.data.tipoRisco !== tipoRisco) {
                     DisparaNotificacao(result.data.tipoRisco);
@@ -110,4 +301,8 @@
     }
 
     setInterval(AtualizaSensoriamentoAtual, 10000);
-</script>
+    </script>
+}
+
+
+

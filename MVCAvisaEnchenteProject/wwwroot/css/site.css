@@ -306,21 +306,21 @@ a#configuracoes:focus {
 .alto-risco-border {
     border: 1px solid #ff0000;
 }
-.card-vazao-agua, .card-altura-agua, .card-nivel-pluviosidade {
+.card-vazao-agua, .card-altura-agua, .card-nivel-pluviosidade, .card-risco {
     color: #FFFFFF;
     height: 120px;
-    width: 75%;
+    width: 100%;
     box-shadow: 5px 7px 4px rgba(0, 0, 0, 0.15);
     border-radius: 15px;
 }
-.card-vazao-agua div, .card-altura-agua div, .card-nivel-pluviosidade div {
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-.card-vazao-agua p, .card-altura-agua p, .card-nivel-pluviosidade p {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
+    .card-vazao-agua div, .card-altura-agua div, .card-nivel-pluviosidade div, .card-risco div {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    .card-vazao-agua p, .card-altura-agua p, .card-nivel-pluviosidade p, .card-risco p {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
 
 .card-vazao-agua {
     background-color: #DB4437E3
@@ -328,17 +328,18 @@ a#configuracoes:focus {
 
 .card-altura-agua {
     background-color: #34A853CC;
-    margin: 0 auto;
 }
 
 .card-nivel-pluviosidade {
     background-color: #4285F4CC;
-    float: right;
+}
+
+.card-risco {
+    background-color: #6e42f4cc;
 }
 
 
 @media screen and (max-width:767px) {
-
     .card-vazao-agua, .card-altura-agua, .card-nivel-pluviosidade {
         width: 100%;
         margin-bottom: 15px;
@@ -363,4 +364,8 @@ a#configuracoes:focus {
 }
 a.text-secondary:focus, a.text-secondary:hover {
     color: unset;
+}
+
+a.btn-header-card:hover {
+    font-size: 1.03rem;
 }

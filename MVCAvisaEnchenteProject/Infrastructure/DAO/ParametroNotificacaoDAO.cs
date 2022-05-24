@@ -2,6 +2,7 @@
 using MVCAvisaEnchenteProject.Infrastructure.Helpers;
 using MVCAvisaEnchenteProject.Models.Entidades;
 using MVCAvisaEnchenteProject.Models.Enum;
+using MVCAvisaEnchenteProject.Models.ViewModels.SensoriamentoAtualModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -34,18 +35,13 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return lista;
         }
 
-        public override List<ParametroNotificacao> Listar()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override SqlParameter[] CriaParametros(ParametroNotificacao parametroNotificacao)
         {
             var pontoDeSensoriamentoParametros = new List<SqlParameter>
             {
                 new SqlParameter("ponto_sensoriamento_id", parametroNotificacao.PontoDeSensoriamentoId),
                 new SqlParameter("tipo_risco", parametroNotificacao.TipoRisco),
-                new SqlParameter("vazao_agua", parametroNotificacao.VazaoDaAgua),
+                new SqlParameter("vazao_da_agua", parametroNotificacao.VazaoDaAgua),
                 new SqlParameter("nivel_pluviosidade", parametroNotificacao.NivelPluviosidade),
                 new SqlParameter("altura_agua", parametroNotificacao.AlturaAgua)
             };
@@ -70,5 +66,9 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
             return parametroNotificacao;
         }
 
+        public override List<ParametroNotificacao> Listar()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

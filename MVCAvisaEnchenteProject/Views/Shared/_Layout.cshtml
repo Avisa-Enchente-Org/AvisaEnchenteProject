@@ -51,7 +51,8 @@
                                         </a>
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item nav-link-dropdown" asp-controller="Usuario" asp-action="Index"><i class="fa-solid fa-users-gear pr-2"></i>Usuários</a>
-                                            <a class="dropdown-item nav-link-dropdown" asp-controller="PontoDeSensoriamento" asp-action="Index"><i class="fa-solid fa-users-gear pr-2"></i>Pontos de Sensoriamento</a>
+                                            <a class="dropdown-item nav-link-dropdown" asp-controller="PontoDeSensoriamento" asp-action="Index"><i class="fa-solid fa-microchip pr-2"></i>Pontos de Sensoriamento</a>
+                                            <a class="dropdown-item nav-link-dropdown" asp-controller="ParametrosNotificacao" asp-action="Index"><i class="fa-solid fa-bell pr-2"></i>Histórico de Alertas</a>
                                         </div>
                                     </li>
                                 }
@@ -111,6 +112,7 @@
     <script src="~/lib/sweet-alert/dist/sweetalert2.all.min.js"></script>
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.js"></script>
     <script type="text/javascript" src="~/lib/jquery-numeric/jquery-numeric.js"></script>
+    <script type="text/javascript" src="~/lib/charts/dist/chart.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

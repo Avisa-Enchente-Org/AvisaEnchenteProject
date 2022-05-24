@@ -108,6 +108,9 @@ realizaPesquisaAvancada = form => {
                     if (form.id === "pesquisa-avancada-pontos-de-sensoriamento") {
                         $('#pv-listar-pontos-sensoriamento').html(res.html);
                     }
+                    if (form.id === "pesquisa-avancada-alertas-risco") {
+                        $('#pv-listar-alertas-risco').html(res.html);
+                    }
                     rebuild();
                 }
 
@@ -137,42 +140,46 @@ function deletarPorIdEController(id, controllerName) {
     }).then((result) => {
         if (result.isConfirmed) {
 
-            $.ajax({
-                type: "DELETE",
-                url: "/"+ controllerName + "/Deletar/" + id,
-                success: function (res) {
+            if (controllerName.toLowerCase() === "parametrosnotificacao") {
+                location.href = "/" + controllerName + "/Deletar/" + id;
+            }
+            else {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/" + controllerName + "/Deletar/" + id,
+                    success: function (res) {
+                        if (res.erro != undefined && res.erro) {
+                            Swal.fire({
+                                title: res.messageErro,
+                                confirmButtonColor: '#08357c',
+                                customClass: {
+                                    confirmButton: 'btn btn-primary btn-md',
+                                },
+                            })
 
-                    if (res.erro) {
-                        Swal.fire({
-                            title: res.messageErro,
-                            confirmButtonColor: '#08357c',
-                            customClass: {
-                                confirmButton: 'btn btn-primary btn-md',
-                            },
-                        })
+                        }
+                        else {
+
+                            Swal.fire({
+                                title: 'Excluido!',
+                                text: 'Esse Registro Foi Excluido com Sucesso',
+                                icon: 'success',
+                                confirmButtonColor: '#08357c'
+                            })
+
+                            if (controllerName.toLowerCase() === "usuario") {
+                                var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
+                                return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
+                            }
+                            if (controllerName.toLowerCase() === "pontodesensoriamento") {
+                                var pesquisaAvancadaPontosDeSensoriamento = document.getElementById('pesquisa-avancada-pontos-de-sensoriamento');
+                                return realizaPesquisaAvancada(pesquisaAvancadaPontosDeSensoriamento);
+                            }
+                        }
 
                     }
-                    else {
-
-                        Swal.fire({
-                            title: 'Excluido!',
-                            text: 'Esse Registro Foi Excluido com Sucesso',
-                            icon: 'success',
-                            confirmButtonColor: '#08357c'
-                        })
-
-                        if (controllerName.toLowerCase() === "usuario") {
-                            var pesquisaAvancadaUsuarios = document.getElementById('pesquisa-avancada-usuarios');
-                            return realizaPesquisaAvancada(pesquisaAvancadaUsuarios);
-                        }
-                        if (controllerName.toLowerCase() === "pontodesensoriamento") {
-                            var pesquisaAvancadaPontosDeSensoriamento = document.getElementById('pesquisa-avancada-pontos-de-sensoriamento');
-                            return realizaPesquisaAvancada(pesquisaAvancadaPontosDeSensoriamento);
-                        }
-                    }
-
-                }
-            })
+                })
+            }
         }
     })
 }

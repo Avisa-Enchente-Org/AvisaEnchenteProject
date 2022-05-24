@@ -71,7 +71,7 @@ CREATE TABLE [dbo].[registros_sensoriamento](
 	[nivel_pluviosidade] decimal(6,2) NOT NULL,
 	[vazao_agua] decimal(6,2) NOT NULL,
 	[altura_agua] decimal(6,2) NOT NULL,
-	[data_registro] DATETIME NOT NULL DEFAULT GETDATE(),	
+	[data_registro] DATETIME NOT NULL,	
 	[tipo_risco] INT NOT NULL DEFAULT 0,
 
 	CONSTRAINT [pk_registros_sensoriamento_id] PRIMARY KEY([id]),
@@ -79,22 +79,6 @@ CREATE TABLE [dbo].[registros_sensoriamento](
         REFERENCES [dbo].[pontos_sensoriamento]([id])
 )
 GO
-
-CREATE TABLE [dbo].[notificacoes_historico](
-	[id] INT IDENTITY(1,1) NOT NULL,
-	[ponto_sensoriamento_id] INT NULL,
-	[nivel_pluviosidade] DECIMAL(6,2) NOT NULL,
-	[vazao_agua] DECIMAL(6,2) NOT NULL,
-	[altura_agua] DECIMAL(6,2) NOT NULL,
-	[data_notificacao] DATETIME NOT NULL DEFAULT GETDATE(),	
-	[tipo_risco] INT NOT NULL,
-
-	CONSTRAINT [pk_notificacoes_historico_id] PRIMARY KEY([id]),
-	CONSTRAINT [fk_notificacoes_historico_ponto_sensoriamento_id] FOREIGN KEY([ponto_sensoriamento_id])
-        REFERENCES [dbo].[pontos_sensoriamento]([id])
-)
-GO
-
 
 CREATE TABLE [dbo].[notificacoes_parametros](
 	[id] INT IDENTITY(1,1) NOT NULL,
@@ -110,6 +94,15 @@ CREATE TABLE [dbo].[notificacoes_parametros](
 )
 GO
 
+CREATE TABLE [dbo].[notificacoes_historico](
+	[id] INT IDENTITY(1,1) NOT NULL,
+	[registro_sensoriamento_id] INT NOT NULL,
+
+	CONSTRAINT [pk_notificacoes_historico_id] PRIMARY KEY([id]),
+	CONSTRAINT [fk_notificacoes_historico_registros_sensoriamento_id] FOREIGN KEY([registro_sensoriamento_id])
+        REFERENCES [dbo].[registros_sensoriamento]([id])
+)
+GO
 
 -- VIEWS
 
@@ -589,7 +582,7 @@ BEGIN
 END
 GO
 
--- SP's Sensoriamento Atual
+-- SP's Registros Sensoriamento
 
 
 CREATE PROCEDURE sp_insert_registros_sensoriamento
@@ -632,6 +625,32 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE sp_consulta_media_sensoriamento_de_15__porpontoDeSensoriamentoId
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT AVG(s.vazao_agua) as 'media_vazao', AVG(s.altura_agua) as 'media_altura', AVG(s.nivel_pluviosidade) as 'media_chuva', DAY(data_registro) as 'dia' from registros_sensoriamento s
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id
+	AND (datediff(dd, s.data_registro, getdate()) <= 16)
+	GROUP BY DAY(s.data_registro)
+END
+GO
+
+CREATE PROCEDURE sp_consulta_ultimos_50_registros_sensoriamento_por_pontoDeSensoriamentoId
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT TOP 50 * FROM [dbo].[registros_sensoriamento] s
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id 
+	AND (datediff(dd,data_registro, getdate()) = 0)
+	ORDER BY data_registro DESC
+END
+GO
+
 CREATE PROCEDURE sp_listar_sensoariamento_atual_por_cidade
 (
 	@cidade_atendida_id INT
@@ -646,7 +665,6 @@ BEGIN
 	p.helix_id
 	INTO #temp FROM [dbo].[registros_sensoriamento] s
 	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id WHERE 1 = 2
-
 
 	DECLARE @ponto_sensoriamento_id INT;
 
@@ -667,6 +685,7 @@ BEGIN
 		p.helix_id
 		FROM [dbo].[registros_sensoriamento] s
 		INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id WHERE p.id = @ponto_sensoriamento_id
+		ORDER BY s.data_registro DESC
 		
 	FETCH NEXT FROM cursor_pds INTO @ponto_sensoriamento_id
 	END
@@ -679,20 +698,30 @@ BEGIN
 END
 GO
 
--- CREATE PROCEDURE sp_listar_registros_sensoriamento
--- AS 
--- BEGIN
+CREATE PROCEDURE sp_pesquisa_avancada_alertas_risco
+(
+	@ponto_sensoriamento_id VARCHAR(MAX),
+	@tipo_risco VARCHAR(MAX),
+	@estadoId VARCHAR(MAX),
+	@cidadeId VARCHAR(MAX)
+)
+AS
+BEGIN
 
--- 	SELECT s.*, 
--- 	p.latitude,
--- 	p.longitude,
--- 	p.cidade_atendida_id,
--- 	p.helix_id
--- 	FROM [dbo].[registros_sensoriamento] s
--- 	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
+	SELECT s.*,
+	p.helix_id
+	FROM [dbo].[notificacoes_historico] n
+	INNER JOIN [dbo].[registros_sensoriamento] s ON s.id = n.registro_sensoriamento_id
+	INNER JOIN [dbo].[pontos_sensoriamento] p ON p.id = s.ponto_sensoriamento_id
+	INNER JOIN [dbo].[cidades_atendidas] c ON c.id = p.cidade_atendida_id
+	WHERE s.ponto_sensoriamento_id  LIKE '%' + @ponto_sensoriamento_id +'%'
+	AND s.tipo_risco LIKE '%' + @tipo_risco +'%'
+	AND p.cidade_atendida_id   LIKE '%' + @cidadeId +'%'
+	AND c.estado_atendido_id LIKE '%' + @estadoId +'%'
 
--- END
--- GO
+END
+GO
+
 
 -- SP's Parametros Notificação
 
@@ -717,6 +746,28 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE sp_update_notificacoes_parametros
+(
+	@id INT,
+	@ponto_sensoriamento_id INT,
+	@tipo_risco INT,
+	@nivel_pluviosidade DECIMAL(6,2),
+	@vazao_da_agua DECIMAL(6,2),
+	@altura_agua DECIMAL(6,2)
+)
+AS
+BEGIN
+	UPDATE [dbo].[notificacoes_parametros]
+	SET
+	tipo_risco = @tipo_risco,
+	nivel_pluviosidade = @nivel_pluviosidade, 
+	vazao_agua = @vazao_da_agua,
+	altura_agua = @altura_agua,
+	ponto_sensoriamento_id = @ponto_sensoriamento_id
+	WHERE id = @id
+END
+GO
+
 
 CREATE PROCEDURE sp_listar_notificacoes_parametros_por_pds
 (
@@ -727,6 +778,24 @@ BEGIN
 	SELECT * FROM [dbo].[notificacoes_parametros] WHERE ponto_sensoriamento_id = @ponto_sensoriamento_id
 END
 GO
+
+
+--SP's Notificações histórico
+
+CREATE PROCEDURE sp_consulta_ultimos_50_alertas_sensoriamento_por_pontoDeSensoriamentoId
+(
+	@ponto_sensoriamento_id INT
+)
+AS
+BEGIN
+	SELECT TOP 50 s.* FROM [dbo].[notificacoes_historico] n
+	INNER JOIN [dbo].[registros_sensoriamento] s ON s.id = n.registro_sensoriamento_id
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id 
+	AND (datediff(dd, s.data_registro, getdate()) = 0)
+	ORDER BY s.data_registro DESC
+END
+GO
+
 
 
 --TRIGGERS
@@ -762,9 +831,6 @@ BEGIN
 	DELETE FROM [dbo].[registros_sensoriamento]  
 		WHERE [ponto_sensoriamento_id] = @ponto_sensoriamento_id
 
-	DELETE FROM [dbo].[notificacoes_historico]  
-		WHERE [ponto_sensoriamento_id] = @ponto_sensoriamento_id
-
 	DELETE FROM [dbo].[pontos_sensoriamento]
 		WHERE id = @ponto_sensoriamento_id
 
@@ -772,6 +838,41 @@ BEGIN
 		DELETE [dbo].[cidades_atendidas] 
 			WHERE id = @cidade_atendida_id
 	END
+
+	SET NOCOUNT OFF
+END
+GO
+
+ALTER TRIGGER trg_excluiDependenciasRegistroSensoriamento ON [dbo].[registros_sensoriamento]
+INSTEAD OF DELETE
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	DECLARE @registro_sensoriamento_id INT
+	
+
+
+	DECLARE cursor_notificacoes CURSOR STATIC FORWARD_ONLY FOR
+	SELECT id FROM deleted
+
+	OPEN cursor_notificacoes
+	FETCH NEXT FROM cursor_notificacoes INTO @registro_sensoriamento_id
+
+	WHILE @@fetch_Status = 0 
+	BEGIN
+
+		DELETE FROM [dbo].[notificacoes_historico]  
+			WHERE [registro_sensoriamento_id] = @registro_sensoriamento_id
+
+		DELETE FROM [dbo].[registros_sensoriamento]  
+			WHERE id = @registro_sensoriamento_id
+		
+	FETCH NEXT FROM cursor_notificacoes INTO @registro_sensoriamento_id
+	END
+
+	CLOSE cursor_notificacoes
+	DEALLOCATE cursor_notificacoes
 
 	SET NOCOUNT OFF
 END
@@ -828,10 +929,75 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER trg_atualizaTipoDoRisco ON [dbo].[registros_sensoriamento]
+INSTEAD OF INSERT
+AS
+BEGIN
+	SET NOCOUNT ON
+
+	DECLARE @registro_sensoriamento_id INT;
+	DECLARE @ponto_sensoriamento_id INT;
+
+	DECLARE @ultimo_tipo_risco INT;
+	DECLARE @tipo_risco_atual INT;
+	DECLARE @grau_atual decimal(6,2);
+	DECLARE @grau_param decimal(6,2);
+	DECLARE @tipo_risco_param decimal(6,2);
+
+	SELECT
+		@ponto_sensoriamento_id = ponto_sensoriamento_id, 
+		@grau_atual = ((vazao_agua * 2) + (altura_agua) + (nivel_pluviosidade))
+	from inserted;
+
+	DECLARE cursor_parametros CURSOR STATIC FORWARD_ONLY FOR
+	SELECT ((vazao_agua * 2) + (altura_agua) + (nivel_pluviosidade)), tipo_risco FROM [dbo].[notificacoes_parametros]  WHERE ponto_sensoriamento_id = @ponto_sensoriamento_id
+
+	SET @tipo_risco_atual = 0;
+
+	OPEN cursor_parametros
+	FETCH NEXT FROM cursor_parametros INTO @grau_param, @tipo_risco_param
+
+	WHILE @@fetch_Status = 0 
+	BEGIN
+
+		IF (@grau_atual >= @grau_param) BEGIN
+			SET @tipo_risco_atual = @tipo_risco_param
+		END
+		
+	FETCH NEXT FROM cursor_parametros INTO @grau_param, @tipo_risco_param
+	END
+
+	CLOSE cursor_parametros
+	DEALLOCATE cursor_parametros
+
+	SELECT TOP 1 @ultimo_tipo_risco = tipo_risco FROM [dbo].[registros_sensoriamento] s
+	WHERE s.ponto_sensoriamento_id = @ponto_sensoriamento_id 
+	ORDER BY s.data_registro DESC
+
+	INSERT INTO [dbo].[registros_sensoriamento] 
+	(nivel_pluviosidade, altura_agua, vazao_agua, ponto_sensoriamento_id, data_registro, tipo_risco)
+	SELECT nivel_pluviosidade, altura_agua, vazao_agua, ponto_sensoriamento_id, data_registro, @tipo_risco_atual FROM inserted;
+	IF (@ultimo_tipo_risco <> @tipo_risco_atual AND @tipo_risco_atual <> 0 ) BEGIN
+
+		INSERT INTO [dbo].[notificacoes_historico] 
+		(registro_sensoriamento_id)
+		SELECT MAX(id) FROM registros_sensoriamento
+	END
+
+	SET NOCOUNT OFF
+END
+GO
+
+
 -- exec sp_insert_usuarios 'Admin', 'admin@admin.com', '123456', 2, 1
 -- exec sp_insert_estados_atendidos 'São Paulo', 'SP', '35'
 -- exec sp_insert_cidades_atendidas 'São Bernardo do Campo', '3548708', 1
--- exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:entity:001', 0, 1, -23.7360896, -46.5825083, 1
+-- exec sp_insert_pontos_sensoriamento 'urn:ngsi-ld:sensor:001', 0, 1, -23.7360896, -46.5825083, 1
 
 
-exec sp_consulta_registros_sensoriamento_diario_por_pontoDeSensoriamentoId 1
+-- SELECT * FROM pontos_sensoriamento
+-- SELECT * FROM notificacoes_parametros 
+-- SELECT * FROM registros_sensoriamento
+-- SELECT * FROM notificacoes_historico
+
+

@@ -21,7 +21,7 @@ namespace Integracoes.Models.Helix.PontoDeSensoriamento
 
         [JsonProperty("lastupdate")]
         public LastUpdate LastUpdate { get; set; }
-
+        
         public PontoDeSensoriamentoHelixEntity(string id) : base(id) 
         {
             RainIntensity = new RainIntensity();

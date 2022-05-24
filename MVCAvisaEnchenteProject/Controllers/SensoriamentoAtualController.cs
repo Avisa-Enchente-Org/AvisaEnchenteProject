@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
 using MVCAvisaEnchenteProject.Infrastructure.DAO;
 using MVCAvisaEnchenteProject.Models.Entidades;
+using MVCAvisaEnchenteProject.Models.ViewModels;
 using MVCAvisaEnchenteProject.Models.ViewModels.GoogleMaps;
 using MVCAvisaEnchenteProject.Models.ViewModels.SensoriamentoAtualModels;
 using System;
@@ -79,6 +80,23 @@ namespace MVCAvisaEnchenteProject.Controllers
         public override IActionResult Deletar(int id)
         {
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult ObterMediaDeSensoriamento(int pdsId)
+        {
+            var pds = DAOPrincipal.ConsultarPorId(pdsId);
+            if (pds == null)
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao consultar os últimos registros do Ponto de Sensoriamento"));
+            try
+            {
+                var registros = DAOPrincipal.ObterMediaDeSensoriamento(pdsId);
+                return Json(registros);
+            }
+            catch (Exception e)
+            {
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao consultar os últimos registros do Ponto de Sensoriamento"));
+            }
         }
     }
 }

@@ -32,12 +32,13 @@ namespace MVCAvisaEnchenteProject
                     config.Cookie.Name = "UserLoginCookie";
                     config.LoginPath = "/Conta/Login";
                     config.AccessDeniedPath = "/home/NotFoundPageView";
+                    config.ExpireTimeSpan = TimeSpan.FromSeconds(3600);
                 });
 
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true;
-                options.IdleTimeout = TimeSpan.FromSeconds(1000000);
+                options.IdleTimeout = TimeSpan.FromSeconds(100000);
             });
 
             services.AddScoped<IAuthorizationHandler, RolesAuthorizationHandler>();

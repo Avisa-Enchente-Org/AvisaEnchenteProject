@@ -2663,9 +2663,10 @@ textarea.form-control-lg {
         }
 
         .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-            color: #495057;
+            color: #08357C !important;
             background-color: #fff;
-            border-color: #dee2e6 #dee2e6 #fff
+            font-weight: 600;
+            border-color: #dee2e6 #dee2e6 #fff;
         }
 
     .nav-tabs .dropdown-menu {

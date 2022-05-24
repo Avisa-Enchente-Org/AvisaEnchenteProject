@@ -1,18 +1,22 @@
 ﻿@model CriarEditarParametrosNotificacaoViewModel
+@{
+    ViewData["Title"] = "Parametros de Notificação";
+}
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 py-2">
         <form method="post" asp-action="SalvarParametrosNotificacao">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="pt-3">
                 <h5 class="text-primary pt-1">Parametros de Notificação</h5>
             </div>
-            <input type="hidden" asp-for="IsCriacao" />
             <input type="hidden" asp-for="PontoDeSensoriamentoId" />
 
             @for (int i = 0; i < Model.ParametrosNotificacaoModel.Count; i++)
             {
                 <input type="hidden" asp-for="ParametrosNotificacaoModel[i].TipoRisco" />
+                <input type="hidden" asp-for="ParametrosNotificacaoModel[i].Id" />
+                <input type="hidden" asp-for="ParametrosNotificacaoModel[i].PontoDeSensoriamentoId" value="@Model.PontoDeSensoriamentoId" />
                 <div class="card my-3">
                     <div class="card-header text-primary" style="font-weight: 500;">
                         <a class="btn-header-card" data-toggle="collapse" href="#collapse@(Model.ParametrosNotificacaoModel[i].TipoRisco)" role="button" aria-expanded="false" aria-controls="collapse@(Model.ParametrosNotificacaoModel[i].TipoRisco)">
@@ -24,18 +28,18 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="control-label text-primary">Vazão da Água (m/s²)</label>
+                                        <label class="control-label text-primary">Velocidade do Rio (km/h)</label>
                                         <div class="input-group input-group-sm">
-                                            <input type="text" class="form-control form-control-sm decimal-input" placeholder="Vazão da Água" asp-for="ParametrosNotificacaoModel[i].VazaoDaAgua" />
+                                            <input type="text" class="form-control form-control-sm decimal-input" placeholder="Velocidade do Rio" asp-for="ParametrosNotificacaoModel[i].VazaoDaAgua" />
                                         </div>
                                         <span asp-validation-for="ParametrosNotificacaoModel[i].VazaoDaAgua" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="control-label text-primary">Altura da Água (cm)</label>
+                                        <label class="control-label text-primary">Nível do Rio (cm)</label>
                                         <div class="input-group input-group-sm">
-                                            <input type="text" class="form-control form-control-sm decimal-input" placeholder="Altura da Água" asp-for="ParametrosNotificacaoModel[i].AlturaAgua" />
+                                            <input type="text" class="form-control form-control-sm decimal-input" placeholder="Nível do Rio" asp-for="ParametrosNotificacaoModel[i].AlturaAgua" />
                                         </div>
                                         <span asp-validation-for="ParametrosNotificacaoModel[i].AlturaAgua" class="text-danger"></span>
                                     </div>

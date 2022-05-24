@@ -32,6 +32,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         private readonly EstadoAtendidoDAO _estadoAtendidoDAO;
         private readonly CidadeAtendidaDAO _cidadeAtendidaDAO;
         private readonly ParametroNotificacaoDAO _parametroNotificaoDAO;
+        private readonly RegistroSensoriamentoDAO _registroSensoriamentoDAO;
 
         public PontoDeSensoriamentoController() : base()
         {
@@ -41,6 +42,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             _estadoAtendidoDAO = new EstadoAtendidoDAO();
             _cidadeAtendidaDAO = new CidadeAtendidaDAO();
             _parametroNotificaoDAO = new ParametroNotificacaoDAO();
+            _registroSensoriamentoDAO = new RegistroSensoriamentoDAO();
 
         }
 
@@ -219,8 +221,8 @@ namespace MVCAvisaEnchenteProject.Controllers
 
             if (localizacaoLatLng != null && localizacaoLatLng.status == Status.Ok)
             {
-                var estadoLocalizado = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.EstadoType) && e.long_name == estadoSelecionado.Nome || e.short_name == estadoSelecionado.Sigla)).First();
-                var cidadeLocalizada = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.CidadeType) && e.long_name == cidadeSelecionada.Nome || e.short_name == cidadeSelecionada.Nome)).First();
+                var estadoLocalizado = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.EstadoType) && e.long_name == estadoSelecionado.Nome || e.short_name == estadoSelecionado.Sigla)).FirstOrDefault();
+                var cidadeLocalizada = localizacaoLatLng.results.Where(r => r.types.Contains(LocationType.Political) && r.address_components.Any(e => e.types.Contains(LocationType.CidadeType) && e.long_name == cidadeSelecionada.Nome || e.short_name == cidadeSelecionada.Nome)).FirstOrDefault();
 
                 if (estadoLocalizado == null || cidadeLocalizada == null)
                     return new JsonResponse(messageErro: "Erro, essa latitude e longitude não Coincidem com o Estado e Cidade Selecionados!");
@@ -241,7 +243,7 @@ namespace MVCAvisaEnchenteProject.Controllers
             }
             catch (Exception e)
             {
-                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao pesquisar os Usuários!"));
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao pesquisar os Pontos de Sensoriamento!"));
             }
         }
 
@@ -257,6 +259,53 @@ namespace MVCAvisaEnchenteProject.Controllers
             var indexViewModel = new PontoSensoriamentoDetalhesViewModel(pds, parametrosNotificacao);
 
             return View(indexViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult UltimosRegistros(int pdsId)
+        {
+            var pds = DAOPrincipal.ConsultarPorId(pdsId);
+            if (pds == null)
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao consultar os últimos registros do Ponto de Sensoriamento"));
+            try
+            {
+                var registros = _registroSensoriamentoDAO.ConsultaUltimosRegistrosSensoriamento(pdsId);
+                return Json(registros);
+            }
+            catch (Exception e)
+            {
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao consultar os últimos registros do Ponto de Sensoriamento"));
+            }
+        }
+
+        [HttpGet]
+        public IActionResult UltimosAlertasDeRisco(int pdsId)
+        {
+            var pds = DAOPrincipal.ConsultarPorId(pdsId);
+            if (pds == null)
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao consultar os últimos alertas de risco do Ponto de Sensoriamento"));
+            try
+            {
+                var registros = _registroSensoriamentoDAO.ConsultaUltimosAlertasDeRisco(pdsId);
+                return Json(registros);
+            }
+            catch (Exception e)
+            {
+                return Json(new JsonResponse(messageErro: "Ocorreu um erro ao consultar os últimos alertas de risco do Ponto de Sensoriamento"));
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ObtemSelectListPontosSensoriamento()
+        {
+            var pds = DAOPrincipal.Listar();
+            List<SelectListItem> selectPds = new List<SelectListItem>();
+            pds.ToList().ForEach(x =>
+            {
+                selectPds.Add(new SelectListItem { Text = x.HelixId, Value = x.Id.ToString() });
+            });
+
+            return Ok(selectPds);
         }
     }
 }

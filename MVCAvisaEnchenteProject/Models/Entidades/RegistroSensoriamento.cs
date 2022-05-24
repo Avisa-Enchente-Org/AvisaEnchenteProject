@@ -16,6 +16,7 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
         public DateTime DataRegistro { get; set; }
         public ETipoRisco TipoRisco { get; set; }
         public string TipoRiscoTexto => TipoRisco.GetDescription();
+        public string DataRegistroTexto => DataRegistro.ToString("dd/MM/yyyy HH:mm:ss");
         public PontoDeSensoriamento PontoDeSensoriamento { get; set; }
         public RegistroSensoriamento()
         {

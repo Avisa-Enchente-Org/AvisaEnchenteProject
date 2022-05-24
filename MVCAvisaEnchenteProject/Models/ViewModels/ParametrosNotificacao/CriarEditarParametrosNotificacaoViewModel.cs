@@ -13,7 +13,7 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.ParametrosNotificacao
     public class CriarEditarParametrosNotificacaoViewModel
     {
         public List<ParametroNotificacaoViewModel> ParametrosNotificacaoModel { get; set; }
-        public bool IsCriacao => ParametrosNotificacaoModel.Any(p => p.IsCriacao);
+        public bool isEdicao => ParametrosNotificacaoModel.Any(p => p.EdicaoModel());
         public int PontoDeSensoriamentoId { get; set; }
 
         public CriarEditarParametrosNotificacaoViewModel(int pdsId)
@@ -26,9 +26,11 @@ namespace MVCAvisaEnchenteProject.Models.ViewModels.ParametrosNotificacao
             };
             PontoDeSensoriamentoId = pdsId;
         }
-        public CriarEditarParametrosNotificacaoViewModel(List<ParametroNotificacao> parametrosNotificacao)
+        public CriarEditarParametrosNotificacaoViewModel(List<ParametroNotificacao> parametrosNotificacao, int pdsId)
         {
+            ParametrosNotificacaoModel = new List<ParametroNotificacaoViewModel>();
             parametrosNotificacao.ForEach(p => ParametrosNotificacaoModel.Add(new ParametroNotificacaoViewModel(p)));
+            PontoDeSensoriamentoId = pdsId;
         }
         public CriarEditarParametrosNotificacaoViewModel()
         {

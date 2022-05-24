@@ -1,0 +1,48 @@
+﻿@model IEnumerable<RegistroSensoriamento>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table-sm table-striped table-responsive-xl"
+               id="table"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-list="[5, 10, 15, 20, 25, 50, 100, ALL]">
+            <thead>
+                <tr>
+                    <th data-field="pontoDeSensoriamento" data-sortable="true" data-width="20" data-width-unit="%">Ponto de Sensoriamento</th>
+                    <th data-field="vazaoDaAgua" data-sortable="true" data-width="15" data-width-unit="%">Velocidade do Rio</th>
+                    <th data-field="alturaAgua" data-sortable="true" data-width="15" data-width-unit="%">Nível do Rio</th>
+                    <th data-field="nivelPluviosidade" data-sortable="true" data-width="15" data-width-unit="%">Intensidade da Chuva</th>
+                    <th data-field="tipoRiscoTexto" data-sortable="true" data-width="15" data-width-unit="%">Tipo do Risco</th>
+                    <th data-field="dataRegistroTexto" data-sortable="true" data-width="20" data-width-unit="%">Data do Registro</th>
+                </tr>
+            </thead>
+            <tbody style=" font-size: 0.9rem;">
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @item.PontoDeSensoriamento.HelixId
+                    </td>
+                    <td>
+                        @item.VazaoDaAgua
+                    </td>
+                    <td>
+                        @item.AlturaAgua
+                    </td>
+                    <td>
+                        @item.NivelPluviosidade
+                    </td>
+                    <td>
+                        @item.TipoRiscoTexto
+                    </td>
+                    <td>
+                        @item.DataRegistroTexto
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
