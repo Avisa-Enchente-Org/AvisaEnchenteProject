@@ -98,6 +98,7 @@ namespace MVCAvisaEnchenteProject.Controllers
 
                         var userPrincipal = new ClaimsPrincipal(new[] { userIdentity });
                         HttpContext.SignInAsync(userPrincipal);
+                        HttpContext.Session.SetString("ImagemPerfilBase64", usuario.ImagemDePerfilEmBase64);
 
                         if (usuario.PrimeiroLogin)
                             return RedirectToAction("PrimeiroLogin");

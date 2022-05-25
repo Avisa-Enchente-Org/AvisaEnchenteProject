@@ -1,0 +1,87 @@
+﻿@model EditarLocalizacaoViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="form-editar-perfil-localizacao" asp-action="SalvarLocalizacao" asp-route-id="@Model.Id" onsubmit="return salvarAjax(this);">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="EstadoAtendidoId" class="control-label text-primary"></label>
+                <div id="estados-atendidos">
+                    @Html.DropDownListFor(m => m.EstadoAtendidoId, new List<SelectListItem>(), "Selecione o Estado...", new { @class = "form-control form-control-sm", @id = "selectEstadoAtendido" })
+                </div>
+                <span asp-validation-for="EstadoAtendidoId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CidadeAtendidaId" class="control-label text-primary"></label>
+                <div id="municipios-atendidos">
+                    @Html.DropDownListFor(m => m.CidadeAtendidaId, new List<SelectListItem>(), "Selecione a Cidade...", new { @class = "form-control form-control-sm", @id = "selectCidadeAtendida" })
+                </div>
+                <span asp-validation-for="CidadeAtendidaId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Pronto!" class="btn btn-primary btn-block" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            realizaBuscaEstadosAtendidos();
+        });
+
+        realizaBuscaEstadosAtendidos = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListEstadosAtendidos",
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var estadosHtml = "<select class='form-control form-control-sm' id='selectEstadoAtendido' name='EstadoAtendidoId'>";
+                    estadosHtml = estadosHtml + '<option value="0">Selecione o Estado...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        estadosHtml = estadosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    estadosHtml = estadosHtml + '</select>';
+                    $('#estados-atendidos').html(estadosHtml);
+                    $('#selectEstadoAtendido').val('@Model.EstadoAtendidoId')
+                    $('#selectEstadoAtendido').change(() => realizaBuscaCidadesAtendidas());
+                    realizaBuscaCidadesAtendidas();
+                }
+            })
+        };
+
+        realizaBuscaCidadesAtendidas = () => {
+            $.ajax({
+                type: 'GET',
+                url: "/Localizacao/ObtemSelectListCidadesAtendidasPorEstadoId",
+                data: { estado: $('#selectEstadoAtendido').val() },
+                datatype: 'JSON',
+                traditional: true,
+                async: false,
+                success: function (data) {
+                    var municipiosHtml = "<select class='form-control form-control-sm' id='selectCidadeAtendida' name='CidadeAtendidaId'>";
+                    municipiosHtml = municipiosHtml + '<option value="0">Selecione a Cidade...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        municipiosHtml = municipiosHtml + '<option value=' + data[i].value + '>' + data[i].text + '</option>';
+                    }
+                    municipiosHtml = municipiosHtml + '</select>';
+                    $('#municipios-atendidos').html(municipiosHtml);
+                    $('#selectCidadeAtendida').val('@Model.CidadeAtendidaId')
+                }
+            })
+        };
+
+    </script>

@@ -62,6 +62,10 @@ salvarAjax = (form) => {
                             var pesquisaAvancadaPontosDeSensoriamento = document.getElementById('pesquisa-avancada-pontos-de-sensoriamento');
                             return realizaPesquisaAvancada(pesquisaAvancadaPontosDeSensoriamento);
                         }
+                        if (form.id === "form-editar-dados-pessoais" || form.id === "form-editar-perfil-localizacao") {
+                            location.reload(true);
+                            return;
+                        }
                     }
                     else {
                         $('#form-modal .modal-body').html(res.html);

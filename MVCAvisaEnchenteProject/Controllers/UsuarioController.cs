@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCAvisaEnchenteProject.Infrastructure.CustomAttributes;
@@ -10,6 +11,7 @@ using MVCAvisaEnchenteProject.Models.ViewModels;
 using MVCAvisaEnchenteProject.Models.ViewModels.UsuarioModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,13 +33,15 @@ namespace MVCAvisaEnchenteProject.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = nameof(ETipoUsuario.Admin))]
+        [Authorize]
         public override IActionResult Deletar(int id)
         {
-            if(id == Convert.ToInt32(ObterIdUsuarioLogado()))
-                return Json(new JsonResponse(messageErro: "Você não pode excluir seu proprio Usuário!"));
+            base.Deletar(id);
 
-            return base.Deletar(id);
+            if (id == Convert.ToInt32(ObterIdUsuarioLogado()))
+                return RedirectToAction("Logout", "Conta");
+
+            return Json(new JsonResponse());
         }
 
         [HttpGet]
@@ -125,8 +129,134 @@ namespace MVCAvisaEnchenteProject.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult MeuPerfil()
+        public IActionResult EditarDadosPessoais(int id = 0)
         {
+            var usuario = DAOPrincipal.ConsultarPorId(id);
+            if (usuario != null)
+                return View(new EditarDadosPessoaisViewModel(usuario));
+
+            TempData["Error"] = "Usuário não existe!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult EditarLocalizacao(int id = 0)
+        {
+            var usuario = DAOPrincipal.ConsultarEnderecoUsuario(id);
+            if (usuario != null)
+                return View(new EditarLocalizacaoViewModel(usuario));
+
+            TempData["Error"] = "Usuário não existe!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult SalvarDadosPessoais(int id, [Bind("Id, NomeCompleto, Email, Senha")] EditarDadosPessoaisViewModel dadosPessoaisViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var usuario = DAOPrincipal.ConsultarPorId(id);
+                    if (usuario != null)
+                    {
+                        usuario.Email = dadosPessoaisViewModel.Email;
+                        usuario.NomeCompleto = dadosPessoaisViewModel.NomeCompleto;
+                        if(dadosPessoaisViewModel.Senha != null)
+                            usuario.Senha = dadosPessoaisViewModel.Senha;
+
+                        DAOPrincipal.Atualizar(usuario);
+                    }
+                    else
+                        return Json(new JsonResponse(messageErro: "Usuário não encontrado!"));
+                  
+
+                    return Json(new JsonResponse(valido: true));
+                }
+                catch (Exception e)
+                {
+                    return Json(new JsonResponse(messageErro: "Ocorreu um erro ao tentar salvar os dados pessoais!"));
+                }
+            }
+            return Json(new JsonResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "EditarDadosPessoais", dadosPessoaisViewModel)));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult SalvarLocalizacao(int id, [Bind("Id, EstadoAtendidoId, CidadeAtendidaId")] EditarLocalizacaoViewModel localizacaoViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var usuario = DAOPrincipal.ConsultarPorId(id);
+                    if (usuario != null)
+                    {
+                        DAOPrincipal.DefineCidadeUsuario(id, localizacaoViewModel.CidadeAtendidaId);
+                    }
+                    else
+                        return Json(new JsonResponse(messageErro: "Usuário não encontrado!"));
+
+
+                    return Json(new JsonResponse(valido: true));
+                }
+                catch (Exception e)
+                {
+                    return Json(new JsonResponse(messageErro: "Ocorreu um erro ao tentar salvar a Localização!"));
+                }
+            }
+            return Json(new JsonResponse(valido: false, html: HelperRenderRazorView.RenderRazorViewToString(this, "EditarLocalizacao", localizacaoViewModel)));
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult SalvarImagemDePerfil(int id, AtualizarImagemPerfilViewModel imagemPerfilViewModel)
+        {
+            try
+            {
+                var usuario = DAOPrincipal.ConsultarPorId(id);
+                if (usuario != null)
+                {
+                    imagemPerfilViewModel.ImagemEmByte = ConvertImageToByte(imagemPerfilViewModel.Imagem);
+                    if (imagemPerfilViewModel.ImagemEmByte == null)
+                    {
+                        TempData["Error"] = "Imagem Inválida!";
+                        return RedirectToAction("MeuPerfil");
+                    }
+
+
+                    DAOPrincipal.AtualizaImagemDePerfil(imagemPerfilViewModel);
+                    HttpContext.Session.SetString("ImagemPerfilBase64", DAOPrincipal.ConsultarPorId(id).ImagemDePerfilEmBase64);
+                }
+                return RedirectToAction("MeuPerfil");
+            }
+            catch (Exception e)
+            {
+                return View("Error", new ErrorViewModel(e.ToString()));
+            }
+
+        }
+
+
+        public byte[] ConvertImageToByte(IFormFile file)
+        {
+            if (file != null)
+                using (var ms = new MemoryStream())
+                {
+                    file.CopyTo(ms);
+                    return ms.ToArray();
+                }
+            else
+                return null;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult MeuPerfil()
+        { 
             return View(ObterUsuarioLogado() ?? new Usuario());
         }
     }

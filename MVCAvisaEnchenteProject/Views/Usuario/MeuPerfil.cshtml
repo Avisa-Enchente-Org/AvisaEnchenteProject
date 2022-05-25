@@ -4,63 +4,135 @@
     ViewData["Title"] = "Meu Pefil";
 }
 
-<h3 class="text-primary pt-3">@ViewData["Title"]</h3>
+<link rel="stylesheet" href="~/css/meu-perfil.css" />
 
-<div>
-    <h4>Usuario</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeCompleto)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NomeCompleto)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Senha)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Senha)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoUsuario)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TipoUsuario)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CidadeAtendidaId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CidadeAtendidaId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PrimeiroLogin)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PrimeiroLogin)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-    </dl>
+
+<div class="row mt-4">
+    <div class="col-md-6" style="place-self: center;">
+        <h4 class="text-primary">@ViewData["Title"]</h4>
+    </div>
+    <div class="col-md-6" style=" text-align: end; place-self: center;">
+        <a onclick="deletarPorIdEController(@Model.Id, 'Usuario')" class="btn btn-danger btn-sm text-white" style="width: 100%; max-width: 11rem; font-size: 0.9rem; text-align: center"><i class="fa-solid fa-trash mr-1"></i>Excluir Conta</a>
+    </div>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card card-body mt-2" style=" min-height: 215px;">
+
+    <h5 class="text-primary pb-2">Dados Pessoais</h5>
+
+    <div class="row" style="place-content: center">
+        <div class="col-md-2">
+            <form asp-action="SalvarImagemDePerfil" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+                <input type="file" name="Imagem" id="Imagem" onchange="salvarImagem()"class="btn btn-secondary d-none" accept="image/*">
+                <div class="imagem-containter">
+
+
+                    @if (@Model.ImagemDePerfil == null)
+                    {
+                        <img id="imgPreview" src="~/img/image.png" class="img-responsive" width="100" alt="Selecione uma foto de Perfil" title="Selecione uma foto de Perfil">
+                    }
+                    else
+                    {
+                        <img id="imgPreview" src="data:image/jpeg;base64,@Model.ImagemDePerfilEmBase64" class="img-responsive" width="100" alt="Selecione uma foto de Perfil" title="Selecione uma foto de Perfil">
+                    }
+                </div>
+                <input id="SalvarImagemButton" type="submit" value="Salvar" class="btn btn-primary d-none" />
+            </form>
+        </div>
+        <div class="col-md-10" style="align-self: center;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-primary font-weight-bold">Nome Completo:</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="nome-completo" class="text-primary pb-2">@Model.NomeCompleto</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-primary font-weight-bold">Email:</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div id="email" class="text-primary pb-2">@Model.Email</div>
+                        </div>
+                        <div class="col-md-4" style=" text-align: end; place-self: center;">
+                            <a onclick="abrirFormModal('@Url.Action("EditarDadosPessoais", "Usuario", new {id=Model.Id}, Context.Request.Scheme)', 'Editar Dados Pessoais')" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 14rem; font-size: 0.9rem; text-align: center"><i class="fa-solid fa-pen-to-square mr-1"></i>Editar Dados Pessoais</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="card card-body mt-3">
+
+    <h5 class="text-primary pb-2">Sua Localização <i class="fa-solid fa-location-dot fa-1x ml-2"></i></h5>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-primary font-weight-bold">Estado:</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-primary pb-2">@Model.EstadoAtendido.Descricao - @Model.EstadoAtendido.UF</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-primary font-weight-bold">Cidade:</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="text-primary pb-2">@Model.CidadeAtendida.Descricao</div>
+        </div>
+        <div class="col-md-4" style=" text-align: end; place-self: center;">
+            <a onclick="abrirFormModal('@Url.Action("EditarLocalizacao", "Usuario", new {id=Model.Id}, Context.Request.Scheme)', 'Editar Localização')" class="btn btn-warning btn-sm text-white" style="width: 100%; max-width: 14rem; font-size: 0.9rem; text-align: center"><i class="fa-solid fa-pen-to-square mr-1"></i>Editar Localização</a>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script>
+
+        let photo = document.getElementById("imgPreview");
+        let file = document.getElementById("Imagem");
+        let subimitButtonImage = document.getElementById("SalvarImagemButton");
+
+        photo.addEventListener('click', () => {
+            file.click();
+        });
+
+        salvarImagem = () => {
+            var size = file.files[0].size;
+            if (size > 2097152) {
+                Swal.fire({
+                    title: 'Imagem muito grande! Limite: 2mb',
+                    confirmButtonColor: '#08357c',
+                    customClass: {
+                        confirmButton: 'btn btn-primary btn-md',
+                    },
+                })
+                e.preventDefault();
+                return;
+            } else {
+                subimitButtonImage.click();
+            }
+        }
+
+    </script>
+
+    <script>
+
         window.addEventListener('load', function () {
 
             $('#index').removeClass('active');

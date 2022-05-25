@@ -41,6 +41,7 @@ CREATE TABLE [dbo].[usuarios](
 	[tipo_usuario] INT NOT NULL,
 	[cidade_atendida_id] INT NULL,
 	[primeiro_login] BIT NOT NULL,
+	[imagem_perfil] VARBINARY(max),
 
 	CONSTRAINT [pk_usuarios_id] PRIMARY KEY([id]),
 	CONSTRAINT [fk_usuarios_cidade_atendida_id] FOREIGN KEY([cidade_atendida_id])
@@ -107,7 +108,7 @@ GO
 -- VIEWS
 
 CREATE VIEW vw_usuarios AS
-	SELECT u.id, u.nome_completo, u.email, u.tipo_usuario, u.cidade_atendida_id, u.primeiro_login FROM usuarios u
+	SELECT u.id, u.nome_completo, u.email, u.tipo_usuario, u.cidade_atendida_id, u.primeiro_login, u.imagem_perfil FROM usuarios u
 GO
 
 -- FUNCTIONS
@@ -319,6 +320,19 @@ BEGIN
 	INNER JOIN [dbo].[estados_atendidos] e ON e.id = c.estado_atendido_id
 	WHERE u.id = @id
 
+END
+GO
+
+CREATE PROCEDURE sp_update_imagem_perfil
+(
+	@id int,
+	@imagem_perfil VARBINARY(max)
+)
+AS
+BEGIN
+	UPDATE usuarios SET
+	imagem_perfil = @imagem_perfil
+	WHERE id = @id
 END
 GO
 
@@ -669,7 +683,7 @@ BEGIN
 	DECLARE @ponto_sensoriamento_id INT;
 
 	DECLARE cursor_pds CURSOR STATIC FORWARD_ONLY FOR
-	SELECT id FROM [dbo].[pontos_sensoriamento] 
+	SELECT id FROM [dbo].[pontos_sensoriamento] WHERE cidade_atendida_id = @cidade_atendida_id
 
 	OPEN cursor_pds
 	FETCH NEXT FROM cursor_pds INTO @ponto_sensoriamento_id

@@ -147,3 +147,16 @@ BEGIN
 
 END
 GO
+
+CREATE PROCEDURE sp_update_imagem_perfil
+(
+	@id int,
+	@imagem_perfil VARBINARY(max)
+)
+AS
+BEGIN
+	UPDATE usuarios SET
+	imagem_perfil = @imagem_perfil
+	WHERE id = @id
+END
+GO

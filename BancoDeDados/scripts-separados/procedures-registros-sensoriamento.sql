@@ -85,7 +85,7 @@ BEGIN
 	DECLARE @ponto_sensoriamento_id INT;
 
 	DECLARE cursor_pds CURSOR STATIC FORWARD_ONLY FOR
-	SELECT id FROM [dbo].[pontos_sensoriamento] 
+	SELECT id FROM [dbo].[pontos_sensoriamento] WHERE cidade_atendida_id = @cidade_atendida_id
 
 	OPEN cursor_pds
 	FETCH NEXT FROM cursor_pds INTO @ponto_sensoriamento_id

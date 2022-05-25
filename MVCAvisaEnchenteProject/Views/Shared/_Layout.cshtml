@@ -14,6 +14,7 @@
 <body>
     @{
         var userRole = User?.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
+        var userImage = HttpContextAccessor.HttpContext.Session.GetString("ImagemPerfilBase64");
     }
     @if ((string)ViewData["Title"] != "Página Inicial" || User.Identity.IsAuthenticated)
     {
@@ -59,7 +60,15 @@
 
                                 <li class="nav-item dropdown meu-perfil-button">
                                     <a class="nav-link dropdown-toggle" href="#" id="dropdownMeuPerfilLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0">
-                                        <img src="/img/image.png" width="40" height="40" id="meu-perfil-image" class="rounded-circle">
+                                        @*<img src="/img/image.png" width="40" height="40" id="meu-perfil-image" class="rounded-circle">*@
+                                        @if (string.IsNullOrEmpty(userImage))
+                                        {
+                                            <img src="~/img/image.png" width="40" height="40" id="meu-perfil-image" class="rounded-circle">
+                                        }
+                                        else
+                                        {
+                                            <img  id="meu-perfil-image" width="40" height="40" src="data:image/jpeg;base64,@userImage" class="rounded-circle" >
+                                        }
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMeuPerfilLink">
                                         <a class="dropdown-item nav-link-dropdown" asp-controller="Usuario" asp-action="MeuPerfil"><i class="fa-solid fa-user pr-2"></i> Meu Perfil</a>

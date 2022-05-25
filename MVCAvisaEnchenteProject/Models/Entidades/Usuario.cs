@@ -21,6 +21,17 @@ namespace MVCAvisaEnchenteProject.Models.Entidades
         public int CidadeAtendidaId { get; set; }
 
         public bool PrimeiroLogin { get; set; }
+        public byte[] ImagemDePerfil { get; set; }
+        public string ImagemDePerfilEmBase64
+        {
+            get
+            {
+                if (ImagemDePerfil != null)
+                    return Convert.ToBase64String(ImagemDePerfil);
+                else
+                    return string.Empty;
+            }
+        }
 
         public CidadeAtendida CidadeAtendida { get; set; }
         public EstadoAtendido EstadoAtendido { get; set; }

@@ -110,7 +110,17 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 return null;
             else
                 return MontaEntidadeUsuarioComEndereco(tabela.Rows[0]);
-        } 
+        }
+
+        public void AtualizaImagemDePerfil(AtualizarImagemPerfilViewModel imagemPerfilViewModel)
+        {
+            SqlParameter[] parametros =
+            {
+                 new SqlParameter("id", imagemPerfilViewModel.Id),
+                 new SqlParameter("imagem_perfil", imagemPerfilViewModel.ImagemEmByte)
+            };
+            HelperDAO.ExecutaProc("sp_update_imagem_perfil", parametros);
+        }
 
         #region Helpers
 
@@ -128,7 +138,8 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 usuario.Senha = registro["senha"].ToString();
             if (registro["cidade_atendida_id"] != DBNull.Value)
                 usuario.CidadeAtendidaId = Convert.ToInt32(registro["cidade_atendida_id"]);
-            
+            if (registro["imagem_perfil"] != DBNull.Value)
+                usuario.ImagemDePerfil = registro["imagem_perfil"] as byte[];
 
             return usuario;
         }
@@ -140,6 +151,8 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 Id = Convert.ToInt32(registro["id"]),
                 NomeCompleto = registro["nome_completo"].ToString(),
                 Email = registro["email"].ToString(),
+                TipoUsuario = (ETipoUsuario)Convert.ToInt32(registro["tipo_usuario"]),
+                PrimeiroLogin = Convert.ToBoolean(registro["primeiro_login"]),
                 CidadeAtendida = new CidadeAtendida
                 {
                     Id = Convert.ToInt32(registro["cidade_atendida_id"]),
@@ -155,13 +168,16 @@ namespace MVCAvisaEnchenteProject.Infrastructure.DAO
                 }
             };
 
+            if (registro["imagem_perfil"] != DBNull.Value)
+                usuario.ImagemDePerfil = registro["imagem_perfil"] as byte[];
+
             return usuario;
         }
 
 
         protected override SqlParameter[] CriaParametros(Usuario usuario)
         {
-            var usuarioParametros = new List<SqlParameter> 
+            var usuarioParametros = new List<SqlParameter>
             {
                 new SqlParameter("nome_completo", usuario.NomeCompleto),
                 new SqlParameter("email", usuario.Email),

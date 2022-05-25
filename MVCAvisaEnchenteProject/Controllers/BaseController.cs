@@ -65,7 +65,7 @@ namespace MVCAvisaEnchenteProject.Controllers
         {
             var usuarioDAO = new UsuarioDAO();
             if (UsuarioEstaLogado())
-                return usuarioDAO.ConsultarPorId(Convert.ToInt32(ObterIdUsuarioLogado()));
+                return usuarioDAO.ConsultarEnderecoUsuario(Convert.ToInt32(ObterIdUsuarioLogado()));
 
             return null;
         }
