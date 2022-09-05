@@ -41,3 +41,9 @@ tudo o que estiver no arquivo **"appsettings.json"**, e configure a DefaultConne
 # Rodar o Projeto
 
 Após Realizado os primeiros passos, basta dar um Build na Solução, ou apertar F5 para roda-la
+
+
+# Observações
+
+É possivel que nesse momento, a licensa do Geocoder, do Google, possa ter expirado, e por isso o Mapa do Sistema pode não carregar ao executa-lo.
+Nesse Caso você poderá utilizar sua propria Chave de Licensa do Geocode.
