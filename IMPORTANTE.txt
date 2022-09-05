@@ -1,0 +1,6 @@
+Configurações iniciais necessárias para colocar o projeto pra rodar.
+
+- Primeiro de tudo acesse a pasta **BancoDeDados** e execute o script SQL do arquivo "scripts", para que toda o Banco de Dados
+e tabelas sejam devidamente criados;
+- Abra a pasta MVCAvisaEnchenteProject, e crie um arquivo chamado **"appsettings.Delevopment.json"**, e após isso, copie e cole 
+tudo o que estiver no arquivo **"appsettings.json"**, e configure a DefaultConnection para a sua connection string local;  
