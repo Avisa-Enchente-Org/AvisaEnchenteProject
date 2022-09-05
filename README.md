@@ -13,24 +13,16 @@ e exibirá esses Dados em tempo real para os usuários.
 Além de tudo, haverá também um Painel Administrador, da qual será incluido todas as funcionalidades relacionadas a configuração
 dos dispositivos conectados, bem como seus parametros de notificação, e também para controle de usuários.
 
+## Apresentação do Sistema
+
+Video de Apresentação e Funcionamento do Sistema no Youtube:
+[Video de apresentação](https://www.youtube.com/watch?v=FGh7rhUspQI)
+
 # Primeiros passos
 Para começar o desenvolvimento, será necessário seguir os seguintes passos:
 
-## 1.	Clonando o Repositório
-Como Clonar o respoistório para sua máquina local.
 
-- Vá até o menu do canto esquerdo da tela, e selecione **"Repos"**;
-
-- No topo da tela, selecione a branch **"Main"**, e logo no canto superior direito, clique no botão **"Clone"**;
-
-- Copie o comando HTTPS gerado, e no seu cmd ou bash realize o seguinte comando git clone {HTTPS-Gerado};
-
-- É possivel que você seja bloqueado ao tentar fazer o clone, e nesse caso o git irá pedir suas credenciais, 
-nesse caso, só clickar no botão **Generate Git Credentials"** que o mesmo irá gerar um Username e Password.
-
-
-
-### 2.	Configurações Iniciais
+### 1.	Configurações Iniciais
 Configurações iniciais necessárias para colocar o projeto pra rodar.
 
 - Primeiro de tudo acesse a pasta **BancoDeDados** e execute o script SQL do arquivo "scripts-db", para que toda o Banco de Dados
