@@ -16,7 +16,7 @@ dos dispositivos conectados, bem como seus parametros de notificação, e també
 # Primeiros passos
 Para começar o desenvolvimento, será necessário seguir os seguintes passos:
 
-##1.	Clonando o Repositório
+## 1.	Clonando o Repositório
 Como Clonar o respoistório para sua máquina local.
 
 - Vá até o menu do canto esquerdo da tela, e selecione **"Repos"**;
@@ -30,7 +30,7 @@ nesse caso, só clickar no botão **Generate Git Credentials"** que o mesmo irá
 
 
 
-###2.	Configurações Iniciais
+### 2.	Configurações Iniciais
 Configurações iniciais necessárias para colocar o projeto pra rodar.
 
 - Primeiro de tudo acesse a pasta **BancoDeDados** e execute o script SQL do arquivo "scripts-db", para que toda o Banco de Dados
@@ -43,7 +43,7 @@ tudo o que estiver no arquivo **"appsettings.json"**, e configure a DefaultConne
 Após Realizado os primeiros passos, basta dar um Build na Solução, ou apertar F5 para roda-la
 
 
-# Observações
+## Observações
 
 É possivel que nesse momento, a licensa do Geocoder, do Google, possa ter expirado, e por isso o Mapa do Sistema pode não carregar ao executa-lo.
 Nesse Caso você poderá utilizar sua propria Chave de Licensa do Geocode.
